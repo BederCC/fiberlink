@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         if (localStorage.getItem('token')) {
-            window.location.href = 'dashboard.php';
+            window.location.href = 'public/dashboard.php';
         }
     </script>
     <style>
@@ -96,7 +96,7 @@
             btnText.textContent = 'Verificando...';
 
             try {
-                const response = await fetch('./api/login.php', {
+                const response = await fetch('api/login.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -123,7 +123,7 @@
                         submitBtn.disabled = false;
                         spinner.classList.add('hidden');
                         btnText.textContent = 'Ingresar al Sistema';
-                        window.location.href = 'dashboard.php';
+                        window.location.href = 'public/dashboard.php';
                     }, 1000);
                 } else {
                     throw new Error(data.message || 'Error en el inicio de sesión');

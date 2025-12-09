@@ -42,7 +42,7 @@
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            window.location.href = 'index.php';
+            window.location.href = '../index.php';
         }
     </script>
 </body>

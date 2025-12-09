@@ -1,6 +1,6 @@
-<?php require_once 'includes/header.php'; ?>
-<?php require_once 'includes/navbar.php'; ?>
-<?php require_once 'includes/sidebar.php'; ?>
+<?php require_once '../includes/header.php'; ?>
+<?php require_once '../includes/navbar.php'; ?>
+<?php require_once '../includes/sidebar.php'; ?>
 
     <!-- Main Content -->
     <div class="p-4 sm:ml-64 mt-14">
@@ -78,4 +78,4 @@
         </div>
     </div>
 
-<?php require_once 'includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; ?>
