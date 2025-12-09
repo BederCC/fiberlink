@@ -73,7 +73,34 @@
                     <label class="block mb-2 text-sm font-medium text-white">Modelo Router</label>
                     <input type="text" id="routerModel" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5" placeholder="TP-Link Archer C6">
                 </div>
-                <button onclick="saveService()" type="button" class="w-full text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                <!-- Installation Costs -->
+                <div class="border-t border-slate-700 pt-4 mt-4">
+                    <h4 class="text-white font-medium mb-3">Facturación de Instalación</h4>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-white">Costo Mano de Obra (S/)</label>
+                            <input type="number" id="installCost" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5" placeholder="50.00" value="0">
+                        </div>
+                        <div class="flex items-center pt-6">
+                            <input id="firstMonth" type="checkbox" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-600 ring-offset-slate-800">
+                            <label for="firstMonth" class="ml-2 text-sm font-medium text-slate-300">Cobrar Primer Mes</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Equipment -->
+                <div class="border-t border-slate-700 pt-4 mt-4">
+                    <h4 class="text-white font-medium mb-3">Equipos Utilizados</h4>
+                    <div id="productsContainer" class="space-y-2 mb-2">
+                        <!-- Dynamic Product Rows -->
+                    </div>
+                    <button type="button" onclick="addProductRow()" class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Agregar Equipo
+                    </button>
+                </div>
+
+                <button onclick="saveService()" type="button" class="w-full text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mt-4">
                     Guardar Instalación
                 </button>
             </div>
@@ -85,8 +112,43 @@
     document.addEventListener('DOMContentLoaded', () => {
         loadServices();
         loadClients();
+        loadClients();
         loadPlans();
+        loadProductsList();
     });
+
+    let availableProducts = [];
+
+    async function loadProductsList() {
+        try {
+            const response = await fetch('../api/products.php');
+            availableProducts = await response.json();
+        } catch (error) {
+            console.error('Error loading products:', error);
+        }
+    }
+
+    function addProductRow() {
+        const container = document.getElementById('productsContainer');
+        const div = document.createElement('div');
+        div.className = 'flex gap-2 items-center product-row';
+        
+        let options = '<option value="">Seleccionar Equipo</option>';
+        availableProducts.forEach(p => {
+            options += `<option value="${p.id}" data-price="${p.price}">${p.name} (S/ ${p.price})</option>`;
+        });
+
+        div.innerHTML = `
+            <select class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5 product-select">
+                ${options}
+            </select>
+            <input type="number" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg block w-20 p-2.5 product-qty" placeholder="Cant." value="1" min="1">
+            <button type="button" onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-300">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        `;
+        container.appendChild(div);
+    }
 
     async function loadServices() {
         try {
@@ -166,6 +228,9 @@
                  document.getElementById('ipAddress').value = '';
                  document.getElementById('macAddress').value = '';
                  document.getElementById('routerModel').value = '';
+                 document.getElementById('installCost').value = '0';
+                 document.getElementById('firstMonth').checked = false;
+                 document.getElementById('productsContainer').innerHTML = '';
             }
         }
     }
@@ -181,8 +246,23 @@
             plan_id: document.getElementById('planId').value,
             ip_address: document.getElementById('ipAddress').value,
             mac_address: document.getElementById('macAddress').value,
-            router_model: document.getElementById('routerModel').value
+            router_model: document.getElementById('routerModel').value,
+            installation_cost: parseFloat(document.getElementById('installCost').value) || 0,
+            include_first_month: document.getElementById('firstMonth').checked,
+            products: []
         };
+
+        // Collect products
+        document.querySelectorAll('.product-row').forEach(row => {
+            const select = row.querySelector('.product-select');
+            const qty = row.querySelector('.product-qty');
+            if(select.value && qty.value) {
+                data.products.push({
+                    id: select.value,
+                    quantity: parseInt(qty.value)
+                });
+            }
+        });
 
         if (id) {
             data.id = id;
@@ -208,6 +288,9 @@
                 document.getElementById('ipAddress').value = '';
                 document.getElementById('macAddress').value = '';
                 document.getElementById('routerModel').value = '';
+                document.getElementById('installCost').value = '0';
+                document.getElementById('firstMonth').checked = false;
+                document.getElementById('productsContainer').innerHTML = '';
             } else {
                 alert('Error al guardar servicio');
             }

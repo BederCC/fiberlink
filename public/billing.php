@@ -140,14 +140,21 @@
         document.getElementById('genYear').value = date.getFullYear();
     });
 
+    let previousStatuses = {};
+
     async function loadInvoices() {
         try {
             const response = await fetch('../api/billing.php');
             const invoices = await response.json();
             const tbody = document.getElementById('invoicesTableBody');
-            tbody.innerHTML = '';
-
+            
             let unpaid = 0, paid = 0, overdue = 0;
+
+            // Create a map of current rows for easy access
+            const currentRows = {};
+            tbody.querySelectorAll('tr').forEach(row => {
+                currentRows[row.id] = row;
+            });
 
             invoices.forEach(inv => {
                 const amount = parseFloat(inv.total_amount);
@@ -155,15 +162,13 @@
                 else if(inv.status === 'overdue') overdue += amount;
                 else unpaid += amount;
 
-                const tr = document.createElement('tr');
-                tr.className = 'bg-slate-800 border-b border-slate-700 hover:bg-slate-700 transition-colors';
-                
                 let statusColor = 'bg-slate-500/10 text-slate-400';
                 if(inv.status === 'paid') statusColor = 'bg-emerald-500/10 text-emerald-400';
                 if(inv.status === 'overdue') statusColor = 'bg-red-500/10 text-red-400';
                 if(inv.status === 'unpaid') statusColor = 'bg-amber-500/10 text-amber-400';
 
-                tr.innerHTML = `
+                const rowId = `invoice-${inv.id}`;
+                const rowContent = `
                     <td class="px-6 py-4 font-medium text-white">${inv.invoice_number}</td>
                     <td class="px-6 py-4">
                         <div class="flex flex-col">
@@ -182,13 +187,48 @@
                     <td class="px-6 py-4">
                         ${inv.status !== 'paid' ? 
                             `<button onclick="openPaymentModal(${inv.id}, ${amount})" class="font-medium text-emerald-400 hover:underline mr-3">Pagar</button>` : 
-                            `<button class="font-medium text-slate-500 cursor-not-allowed">Pagado</button>`
+                            `<button class="font-medium text-slate-500 cursor-not-allowed mr-3">Pagado</button>`
                         }
-                        <button class="font-medium text-indigo-400 hover:underline">PDF</button>
+                        <a href="../api/pdf_invoice.php?id=${inv.id}" target="_blank" class="font-medium text-indigo-400 hover:underline mr-3">PDF</a>
+                        <a href="../api/xml_invoice.php?id=${inv.id}" target="_blank" class="font-medium text-amber-400 hover:underline">XML</a>
                     </td>
                 `;
-                tbody.appendChild(tr);
+
+                let tr;
+                if (currentRows[rowId]) {
+                    tr = currentRows[rowId];
+                    // Check if status changed
+                    if (previousStatuses[inv.id] && previousStatuses[inv.id] !== inv.status && inv.status === 'paid') {
+                        // Status changed to paid!
+                        tr.innerHTML = rowContent;
+                        // Add highlight class
+                        tr.classList.add('bg-emerald-500/20');
+                        setTimeout(() => {
+                            tr.classList.remove('bg-emerald-500/20');
+                        }, 3000);
+                    } else if (tr.innerHTML !== rowContent) {
+                         // Update content if something else changed (rare but possible)
+                         tr.innerHTML = rowContent;
+                    }
+                } else {
+                    // New row
+                    tr = document.createElement('tr');
+                    tr.id = rowId;
+                    tr.className = 'bg-slate-800 border-b border-slate-700 hover:bg-slate-700 transition-colors duration-500';
+                    tr.innerHTML = rowContent;
+                    tbody.appendChild(tr);
+                }
+                
+                // Update status map
+                previousStatuses[inv.id] = inv.status;
+                // Remove from currentRows map to track deletions
+                delete currentRows[rowId];
             });
+
+            // Remove rows that are no longer in the data
+            for (const id in currentRows) {
+                currentRows[id].remove();
+            }
 
             document.getElementById('totalUnpaid').textContent = `S/ ${unpaid.toFixed(2)}`;
             document.getElementById('totalPaid').textContent = `S/ ${paid.toFixed(2)}`;
@@ -198,6 +238,9 @@
             console.error('Error loading invoices:', error);
         }
     }
+
+    // Poll every 5 seconds
+    setInterval(loadInvoices, 5000);
 
     function openGenerateModal() {
         document.getElementById('generateModal').classList.remove('hidden');

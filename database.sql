@@ -79,8 +79,28 @@ CREATE TABLE IF NOT EXISTS invoices (
     due_date DATE NOT NULL,
     total_amount DECIMAL(10, 2) NOT NULL,
     status ENUM('unpaid', 'paid', 'overdue', 'cancelled') DEFAULT 'unpaid',
+    type ENUM('monthly', 'installation', 'product_sale') DEFAULT 'monthly',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES clients(id)
+);
+
+CREATE TABLE IF NOT EXISTS products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    price DECIMAL(10, 2) NOT NULL,
+    stock INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS installation_details (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    service_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT DEFAULT 1,
+    price_at_moment DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (service_id) REFERENCES services(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
 -- Invoice Items Table
@@ -105,3 +125,8 @@ CREATE TABLE IF NOT EXISTS payments (
     FOREIGN KEY (invoice_id) REFERENCES invoices(id),
     FOREIGN KEY (created_by) REFERENCES users(id)
 );
+
+
+UPDATE users 
+SET password = '$2y$10$Y3/lGaGEo2WxAFqXqxjZqOfoSnS504V4sRdVL6ofSiVzv54GWcJxe' 
+WHERE username = 'admin';

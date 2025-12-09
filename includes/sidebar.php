@@ -43,7 +43,15 @@
                         <svg class="flex-shrink-0 w-5 h-5 transition duration-75 text-slate-400 group-hover:text-indigo-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
                             <path d="M17 5.923A1 1 0 0 0 16 5h-3V4a4 4 0 1 0-8 0v1H2a1 1 0 0 0-1 .923L.166 16.043A2 2 0 0 0 2.133 18h13.734a2 2 0 0 0 1.967-1.957L17 5.923ZM7 9a1 1 0 0 1-2 0V7h2v2Zm0-5a2 2 0 1 1 4 0v1H7V4Zm6 5a1 1 0 1 1-2 0V7h2v2Z"/>
                         </svg>
-                        <span class="flex-1 ms-3 whitespace-nowrap">Planes (Productos)</span>
+                        <span class="flex-1 ms-3 whitespace-nowrap">Planes (Servicios)</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="products.php" class="flex items-center p-2 text-slate-300 rounded-lg hover:bg-slate-800 hover:text-indigo-400 group transition-colors">
+                        <svg class="flex-shrink-0 w-5 h-5 transition duration-75 text-slate-400 group-hover:text-indigo-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M1 5h1.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 1 0 0-2H8.576a3.228 3.228 0 0 0-6.152 0H1a1 1 0 1 0 0 2Zm18 4h-1.424a3.228 3.228 0 0 0-6.152 0H1a1 1 0 1 0 0 2h10.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 0 0 0-2Zm0 6H8.576a3.228 3.228 0 0 0-6.152 0H1a1 1 0 0 0 0 2h1.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 0 0 0-2Z"/>
+                        </svg>
+                        <span class="flex-1 ms-3 whitespace-nowrap">Inventario (Equipos)</span>
                     </a>
                 </li>
             </ul>
