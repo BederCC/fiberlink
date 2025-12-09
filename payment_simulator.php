@@ -97,6 +97,7 @@
 
     <script>
         let selectedInvoice = null;
+        let searchTimestamp = null;
 
         async function searchInvoices() {
             const dni = document.getElementById('dniInput').value;
@@ -108,6 +109,10 @@
             try {
                 const response = await fetch(`api/billing.php?dni=${dni}`);
                 const invoices = await response.json();
+                
+                if (invoices.length > 0) {
+                    searchTimestamp = Date.now(); // Capture timestamp
+                }
                 
                 const list = document.getElementById('invoicesList');
                 list.innerHTML = '';
@@ -138,6 +143,8 @@
                 alert('Error al buscar facturas');
             }
         }
+
+
 
         function selectInvoice(inv) {
             selectedInvoice = {
@@ -200,7 +207,8 @@
                         amount: selectedInvoice.amount,
                         payment_method: document.getElementById('selectedMethod').value,
                         transaction_id: 'SIM-' + Date.now(),
-                        notes: 'Pago simulado desde pasarela externa'
+                        notes: 'Pago simulado desde pasarela externa',
+                        search_timestamp: searchTimestamp
                     })
                 });
 

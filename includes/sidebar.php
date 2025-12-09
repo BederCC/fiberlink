@@ -54,6 +54,22 @@
                         <span class="flex-1 ms-3 whitespace-nowrap">Inventario (Equipos)</span>
                     </a>
                 </li>
+                <li>
+                    <a href="technical.php" class="flex items-center p-2 text-slate-300 rounded-lg hover:bg-slate-800 hover:text-indigo-400 group transition-colors">
+                        <svg class="flex-shrink-0 w-5 h-5 transition duration-75 text-slate-400 group-hover:text-indigo-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                        </svg>
+                        <span class="flex-1 ms-3 whitespace-nowrap">Operaciones Técnicas</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="reports.php" class="flex items-center p-2 text-slate-300 rounded-lg hover:bg-slate-800 hover:text-indigo-400 group transition-colors">
+                        <svg class="flex-shrink-0 w-5 h-5 transition duration-75 text-slate-400 group-hover:text-indigo-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        <span class="flex-1 ms-3 whitespace-nowrap">Reportes</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </aside>

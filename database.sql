@@ -130,3 +130,13 @@ CREATE TABLE IF NOT EXISTS payments (
 UPDATE users 
 SET password = '$2y$10$Y3/lGaGEo2WxAFqXqxjZqOfoSnS504V4sRdVL6ofSiVzv54GWcJxe' 
 WHERE username = 'admin';
+
+-- Payment Metrics Table (Time to Payment)
+CREATE TABLE IF NOT EXISTS payment_metrics (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    invoice_id INT NOT NULL,
+    search_timestamp DATETIME NOT NULL,
+    payment_timestamp DATETIME NOT NULL,
+    duration_seconds INT NOT NULL,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(id)
+);

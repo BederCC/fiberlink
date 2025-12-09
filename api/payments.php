@@ -88,6 +88,24 @@ if(!empty($data->invoice_id) && !empty($data->amount)) {
             );
         }
         
+        // 4. Record Payment Metric (Time to Payment)
+        if (!empty($data->search_timestamp)) {
+            $searchTime = $data->search_timestamp / 1000; // Convert JS ms to PHP seconds
+            $payTime = time();
+            $duration = $payTime - $searchTime;
+            
+            if ($duration > 0) {
+                $q_metric = "INSERT INTO payment_metrics (invoice_id, search_timestamp, payment_timestamp, duration_seconds) 
+                             VALUES (:invoice_id, FROM_UNIXTIME(:search_ts), FROM_UNIXTIME(:pay_ts), :duration)";
+                $s_metric = $db->prepare($q_metric);
+                $s_metric->bindParam(":invoice_id", $data->invoice_id);
+                $s_metric->bindParam(":search_ts", $searchTime);
+                $s_metric->bindParam(":pay_ts", $payTime);
+                $s_metric->bindParam(":duration", $duration);
+                $s_metric->execute();
+            }
+        }
+        
         http_response_code(201);
         echo json_encode(array("message" => "Pago registrado y recibo enviado."));
     } else {
