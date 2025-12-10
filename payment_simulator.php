@@ -67,17 +67,17 @@
                     <label class="block text-sm font-medium text-slate-700 mb-2">Método de Pago</label>
                     <div class="grid grid-cols-2 gap-3">
                         <button type="button" onclick="selectMethod('visa')" class="payment-method-btn flex items-center justify-center gap-2 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" data-method="credit_card">
-                            <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M14 13.963H12.016L12.492 11H14.476L14 13.963ZM21.908 11.586C21.908 11.586 21.84 11.56 21.728 11.56C21.492 11.56 21.056 11.691 20.876 12.123L19.864 16.896H17.768L19.06 11.08C19.06 11.08 19.34 10.142 17.588 10.142H14.932L14.88 10.386C14.88 10.386 15.688 10.55 15.84 10.644C16.004 10.748 16.056 10.89 16.044 11.022L15.456 13.974L14.82 16.896H12.724L13.344 13.974L13.88 11.022C13.88 11.022 13.968 10.638 13.508 10.422C13.196 10.272 12.78 10.226 12.78 10.226L12.232 12.794L11.604 15.754L10.932 12.428L10.92 12.38C10.768 11.714 10.344 11.226 9.68 10.88C8.968 10.504 8.02 10.354 7.02 10.354H6.808L6.68 10.926C6.68 10.926 7.68 11.124 8.52 11.602C9.18 11.988 9.38 12.598 9.38 12.598L8.144 16.896H10.292L13.208 10.142H11.508L10.932 12.428L10.92 12.38L10.292 16.896H12.44L13.06 13.974L13.596 11.022L14.132 13.974L14.756 16.896H16.852L18.42 10.142H20.364C20.364 10.142 20.664 10.142 20.888 10.638L22.664 16.896H24.764L22.964 11.972C22.964 11.972 22.688 11.136 21.908 11.586Z"/></svg>
-                            <span class="text-sm font-medium">Tarjeta</span>
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" class="h-6 object-contain">
                         </button>
                         <button type="button" onclick="selectMethod('yape')" class="payment-method-btn flex items-center justify-center gap-2 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" data-method="yape">
-                            <span class="text-sm font-bold text-purple-600">Yape</span>
+                            <img src="https://static.cdnlogo.com/logos/y/37/yape-peru.svg" alt="Yape" class="h-8 object-contain">
                         </button>
                         <button type="button" onclick="selectMethod('plin')" class="payment-method-btn flex items-center justify-center gap-2 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" data-method="plin">
-                            <span class="text-sm font-bold text-cyan-500">Plin</span>
+                            <img src="https://plin.pe/wp-content/themes/plin/imgs/logo.png" alt="Plin" class="h-8 object-contain">
                         </button>
                         <button type="button" onclick="selectMethod('bank')" class="payment-method-btn flex items-center justify-center gap-2 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" data-method="bank_transfer">
-                            <span class="text-sm font-medium">Transferencia</span>
+                            <img src="https://cdn-icons-png.flaticon.com/512/2830/2830284.png" alt="Transferencia" class="h-6 object-contain opacity-70">
+                            <span class="text-sm font-medium text-slate-600">Otros Bancos</span>
                         </button>
                     </div>
                     <input type="hidden" id="selectedMethod" value="credit_card">

@@ -995,6 +995,9 @@
   .bg-clip-text {
     background-clip: text;
   }
+  .object-contain {
+    object-fit: contain;
+  }
   .p-2 {
     padding: calc(var(--spacing) * 2);
   }
@@ -1260,6 +1263,9 @@
   }
   .opacity-25 {
     opacity: 25%;
+  }
+  .opacity-70 {
+    opacity: 70%;
   }
   .opacity-75 {
     opacity: 75%;
