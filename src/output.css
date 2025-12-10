@@ -385,6 +385,9 @@
   .mb-10 {
     margin-bottom: calc(var(--spacing) * 10);
   }
+  .-ml-1 {
+    margin-left: calc(var(--spacing) * -1);
+  }
   .ml-1 {
     margin-left: calc(var(--spacing) * 1);
   }
@@ -411,6 +414,9 @@
   }
   .inline {
     display: inline;
+  }
+  .inline-block {
+    display: inline-block;
   }
   .inline-flex {
     display: inline-flex;
