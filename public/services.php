@@ -47,11 +47,13 @@
             </div>
             <div class="p-6 space-y-4">
                 <input type="hidden" id="serviceId">
-                <div>
+                <div class="relative">
                     <label class="block mb-2 text-sm font-medium text-white">Cliente</label>
-                    <select id="clientId" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5">
-                        <option value="">Cargando clientes...</option>
-                    </select>
+                    <input type="hidden" id="clientId">
+                    <input type="text" id="clientSearch" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5" placeholder="Buscar por nombre o DNI..." autocomplete="off">
+                    <div id="clientSearchResults" class="absolute z-10 w-full bg-slate-800 border border-slate-600 rounded-lg mt-1 max-h-48 overflow-y-auto hidden shadow-lg">
+                        <!-- Results -->
+                    </div>
                 </div>
                 <div>
                     <label class="block mb-2 text-sm font-medium text-white">Plan de Internet</label>
@@ -111,8 +113,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         loadServices();
-        loadClients();
-        loadClients();
+
         loadPlans();
         loadProductsList();
     });
@@ -150,10 +151,21 @@
         container.appendChild(div);
     }
 
+    // Poll for updates
+    setInterval(loadServices, 3000);
+
+    let lastServicesHash = '';
+
     async function loadServices() {
         try {
-            const response = await fetch('../api/services.php');
+            const response = await fetch('../api/services.php?_=' + new Date().getTime());
             const services = await response.json();
+            
+            // Check if data changed to avoid unnecessary re-renders
+            const currentHash = JSON.stringify(services);
+            if (currentHash === lastServicesHash) return;
+            lastServicesHash = currentHash;
+
             const tbody = document.getElementById('servicesTableBody');
             tbody.innerHTML = '';
 
@@ -173,8 +185,8 @@
                     </td>
                     <td class="px-6 py-4">${service.router_model || '-'}</td>
                     <td class="px-6 py-4">
-                        <span class="px-2 py-1 rounded-full text-xs ${service.service_status === 'active' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}">
-                            ${service.service_status}
+                        <span class="px-2 py-1 rounded-full text-xs ${service.service_status === 'active' ? 'bg-emerald-500/10 text-emerald-400' : (service.service_status === 'pending' ? 'bg-amber-500/10 text-amber-400' : (service.service_status === 'in_progress' ? 'bg-blue-500/10 text-blue-400' : 'bg-red-500/10 text-red-400'))}">
+                            ${service.service_status === 'active' ? 'Activo' : (service.service_status === 'pending' ? 'Pendiente' : (service.service_status === 'in_progress' ? 'En Progreso' : 'Cortado'))}
                         </span>
                     </td>
                     <td class="px-6 py-4">
@@ -188,17 +200,77 @@
         }
     }
 
-    async function loadClients() {
-        const response = await fetch('../api/clients.php');
-        const clients = await response.json();
-        const select = document.getElementById('clientId');
-        select.innerHTML = '<option value="">Seleccione Cliente</option>';
-        clients.forEach(c => {
-            const option = document.createElement('option');
-            option.value = c.id;
-            option.textContent = `${c.fullname}`;
-            select.appendChild(option);
-        });
+    // Client Search Logic
+    const clientSearchInput = document.getElementById('clientSearch');
+    const clientSearchResults = document.getElementById('clientSearchResults');
+
+    clientSearchInput.addEventListener('input', debounce(async (e) => {
+        const term = e.target.value;
+        if (term.length < 2) {
+            clientSearchResults.classList.add('hidden');
+            return;
+        }
+
+        try {
+            const response = await fetch(`../api/clients.php?search=${encodeURIComponent(term)}&limit=5`);
+            const data = await response.json();
+            const clients = data.data || []; // Handle pagination structure
+
+            clientSearchResults.innerHTML = '';
+            if (clients.length > 0) {
+                clients.forEach(client => {
+                    const div = document.createElement('div');
+                    div.className = 'p-2 hover:bg-slate-700 cursor-pointer text-sm text-slate-300 border-b border-slate-700 last:border-0';
+                    div.innerHTML = `<span class="font-bold text-white">${client.fullname}</span> <span class="text-xs">(${client.dni_ruc})</span>`;
+                    div.onclick = () => {
+                        document.getElementById('clientId').value = client.id;
+                        clientSearchInput.value = client.fullname;
+                        clientSearchResults.classList.add('hidden');
+                    };
+                    clientSearchResults.appendChild(div);
+                });
+                clientSearchResults.classList.remove('hidden');
+            } else {
+                clientSearchResults.classList.add('hidden');
+            }
+        } catch (error) {
+            console.error('Error searching clients:', error);
+        }
+    }, 300));
+
+    // Close search results when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!clientSearchInput.contains(e.target) && !clientSearchResults.contains(e.target)) {
+            clientSearchResults.classList.add('hidden');
+        }
+    });
+
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // Random IP & MAC Generator
+    function generateRandomIP() {
+        return `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 253) + 2}`;
+    }
+
+    function generateRandomMAC() {
+        const hex = "0123456789ABCDEF";
+        let mac = "";
+        for (let i = 0; i < 6; i++) {
+            mac += hex.charAt(Math.floor(Math.random() * 16));
+            mac += hex.charAt(Math.floor(Math.random() * 16));
+            if (i < 5) mac += ":";
+        }
+        return mac;
     }
 
     async function loadPlans() {
@@ -224,9 +296,10 @@
             // Better approach:
             if(!document.getElementById('serviceId').value) {
                  document.getElementById('clientId').value = '';
+                 document.getElementById('clientSearch').value = ''; // Clear search input
                  document.getElementById('planId').value = '';
-                 document.getElementById('ipAddress').value = '';
-                 document.getElementById('macAddress').value = '';
+                 document.getElementById('ipAddress').value = generateRandomIP(); // Random IP
+                 document.getElementById('macAddress').value = generateRandomMAC(); // Random MAC
                  document.getElementById('routerModel').value = '';
                  document.getElementById('installCost').value = '0';
                  document.getElementById('firstMonth').checked = false;
@@ -284,6 +357,7 @@
                 // Clear form
                 document.getElementById('serviceId').value = '';
                 document.getElementById('clientId').value = '';
+                document.getElementById('clientSearch').value = '';
                 document.getElementById('planId').value = '';
                 document.getElementById('ipAddress').value = '';
                 document.getElementById('macAddress').value = '';
@@ -307,6 +381,7 @@
             
             document.getElementById('serviceId').value = service.id;
             document.getElementById('clientId').value = service.client_id;
+            document.getElementById('clientSearch').value = service.fullname; // Set name in search input
             document.getElementById('planId').value = service.plan_id;
             document.getElementById('ipAddress').value = service.ip_address;
             document.getElementById('macAddress').value = service.mac_address;

@@ -42,6 +42,18 @@
                 </tbody>
             </table>
         </div>
+        
+        <!-- Pagination -->
+        <div class="flex flex-col items-center justify-between mt-4 gap-4 sm:flex-row" id="paginationControls">
+            <span class="text-sm text-slate-400">
+                Mostrando <span class="font-semibold text-white" id="showingStart">0</span> a <span class="font-semibold text-white" id="showingEnd">0</span> de <span class="font-semibold text-white" id="totalRecords">0</span> entradas
+            </span>
+            <nav aria-label="Page navigation">
+                <ul class="inline-flex -space-x-px text-sm" id="paginationNumbers">
+                    <!-- Dynamic content -->
+                </ul>
+            </nav>
+        </div>
     </div>
 </div>
 
@@ -98,14 +110,30 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', loadClients);
+    let currentPage = 1;
+    let currentLimit = 10;
+    let totalPages = 1;
 
-    async function loadClients() {
+    document.addEventListener('DOMContentLoaded', () => loadClients());
+
+    async function loadClients(page = 1) {
+        const search = document.getElementById('searchInput').value;
+        currentPage = page;
+        
         try {
-            const response = await fetch('../api/clients.php');
-            const clients = await response.json();
+            const response = await fetch(`../api/clients.php?page=${page}&limit=${currentLimit}&search=${encodeURIComponent(search)}`);
+            const result = await response.json();
+            
+            const clients = result.data;
+            const pagination = result.pagination;
+            totalPages = pagination.total_pages;
+
             const tbody = document.getElementById('clientsTableBody');
             tbody.innerHTML = '';
+
+            if (clients.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-slate-500">No se encontraron clientes</td></tr>';
+            }
 
             clients.forEach(client => {
                 const tr = document.createElement('tr');
@@ -134,10 +162,114 @@
                 `;
                 tbody.appendChild(tr);
             });
+
+            // Update Pagination UI
+            const start = (pagination.current_page - 1) * pagination.limit + 1;
+            const end = Math.min(start + clients.length - 1, pagination.total_records);
+            
+            document.getElementById('showingStart').textContent = clients.length > 0 ? start : 0;
+            document.getElementById('showingEnd').textContent = end;
+            document.getElementById('totalRecords').textContent = pagination.total_records;
+
+            renderPagination(pagination);
+
         } catch (error) {
             console.error('Error loading clients:', error);
         }
     }
+
+    function renderPagination(pagination) {
+        const container = document.getElementById('paginationNumbers');
+        container.innerHTML = '';
+        
+        const total = pagination.total_pages;
+        const current = pagination.current_page;
+        
+        if (total <= 1) return;
+
+        // Helper to create button
+        const addBtn = (page, text, active = false, disabled = false, roundedL = false, roundedR = false) => {
+            const li = document.createElement('li');
+            const btn = document.createElement('button');
+            
+            let classes = "flex items-center justify-center px-3 h-8 leading-tight border border-slate-700 ";
+            
+            if (active) {
+                classes += "text-white bg-indigo-600 hover:bg-indigo-700 hover:text-white ";
+            } else {
+                classes += "text-slate-400 bg-slate-800 hover:bg-slate-700 hover:text-white ";
+            }
+            
+            if (disabled) {
+                classes += "cursor-not-allowed opacity-50 ";
+            }
+            
+            if (roundedL) classes += "rounded-l-lg ";
+            if (roundedR) classes += "rounded-r-lg ";
+            
+            btn.className = classes;
+            btn.innerHTML = text;
+            
+            if (!disabled && page !== null) {
+                btn.onclick = () => loadClients(page);
+            }
+            
+            li.appendChild(btn);
+            container.appendChild(li);
+        };
+
+        // Prev
+        addBtn(current - 1, 'Anterior', false, current === 1, true, false);
+
+        // Pages logic
+        const delta = 2;
+        const range = [];
+        const rangeWithDots = [];
+        let l;
+
+        range.push(1);
+        for (let i = current - delta; i <= current + delta; i++) {
+            if (i < total && i > 1) {
+                range.push(i);
+            }
+        }
+        range.push(total);
+
+        // Filter duplicates and sort
+        const uniqueRange = [...new Set(range)].sort((a, b) => a - b);
+
+        for (let i of uniqueRange) {
+            if (l) {
+                if (i - l === 2) {
+                    rangeWithDots.push(l + 1);
+                } else if (i - l !== 1) {
+                    rangeWithDots.push('...');
+                }
+            }
+            rangeWithDots.push(i);
+            l = i;
+        }
+
+        rangeWithDots.forEach(p => {
+            if (p === '...') {
+                addBtn(null, '...', false, true);
+            } else {
+                addBtn(p, p, p === current);
+            }
+        });
+
+        // Next
+        addBtn(current + 1, 'Siguiente', false, current === total, false, true);
+    }
+
+    // Debounce search
+    let searchTimeout;
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            loadClients(1); // Reset to page 1 on search
+        }, 300);
+    });
 
     function openModal(modalId) {
         document.getElementById(modalId).classList.remove('hidden');
@@ -229,16 +361,7 @@
         }
     }
 
-    // Simple search filter
-    document.getElementById('searchInput').addEventListener('keyup', function(e) {
-        const searchText = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('#clientsTableBody tr');
-        
-        rows.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            row.style.display = text.includes(searchText) ? '' : 'none';
-        });
-    });
+
 </script>
 
 <?php require_once '../includes/footer.php'; ?>

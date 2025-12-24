@@ -23,12 +23,51 @@ switch($method) {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             echo json_encode($row);
         } else {
-            // Get all clients
-            $query = "SELECT * FROM clients ORDER BY created_at DESC";
+            // Get all clients with pagination
+            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+            $offset = ($page - 1) * $limit;
+            $search = isset($_GET['search']) ? $_GET['search'] : '';
+
+            $where = "";
+            if (!empty($search)) {
+                $where = "WHERE fullname LIKE :search OR dni_ruc LIKE :search OR phone LIKE :search";
+            }
+
+            // Get total count
+            $countQuery = "SELECT COUNT(*) as total FROM clients $where";
+            $stmtCount = $db->prepare($countQuery);
+            if (!empty($search)) {
+                $searchTerm = "%$search%";
+                $stmtCount->bindParam(":search", $searchTerm);
+            }
+            $stmtCount->execute();
+            $totalRows = $stmtCount->fetch(PDO::FETCH_ASSOC)['total'];
+            $totalPages = ceil($totalRows / $limit);
+
+            // Get paginated data
+            $query = "SELECT * FROM clients $where ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
             $stmt = $db->prepare($query);
+            
+            if (!empty($search)) {
+                $searchTerm = "%$search%";
+                $stmt->bindParam(":search", $searchTerm);
+            }
+            
+            $stmt->bindParam(":limit", $limit, PDO::PARAM_INT);
+            $stmt->bindParam(":offset", $offset, PDO::PARAM_INT);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            echo json_encode($result);
+
+            echo json_encode([
+                "data" => $result,
+                "pagination" => [
+                    "current_page" => $page,
+                    "total_pages" => $totalPages,
+                    "total_records" => $totalRows,
+                    "limit" => $limit
+                ]
+            ]);
         }
         break;
 
