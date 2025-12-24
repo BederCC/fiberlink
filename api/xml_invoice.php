@@ -11,7 +11,7 @@ $database = new Database();
 $db = $database->getConnection();
 
 // 1. Get Invoice & Client Details
-$query = "SELECT i.*, c.first_name, c.last_name, c.dni_ruc, c.address, c.email 
+$query = "SELECT i.*, c.fullname, c.dni_ruc, c.address, c.email 
           FROM invoices i 
           JOIN clients c ON i.client_id = c.id 
           WHERE i.id = :id";
@@ -58,7 +58,7 @@ $party->addChild('cac:PartyLegalEntity')->addChild('cbc:RegistrationName', 'Fibe
 $customer = $xml->addChild('cac:AccountingCustomerParty');
 $party = $customer->addChild('cac:Party');
 $party->addChild('cac:PartyIdentification')->addChild('cbc:ID', $invoice['dni_ruc'])->addAttribute('schemeID', strlen($invoice['dni_ruc']) == 11 ? '6' : '1'); // 6=RUC, 1=DNI
-$party->addChild('cac:PartyLegalEntity')->addChild('cbc:RegistrationName', $invoice['first_name'] . ' ' . $invoice['last_name']);
+$party->addChild('cac:PartyLegalEntity')->addChild('cbc:RegistrationName', $invoice['fullname']);
 
 // Tax Total (IGV 18%)
 $total_amount = $invoice['total_amount'];

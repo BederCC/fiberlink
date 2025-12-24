@@ -64,12 +64,8 @@
                 <form id="clientForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <input type="hidden" id="clientId">
                     <div>
-                        <label for="first_name" class="block mb-2 text-sm font-medium text-white">Nombres</label>
-                        <input type="text" id="first_name" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" required>
-                    </div>
-                    <div>
-                        <label for="last_name" class="block mb-2 text-sm font-medium text-white">Apellidos</label>
-                        <input type="text" id="last_name" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" required>
+                        <label for="fullname" class="block mb-2 text-sm font-medium text-white">Nombres y Apellidos</label>
+                        <input type="text" id="fullname" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" required>
                     </div>
                     <div>
                         <label for="dni_ruc" class="block mb-2 text-sm font-medium text-white">DNI / RUC</label>
@@ -116,7 +112,7 @@
                 tr.className = 'bg-slate-800 border-b border-slate-700 hover:bg-slate-700 transition-colors';
                 tr.innerHTML = `
                     <td class="px-6 py-4 font-medium text-white whitespace-nowrap">
-                        ${client.first_name} ${client.last_name}
+                        ${client.fullname}
                     </td>
                     <td class="px-6 py-4">${client.dni_ruc}</td>
                     <td class="px-6 py-4">
@@ -157,8 +153,7 @@
     async function saveClient() {
         const id = document.getElementById('clientId').value;
         const data = {
-            first_name: document.getElementById('first_name').value,
-            last_name: document.getElementById('last_name').value,
+            fullname: document.getElementById('fullname').value,
             dni_ruc: document.getElementById('dni_ruc').value,
             phone: document.getElementById('phone').value,
             email: document.getElementById('email').value,
@@ -200,8 +195,7 @@
             const client = await response.json();
             
             document.getElementById('clientId').value = client.id;
-            document.getElementById('first_name').value = client.first_name;
-            document.getElementById('last_name').value = client.last_name;
+            document.getElementById('fullname').value = client.fullname;
             document.getElementById('dni_ruc').value = client.dni_ruc;
             document.getElementById('phone').value = client.phone;
             document.getElementById('email').value = client.email;

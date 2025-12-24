@@ -15,7 +15,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 switch($method) {
     case 'GET':
         // List invoices
-        $query = "SELECT i.*, c.first_name, c.last_name, c.dni_ruc 
+        $query = "SELECT i.*, c.fullname, c.dni_ruc 
                   FROM invoices i 
                   JOIN clients c ON i.client_id = c.id";
         

@@ -161,7 +161,7 @@
                 const tr = document.createElement('tr');
                 tr.className = 'bg-slate-800 border-b border-slate-700 hover:bg-slate-700 transition-colors';
                 tr.innerHTML = `
-                    <td class="px-6 py-4 font-medium text-white">${service.first_name} ${service.last_name}</td>
+                    <td class="px-6 py-4 font-medium text-white">${service.fullname}</td>
                     <td class="px-6 py-4">
                         <span class="bg-indigo-500/10 text-indigo-400 text-xs font-medium px-2.5 py-0.5 rounded">${service.plan_name} (${service.speed_mbps} Mbps)</span>
                     </td>
@@ -196,7 +196,7 @@
         clients.forEach(c => {
             const option = document.createElement('option');
             option.value = c.id;
-            option.textContent = `${c.first_name} ${c.last_name}`;
+            option.textContent = `${c.fullname}`;
             select.appendChild(option);
         });
     }

@@ -35,7 +35,7 @@ if ($action === 'summary') {
     $metric_data = $s_metric->fetch(PDO::FETCH_ASSOC);
 
     // 4. Top Debtors
-    $q_debtors = "SELECT c.first_name, c.last_name, SUM(i.total_amount) as debt 
+    $q_debtors = "SELECT c.fullname, SUM(i.total_amount) as debt 
                   FROM invoices i 
                   JOIN clients c ON i.client_id = c.id 
                   WHERE i.status IN ('unpaid', 'overdue') 
@@ -57,7 +57,7 @@ if ($action === 'summary') {
     // Export logic (simplified for now)
     // In a real app, this would generate a CSV/PDF
     // For now, just return the raw data for frontend to handle or download
-    $q_all_debts = "SELECT c.first_name, c.last_name, c.dni_ruc, i.invoice_number, i.total_amount, i.due_date 
+    $q_all_debts = "SELECT c.fullname, c.dni_ruc, i.invoice_number, i.total_amount, i.due_date 
                     FROM invoices i 
                     JOIN clients c ON i.client_id = c.id 
                     WHERE i.status IN ('unpaid', 'overdue') 

@@ -22,7 +22,7 @@ switch($method) {
             $service = $stmt->fetch(PDO::FETCH_ASSOC);
             echo json_encode($service);
         } else {
-            $query = "SELECT s.*, c.first_name, c.last_name, p.name as plan_name, p.speed_mbps 
+            $query = "SELECT s.*, c.fullname, p.name as plan_name, p.speed_mbps 
                       FROM services s 
                       JOIN clients c ON s.client_id = c.id 
                       JOIN plans p ON s.plan_id = p.id 

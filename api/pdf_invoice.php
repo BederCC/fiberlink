@@ -12,7 +12,7 @@ $database = new Database();
 $db = $database->getConnection();
 
 // 1. Get Invoice & Client Details
-$query = "SELECT i.*, c.first_name, c.last_name, c.dni_ruc, c.email, c.address, c.phone 
+$query = "SELECT i.*, c.fullname, c.dni_ruc, c.email, c.address, c.phone 
           FROM invoices i 
           JOIN clients c ON i.client_id = c.id 
           WHERE i.id = :id";
@@ -88,7 +88,7 @@ $html .= '
         <td width="100%">
             <h3 style="font-size: 12px; color: #333;">CLIENTE</h3>
             <p style="font-size: 10px; color: #555;">
-                <strong>Nombre:</strong> ' . $invoice['first_name'] . ' ' . $invoice['last_name'] . '<br>
+                <strong>Nombre:</strong> ' . $invoice['fullname'] . '<br>
                 <strong>DNI/RUC:</strong> ' . $invoice['dni_ruc'] . '<br>
                 <strong>Dirección:</strong> ' . $invoice['address'] . '<br>
                 <strong>Email:</strong> ' . $invoice['email'] . '

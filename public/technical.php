@@ -100,7 +100,7 @@
                     : '<span class="px-2 py-1 rounded-full text-xs bg-red-500/10 text-red-400">Bloqueado</span>';
 
                 tr.innerHTML = `
-                    <td class="px-6 py-4 font-medium text-white">${service.first_name} ${service.last_name}</td>
+                    <td class="px-6 py-4 font-medium text-white">${service.fullname}</td>
                     <td class="px-6 py-4 font-mono text-xs">${service.ip_address}</td>
                     <td class="px-6 py-4">${service.plan_name}</td>
                     <td class="px-6 py-4">${statusBadge}</td>

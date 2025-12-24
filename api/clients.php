@@ -35,12 +35,11 @@ switch($method) {
     case 'POST':
         $data = json_decode(file_get_contents("php://input"));
         
-        if(!empty($data->first_name) && !empty($data->last_name) && !empty($data->dni_ruc)) {
-            $query = "INSERT INTO clients SET first_name=:first_name, last_name=:last_name, dni_ruc=:dni_ruc, email=:email, phone=:phone, address=:address, coordinates=:coordinates";
+        if(!empty($data->fullname) && !empty($data->dni_ruc)) {
+            $query = "INSERT INTO clients SET fullname=:fullname, dni_ruc=:dni_ruc, email=:email, phone=:phone, address=:address, coordinates=:coordinates";
             $stmt = $db->prepare($query);
             
-            $stmt->bindParam(":first_name", $data->first_name);
-            $stmt->bindParam(":last_name", $data->last_name);
+            $stmt->bindParam(":fullname", $data->fullname);
             $stmt->bindParam(":dni_ruc", $data->dni_ruc);
             $stmt->bindParam(":email", $data->email);
             $stmt->bindParam(":phone", $data->phone);
@@ -64,11 +63,10 @@ switch($method) {
         $data = json_decode(file_get_contents("php://input"));
         
         if(!empty($data->id)) {
-            $query = "UPDATE clients SET first_name=:first_name, last_name=:last_name, dni_ruc=:dni_ruc, email=:email, phone=:phone, address=:address, coordinates=:coordinates, status=:status WHERE id=:id";
+            $query = "UPDATE clients SET fullname=:fullname, dni_ruc=:dni_ruc, email=:email, phone=:phone, address=:address, coordinates=:coordinates, status=:status WHERE id=:id";
             $stmt = $db->prepare($query);
             
-            $stmt->bindParam(":first_name", $data->first_name);
-            $stmt->bindParam(":last_name", $data->last_name);
+            $stmt->bindParam(":fullname", $data->fullname);
             $stmt->bindParam(":dni_ruc", $data->dni_ruc);
             $stmt->bindParam(":email", $data->email);
             $stmt->bindParam(":phone", $data->phone);

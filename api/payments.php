@@ -62,7 +62,7 @@ if(!empty($data->invoice_id) && !empty($data->amount)) {
         include_once '../includes/Mailer.php';
         
         // Get Client & Invoice Details
-        $q_details = "SELECT c.email, c.first_name, c.last_name, i.invoice_number 
+        $q_details = "SELECT c.email, c.fullname, i.invoice_number 
                       FROM invoices i 
                       JOIN clients c ON i.client_id = c.id 
                       WHERE i.id = :id";
@@ -83,7 +83,7 @@ if(!empty($data->invoice_id) && !empty($data->amount)) {
             
             $mailer->sendPaymentReceipt(
                 $details['email'], 
-                $details['first_name'] . ' ' . $details['last_name'], 
+                $details['fullname'], 
                 $paymentData
             );
         }

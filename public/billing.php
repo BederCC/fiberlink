@@ -172,7 +172,7 @@
                     <td class="px-6 py-4 font-medium text-white">${inv.invoice_number}</td>
                     <td class="px-6 py-4">
                         <div class="flex flex-col">
-                            <span class="font-medium text-white">${inv.first_name} ${inv.last_name}</span>
+                            <span class="font-medium text-white">${inv.fullname}</span>
                             <span class="text-xs text-slate-500">${inv.dni_ruc}</span>
                         </div>
                     </td>

@@ -133,7 +133,7 @@
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-slate-700 hover:bg-slate-700/50';
                 tr.innerHTML = `
-                    <td class="px-6 py-4 font-medium text-white">${d.first_name} ${d.last_name}</td>
+                    <td class="px-6 py-4 font-medium text-white">${d.fullname}</td>
                     <td class="px-6 py-4 text-right text-red-400 font-bold">S/ ${parseFloat(d.debt).toFixed(2)}</td>
                 `;
                 tbody.appendChild(tr);

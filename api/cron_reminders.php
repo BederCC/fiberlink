@@ -15,7 +15,7 @@ echo "Starting Reminder Process...\n";
 $days_before = 3;
 $target_date = date('Y-m-d', strtotime("+$days_before days"));
 
-$query = "SELECT i.*, c.first_name, c.last_name, c.email 
+$query = "SELECT i.*, c.fullname, c.email 
           FROM invoices i 
           JOIN clients c ON i.client_id = c.id 
           WHERE i.due_date = :target_date 
@@ -31,7 +31,7 @@ $invoices = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $count = 0;
 
 foreach ($invoices as $inv) {
-    echo "Sending reminder to {$inv['first_name']} {$inv['last_name']} ({$inv['email']}) for Invoice {$inv['invoice_number']}...\n";
+    echo "Sending reminder to {$inv['fullname']} ({$inv['email']}) for Invoice {$inv['invoice_number']}...\n";
     
     $invoiceData = [
         'invoice_number' => $inv['invoice_number'],
@@ -39,7 +39,7 @@ foreach ($invoices as $inv) {
         'amount' => number_format($inv['total_amount'], 2)
     ];
     
-    if($mailer->sendReminder($inv['email'], $inv['first_name'] . ' ' . $inv['last_name'], $invoiceData)) {
+    if($mailer->sendReminder($inv['email'], $inv['fullname'], $invoiceData)) {
         echo "Sent successfully.\n";
         $count++;
     } else {
