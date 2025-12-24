@@ -117,7 +117,8 @@
 
             try {
                 const response = await fetch(`api/billing.php?dni=${dni}`);
-                const invoices = await response.json();
+                const result = await response.json();
+                const invoices = result.data || result; // Handle both new and old formats just in case
                 
                 if (invoices.length > 0) {
                     searchTimestamp = Date.now(); // Capture timestamp

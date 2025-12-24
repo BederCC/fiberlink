@@ -70,6 +70,31 @@ switch($method) {
         }
 
         // List invoices
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
+        $offset = ($page - 1) * $limit;
+
+        // 1. Get Totals and Count
+        $countQuery = "SELECT 
+                        COUNT(*) as total_records,
+                        SUM(CASE WHEN i.status = 'paid' THEN i.total_amount ELSE 0 END) as total_paid,
+                        SUM(CASE WHEN i.status = 'unpaid' THEN i.total_amount ELSE 0 END) as total_unpaid,
+                        SUM(CASE WHEN i.status = 'overdue' THEN i.total_amount ELSE 0 END) as total_overdue
+                       FROM invoices i 
+                       JOIN clients c ON i.client_id = c.id";
+        
+        if(isset($_GET['dni'])) {
+            $countQuery .= " WHERE c.dni_ruc = :dni AND i.status != 'paid'";
+        }
+
+        $stmtCount = $db->prepare($countQuery);
+        if(isset($_GET['dni'])) {
+            $stmtCount->bindParam(":dni", $_GET['dni']);
+        }
+        $stmtCount->execute();
+        $stats = $stmtCount->fetch(PDO::FETCH_ASSOC);
+        
+        // 2. Get Paginated Data
         $query = "SELECT i.*, c.fullname, c.dni_ruc 
                   FROM invoices i 
                   JOIN clients c ON i.client_id = c.id";
@@ -78,7 +103,17 @@ switch($method) {
             $query .= " WHERE c.dni_ruc = :dni AND i.status != 'paid'";
         }
         
-        $query .= " ORDER BY i.issue_date DESC, i.id DESC";
+        // Sort by Status (Overdue > Unpaid > Paid) then Date
+        $query .= " ORDER BY 
+                    CASE 
+                        WHEN i.status = 'overdue' THEN 1 
+                        WHEN i.status = 'unpaid' THEN 2 
+                        WHEN i.status = 'paid' THEN 3 
+                        ELSE 4 
+                    END ASC, 
+                    i.issue_date DESC, i.id DESC";
+        
+        $query .= " LIMIT :limit OFFSET :offset";
         
         $stmt = $db->prepare($query);
         
@@ -86,9 +121,26 @@ switch($method) {
             $stmt->bindParam(":dni", $_GET['dni']);
         }
         
+        $stmt->bindParam(":limit", $limit, PDO::PARAM_INT);
+        $stmt->bindParam(":offset", $offset, PDO::PARAM_INT);
+        
         $stmt->execute();
         $invoices = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo json_encode($invoices);
+        
+        echo json_encode([
+            'data' => $invoices,
+            'pagination' => [
+                'current_page' => $page,
+                'limit' => $limit,
+                'total_records' => $stats['total_records'],
+                'total_pages' => ceil($stats['total_records'] / $limit)
+            ],
+            'stats' => [
+                'paid' => $stats['total_paid'] ?? 0,
+                'unpaid' => $stats['total_unpaid'] ?? 0,
+                'overdue' => $stats['total_overdue'] ?? 0
+            ]
+        ]);
         break;
 
     case 'POST':

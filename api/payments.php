@@ -72,13 +72,21 @@ if(!empty($data->invoice_id) && !empty($data->amount)) {
         $details = $s_details->fetch(PDO::FETCH_ASSOC);
         
         if($details && !empty($details['email'])) {
+            // Fetch Invoice Items
+            $q_items = "SELECT description, amount FROM invoice_items WHERE invoice_id = :id";
+            $s_items = $db->prepare($q_items);
+            $s_items->bindParam(":id", $data->invoice_id);
+            $s_items->execute();
+            $items = $s_items->fetchAll(PDO::FETCH_ASSOC);
+
             $mailer = new Mailer();
             $paymentData = [
                 'invoice_number' => $details['invoice_number'],
                 'amount' => number_format($data->amount, 2),
                 'date' => date('d/m/Y H:i'),
                 'method' => ucfirst($method),
-                'transaction_id' => $txn_id
+                'transaction_id' => $txn_id,
+                'items' => $items // Pass items to mailer
             ];
             
             $mailer->sendPaymentReceipt(
