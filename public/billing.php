@@ -56,39 +56,83 @@
 
 <!-- Generate Modal -->
 <div id="generateModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full bg-slate-900/80 backdrop-blur-sm flex items-center justify-center">
-    <div class="relative w-full max-w-md max-h-full">
+    <div class="relative w-full max-w-2xl max-h-full">
         <div class="relative bg-slate-800 rounded-xl shadow-2xl border border-slate-700">
-            <div class="p-6 text-center">
-                <h3 class="mb-5 text-lg font-normal text-white">Generar Facturación Mensual</h3>
-                <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div>
-                        <label class="block mb-2 text-sm font-medium text-white">Mes</label>
-                        <select id="genMonth" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5">
-                            <option value="1">Enero</option>
-                            <option value="2">Febrero</option>
-                            <option value="3">Marzo</option>
-                            <option value="4">Abril</option>
-                            <option value="5">Mayo</option>
-                            <option value="6">Junio</option>
-                            <option value="7">Julio</option>
-                            <option value="8">Agosto</option>
-                            <option value="9">Septiembre</option>
-                            <option value="10">Octubre</option>
-                            <option value="11">Noviembre</option>
-                            <option value="12">Diciembre</option>
-                        </select>
+            <div class="p-6">
+                <h3 class="mb-5 text-lg font-normal text-white text-center">Generar Facturación Mensual</h3>
+                
+                <!-- Selection Step -->
+                <div id="stepSelect">
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-white">Mes</label>
+                            <select id="genMonth" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5">
+                                <option value="1">Enero</option>
+                                <option value="2">Febrero</option>
+                                <option value="3">Marzo</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Mayo</option>
+                                <option value="6">Junio</option>
+                                <option value="7">Julio</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Septiembre</option>
+                                <option value="10">Octubre</option>
+                                <option value="11">Noviembre</option>
+                                <option value="12">Diciembre</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-white">Año</label>
+                            <input type="number" id="genYear" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5" value="2025">
+                        </div>
                     </div>
-                    <div>
-                        <label class="block mb-2 text-sm font-medium text-white">Año</label>
-                        <input type="number" id="genYear" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5" value="2025">
+                    <div class="text-center">
+                        <button onclick="previewGeneration()" type="button" class="text-white bg-indigo-600 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
+                            Consultar
+                        </button>
+                        <button onclick="closeModal('generateModal')" type="button" class="text-slate-400 bg-transparent hover:bg-slate-700 hover:text-white rounded-lg border border-slate-600 text-sm font-medium px-5 py-2.5 hover:text-white focus:z-10">
+                            Cancelar
+                        </button>
                     </div>
                 </div>
-                <button onclick="generateInvoices()" type="button" class="text-white bg-indigo-600 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
-                    Generar
-                </button>
-                <button onclick="closeModal('generateModal')" type="button" class="text-slate-400 bg-transparent hover:bg-slate-700 hover:text-white rounded-lg border border-slate-600 text-sm font-medium px-5 py-2.5 hover:text-white focus:z-10">
-                    Cancelar
-                </button>
+
+                <!-- Preview Step -->
+                <div id="stepPreview" class="hidden">
+                    <div class="mb-4">
+                        <h4 class="text-white font-medium mb-2">Resumen de Facturación</h4>
+                        <div class="bg-slate-900 rounded-lg p-4 border border-slate-700 max-h-60 overflow-y-auto">
+                            <table class="w-full text-sm text-left text-slate-400">
+                                <thead class="text-xs text-slate-500 uppercase bg-slate-800 sticky top-0">
+                                    <tr>
+                                        <th class="px-4 py-2">Cliente</th>
+                                        <th class="px-4 py-2">Plan</th>
+                                        <th class="px-4 py-2 text-right">Monto</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="previewTableBody">
+                                    <!-- Preview Rows -->
+                                </tbody>
+                                <tfoot class="border-t border-slate-700 bg-slate-800 sticky bottom-0">
+                                    <tr>
+                                        <th class="px-4 py-2 text-white">Total</th>
+                                        <th class="px-4 py-2"></th>
+                                        <th class="px-4 py-2 text-right text-white" id="previewTotal">S/ 0.00</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-2 text-center" id="previewCount">0 facturas a generar</p>
+                    </div>
+                    <div class="text-center">
+                        <button onclick="confirmGeneration()" type="button" class="text-white bg-emerald-600 hover:bg-emerald-700 focus:ring-4 focus:outline-none focus:ring-emerald-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
+                            Confirmar y Generar
+                        </button>
+                        <button onclick="resetModal()" type="button" class="text-slate-400 bg-transparent hover:bg-slate-700 hover:text-white rounded-lg border border-slate-600 text-sm font-medium px-5 py-2.5 hover:text-white focus:z-10">
+                            Atrás
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -243,7 +287,14 @@
     setInterval(loadInvoices, 5000);
 
     function openGenerateModal() {
+        resetModal();
         document.getElementById('generateModal').classList.remove('hidden');
+    }
+
+    function resetModal() {
+        document.getElementById('stepSelect').classList.remove('hidden');
+        document.getElementById('stepPreview').classList.add('hidden');
+        document.getElementById('previewTableBody').innerHTML = '';
     }
 
     function openPaymentModal(id, amount) {
@@ -256,9 +307,68 @@
         document.getElementById(modalId).classList.add('hidden');
     }
 
-    async function generateInvoices() {
+    async function previewGeneration() {
         const month = document.getElementById('genMonth').value;
         const year = document.getElementById('genYear').value;
+        const tbody = document.getElementById('previewTableBody');
+        const btn = document.querySelector('#stepSelect button[onclick="previewGeneration()"]');
+        
+        btn.disabled = true;
+        btn.textContent = 'Consultando...';
+
+        try {
+            const response = await fetch(`../api/billing.php?action=preview&month=${month}&year=${year}`);
+            const data = await response.json();
+            
+            tbody.innerHTML = '';
+            let total = 0;
+
+            if (data.length > 0) {
+                data.forEach(item => {
+                    const price = parseFloat(item.price);
+                    total += price;
+                    tbody.innerHTML += `
+                        <tr class="border-b border-slate-800">
+                            <td class="px-4 py-2 text-white">${item.fullname}</td>
+                            <td class="px-4 py-2 text-slate-500">${item.plan_name}</td>
+                            <td class="px-4 py-2 text-right text-emerald-400 font-medium">S/ ${price.toFixed(2)}</td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('previewCount').textContent = `${data.length} facturas a generar`;
+            } else {
+                tbody.innerHTML = `<tr><td colspan="3" class="px-4 py-4 text-center text-slate-500">No hay servicios pendientes de facturación para este periodo.</td></tr>`;
+                document.getElementById('previewCount').textContent = `0 facturas a generar`;
+            }
+
+            document.getElementById('previewTotal').textContent = `S/ ${total.toFixed(2)}`;
+            
+            document.getElementById('stepSelect').classList.add('hidden');
+            document.getElementById('stepPreview').classList.remove('hidden');
+
+        } catch (error) {
+            console.error(error);
+            alert('Error al consultar datos');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Consultar';
+        }
+    }
+
+    async function confirmGeneration() {
+        const month = document.getElementById('genMonth').value;
+        const year = document.getElementById('genYear').value;
+        const btn = document.querySelector('#stepPreview button[onclick="confirmGeneration()"]');
+        
+        // Check if there is anything to generate
+        const countText = document.getElementById('previewCount').textContent;
+        if (countText.startsWith('0')) {
+            alert('No hay facturas para generar.');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Generando...';
 
         try {
             const response = await fetch('../api/billing.php', {
@@ -278,6 +388,9 @@
         } catch (error) {
             console.error(error);
             alert('Error de conexión');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Confirmar y Generar';
         }
     }
 

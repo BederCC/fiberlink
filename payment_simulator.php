@@ -55,6 +55,15 @@
                     <span class="text-xs font-semibold text-slate-500 uppercase">Vencimiento</span>
                     <span class="text-sm font-medium text-slate-900" id="detailDue">2023-10-15</span>
                 </div>
+                
+                <!-- Items Detail -->
+                <div class="border-t border-slate-200 my-3 pt-3">
+                    <p class="text-xs font-semibold text-slate-500 uppercase mb-2">Conceptos</p>
+                    <ul id="detailItems" class="space-y-2">
+                        <!-- Items will be populated here -->
+                    </ul>
+                </div>
+
                 <div class="border-t border-slate-200 my-2 pt-2 flex justify-between items-center">
                     <span class="text-sm font-bold text-slate-700">Total a Pagar</span>
                     <span class="text-xl font-bold text-indigo-600" id="detailAmount">S/ 100.00</span>
@@ -146,11 +155,11 @@
 
 
 
-        function selectInvoice(inv) {
+        async function selectInvoice(inv) {
             selectedInvoice = {
                 id: inv.id,
                 amount: parseFloat(inv.total_amount),
-                client: `${inv.first_name} ${inv.last_name}`,
+                client: `${inv.first_name || ''} ${inv.last_name || ''}`.trim() || inv.fullname,
                 due: inv.due_date,
                 number: inv.invoice_number
             };
@@ -160,6 +169,33 @@
             document.getElementById('detailDue').textContent = selectedInvoice.due;
             document.getElementById('detailAmount').textContent = `S/ ${selectedInvoice.amount.toFixed(2)}`;
             document.getElementById('btnText').textContent = `Pagar S/ ${selectedInvoice.amount.toFixed(2)}`;
+
+            // Fetch Items
+            const itemsList = document.getElementById('detailItems');
+            itemsList.innerHTML = '<li class="text-xs text-slate-400">Cargando detalles...</li>';
+            
+            try {
+                const response = await fetch(`api/billing.php?invoice_id=${inv.id}`);
+                const data = await response.json();
+                
+                itemsList.innerHTML = '';
+                if(data.items && data.items.length > 0) {
+                    data.items.forEach(item => {
+                        const li = document.createElement('li');
+                        li.className = 'flex justify-between items-start text-sm';
+                        li.innerHTML = `
+                            <span class="text-slate-600 flex-1 mr-2">${item.description}</span>
+                            <span class="font-medium text-slate-900">S/ ${parseFloat(item.amount).toFixed(2)}</span>
+                        `;
+                        itemsList.appendChild(li);
+                    });
+                } else {
+                    itemsList.innerHTML = '<li class="text-xs text-slate-400">Sin detalles disponibles</li>';
+                }
+            } catch (error) {
+                console.error('Error fetching items:', error);
+                itemsList.innerHTML = '<li class="text-xs text-red-400">Error al cargar detalles</li>';
+            }
 
             document.getElementById('resultsSection').classList.add('hidden');
             document.getElementById('invoiceDetails').classList.remove('hidden');

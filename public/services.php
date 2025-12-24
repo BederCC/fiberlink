@@ -8,7 +8,7 @@
         <!-- Header -->
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-white">Servicios Activos (Instalaciones)</h1>
-            <button onclick="openModal('serviceModal')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center gap-2">
+            <button onclick="openNewServiceModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 Nueva Instalación
             </button>
@@ -96,7 +96,7 @@
                     <div id="productsContainer" class="space-y-2 mb-2">
                         <!-- Dynamic Product Rows -->
                     </div>
-                    <button type="button" onclick="addProductRow()" class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+                    <button id="btnAddProduct" type="button" onclick="addProductRow()" class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         Agregar Equipo
                     </button>
@@ -288,24 +288,27 @@
 
     function openModal(modalId) {
         document.getElementById(modalId).classList.remove('hidden');
-        if(modalId === 'serviceModal') {
-            document.getElementById('serviceId').value = '';
-            // Don't reset other fields if we are editing (handled by editService)
-            // But if we are opening fresh, we might want to reset. 
-            // For simplicity, we'll let editService handle population and manual clear for new.
-            // Better approach:
-            if(!document.getElementById('serviceId').value) {
-                 document.getElementById('clientId').value = '';
-                 document.getElementById('clientSearch').value = ''; // Clear search input
-                 document.getElementById('planId').value = '';
-                 document.getElementById('ipAddress').value = generateRandomIP(); // Random IP
-                 document.getElementById('macAddress').value = generateRandomMAC(); // Random MAC
-                 document.getElementById('routerModel').value = '';
-                 document.getElementById('installCost').value = '0';
-                 document.getElementById('firstMonth').checked = false;
-                 document.getElementById('productsContainer').innerHTML = '';
-            }
-        }
+    }
+
+    function openNewServiceModal() {
+        // Reset fields
+        document.getElementById('serviceId').value = '';
+        document.getElementById('clientId').value = '';
+        document.getElementById('clientSearch').value = '';
+        document.getElementById('planId').value = '';
+        document.getElementById('ipAddress').value = generateRandomIP();
+        document.getElementById('macAddress').value = generateRandomMAC();
+        document.getElementById('routerModel').value = '';
+        document.getElementById('installCost').value = '0';
+        document.getElementById('firstMonth').checked = false;
+        document.getElementById('productsContainer').innerHTML = '';
+        
+        // Enable fields
+        document.getElementById('installCost').disabled = false;
+        document.getElementById('firstMonth').disabled = false;
+        document.getElementById('btnAddProduct').style.display = 'flex';
+
+        openModal('serviceModal');
     }
 
     function closeModal(modalId) {
@@ -386,6 +389,49 @@
             document.getElementById('ipAddress').value = service.ip_address;
             document.getElementById('macAddress').value = service.mac_address;
             document.getElementById('routerModel').value = service.router_model;
+            
+            // Populate Installation Details
+            document.getElementById('installCost').value = service.installation_cost || 0;
+            document.getElementById('firstMonth').checked = service.include_first_month == 1;
+
+            // Lock fields if not pending or in_progress
+            const isEditable = service.service_status === 'pending' || service.service_status === 'in_progress';
+            
+            document.getElementById('installCost').disabled = !isEditable;
+            document.getElementById('firstMonth').disabled = !isEditable;
+            document.getElementById('btnAddProduct').style.display = isEditable ? 'flex' : 'none';
+
+            // Populate Products
+            const container = document.getElementById('productsContainer');
+            container.innerHTML = '';
+            
+            if (service.products && service.products.length > 0) {
+                service.products.forEach(prod => {
+                    const div = document.createElement('div');
+                    div.className = 'flex gap-2 items-center product-row';
+                    
+                    let options = '<option value="">Seleccionar Equipo</option>';
+                    availableProducts.forEach(p => {
+                        const selected = p.id == prod.id ? 'selected' : '';
+                        options += `<option value="${p.id}" data-price="${p.price}" ${selected}>${p.name} (S/ ${p.price})</option>`;
+                    });
+
+                    const disabledAttr = !isEditable ? 'disabled' : '';
+                    const deleteBtn = isEditable ? `
+                        <button type="button" onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-300">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>` : '';
+
+                    div.innerHTML = `
+                        <select class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5 product-select" ${disabledAttr}>
+                            ${options}
+                        </select>
+                        <input type="number" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg block w-20 p-2.5 product-qty" placeholder="Cant." value="${prod.quantity}" min="1" ${disabledAttr}>
+                        ${deleteBtn}
+                    `;
+                    container.appendChild(div);
+                });
+            }
             
             openModal('serviceModal');
         } catch (error) {
