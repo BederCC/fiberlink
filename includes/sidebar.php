@@ -88,6 +88,14 @@
                         <span class="flex-1 ms-3 whitespace-nowrap">Reportes</span>
                     </a>
                 </li>
+                <li>
+                    <a href="users.php" class="<?php echo getLinkClass('users.php', $current_page); ?>">
+                        <svg class="<?php echo getIconClass('users.php', $current_page); ?>" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1-3 3 3.004 3.004 0 0 1 3-3Zm5.793 12.574C15.666 15.854 13.97 15 10 15s-5.666.854-5.793 2.574A8.013 8.013 0 0 1 2 10a8 8 0 1 1 16 0 8.013 8.013 0 0 1-2.207 7.574Z"/>
+                        </svg>
+                        <span class="flex-1 ms-3 whitespace-nowrap">Usuarios</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </aside>
