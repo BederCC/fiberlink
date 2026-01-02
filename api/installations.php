@@ -17,13 +17,23 @@ $method = $_SERVER['REQUEST_METHOD'];
 switch($method) {
     case 'GET':
         // List pending and in_progress installations
+        $status_filter = isset($_GET['status']) ? $_GET['status'] : 'active';
+
         $query = "SELECT i.*, c.fullname, c.address, c.phone, p.name as plan_name, s.ip_address, s.router_model, s.mac_address 
                   FROM installations i 
                   JOIN services s ON i.service_id = s.id 
                   JOIN clients c ON i.client_id = c.id 
-                  JOIN plans p ON s.plan_id = p.id 
-                  WHERE i.status IN ('pending', 'in_progress') 
-                  ORDER BY i.created_at ASC";
+                  JOIN plans p ON s.plan_id = p.id";
+        
+        if ($status_filter === 'all') {
+            // No WHERE clause for status
+             $query .= " ORDER BY i.created_at DESC"; // Newest first for history
+        } elseif ($status_filter === 'completed') {
+            $query .= " WHERE i.status = 'completed' ORDER BY i.completed_date DESC";
+        } else {
+            // Default behavior (pending/in_progress)
+            $query .= " WHERE i.status IN ('pending', 'in_progress') ORDER BY i.created_at ASC";
+        }
         
         $stmt = $db->prepare($query);
         $stmt->execute();
@@ -170,8 +180,43 @@ switch($method) {
                     }
                     
                     $db->commit();
+
+                    // --- Post-Commit Actions (Email) ---
+                    $emailSent = false;
+                    try {
+                        // 1. Fetch Client Email and Name
+                        $q_client = "SELECT c.email, c.fullname FROM installations i JOIN clients c ON i.client_id = c.id WHERE i.id = :id";
+                        $s_client = $db->prepare($q_client);
+                        $s_client->bindParam(":id", $data->id);
+                        $s_client->execute();
+                        $clientData = $s_client->fetch(PDO::FETCH_ASSOC);
+
+                        if ($clientData && !empty($clientData['email'])) {
+                            // 2. Generate PDF
+                            include_once '../includes/PdfGenerator.php';
+                            $pdfGen = new PdfGenerator($db);
+                            $pdfContent = $pdfGen->generateInstallationPdf($data->id, 'S'); // 'S' returns string
+
+                            // 3. Send Email
+                            include_once '../includes/Mailer.php';
+                            $mailer = new Mailer();
+                            $filename = 'Hoja_Instalacion_' . $data->id . '.pdf';
+                            
+                            if ($mailer->sendInstallationSheet($clientData['email'], $clientData['fullname'], $pdfContent, $filename)) {
+                                $emailSent = true;
+                            }
+                        }
+                    } catch (Exception $e) {
+                        error_log("Error sending installation email: " . $e->getMessage());
+                        // Don't fail the request if email fails, just log it
+                    }
+
                     http_response_code(200);
-                    echo json_encode(array("message" => "Instalación completada y servicio activado."));
+                    $msg = "Instalación completada y servicio activado.";
+                    if ($emailSent) {
+                        $msg .= " Se envió la hoja de instalación al correo del cliente.";
+                    }
+                    echo json_encode(array("message" => $msg));
                 }
                 
             } catch (Exception $e) {

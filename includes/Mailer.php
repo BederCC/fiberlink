@@ -231,5 +231,43 @@ class Mailer {
             return false;
         }
     }
+    public function sendInstallationSheet($toEmail, $toName, $pdfContent, $filename) {
+        try {
+            $this->mail->addAddress($toEmail, $toName);
+
+            $this->mail->isHTML(true);
+            $this->mail->Subject = 'Hoja de Instalación - FiberLink';
+            
+            $body = "
+            <div style='font-family: Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff;'>
+                <div style='text-align: center; padding: 30px 20px; background-color: #f8fafc; border-bottom: 1px solid #e2e8f0;'>
+                    <h1 style='color: #4f46e5; margin: 0; font-size: 24px;'>FiberLink</h1>
+                    <p style='color: #64748b; margin: 5px 0; font-size: 14px;'>Constancia de Instalación</p>
+                </div>
+                <div style='padding: 30px 20px;'>
+                    <p style='color: #334155; font-size: 14px;'>Hola <strong>{$toName}</strong>,</p>
+                    <p style='color: #334155; font-size: 14px;'>Tu instalación ha sido completada exitosamente.</p>
+                    <p style='color: #334155; font-size: 14px;'>Adjuntamos la hoja de instalación con los detalles de tu servicio.</p>
+                </div>
+                <div style='text-align: center; padding: 20px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; color: #94a3b8; font-size: 11px;'>
+                    <p style='margin: 0;'>FiberLink Telecomunicaciones S.A.C.</p>
+                </div>
+            </div>";
+
+            $this->mail->Body = $body;
+            $this->mail->AltBody = "Hola {$toName}, tu instalación ha sido completada. Adjuntamos la hoja de instalación.";
+
+            // Attach PDF
+            $this->mail->addStringAttachment($pdfContent, $filename, 'base64', 'application/pdf');
+
+            $this->mail->send();
+            $this->mail->clearAddresses();
+            $this->mail->clearAttachments(); // Clear attachments for next send
+            return true;
+        } catch (Exception $e) {
+            error_log("Message could not be sent. Mailer Error: {$this->mail->ErrorInfo}");
+            return false;
+        }
+    }
 }
 ?>
