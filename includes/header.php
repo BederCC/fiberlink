@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FiberLink</title>
-    <link href="../src/output.css" rel="stylesheet">
+    <?php
+    require_once __DIR__ . '/../config.php';
+    ?>
+    <link href="<?php echo ASSETS_URL; ?>/output.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         // Auth Check
         if (!localStorage.getItem('token')) {
-            window.location.href = 'index.php';
+            window.location.href = '<?php echo BASE_URL; ?>/index.php';
         }
     </script>
     <style>

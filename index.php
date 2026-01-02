@@ -7,8 +7,17 @@
     <link href="./src/output.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
+        // Clear any existing session data when on login page
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+
         if (localStorage.getItem('token')) {
-            window.location.href = 'public/dashboard.php';
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user && user.role === 'technician') {
+                window.location.href = 'public/technician/dashboard.php';
+            } else {
+                window.location.href = 'public/dashboard.php';
+            }
         }
     </script>
     <style>
@@ -123,7 +132,12 @@
                         submitBtn.disabled = false;
                         spinner.classList.add('hidden');
                         btnText.textContent = 'Ingresar al Sistema';
-                        window.location.href = 'public/dashboard.php';
+                        
+                        if (data.user.role === 'technician') {
+                            window.location.href = 'public/technician/dashboard.php';
+                        } else {
+                            window.location.href = 'public/dashboard.php';
+                        }
                     }, 1000);
                 } else {
                     throw new Error(data.message || 'Error en el inicio de sesión');

@@ -1,17 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Instalaciones - FiberLink</title>
-    <link href="../src/output.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Outfit', sans-serif; }
-    </style>
-</head>
-<body class="bg-slate-950 text-slate-50 min-h-screen p-4">
+<?php require_once '../../includes/header.php'; ?>
+<?php require_once '../../includes/navbar.php'; ?>
+<?php require_once '../../includes/sidebar.php'; ?>
 
+<div class="p-4 sm:ml-64 mt-14">
     <div class="max-w-7xl mx-auto">
         <!-- Header -->
         <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b border-slate-800 pb-6">
@@ -43,6 +34,7 @@
             <p class="text-slate-600">No hay instalaciones pendientes asignadas.</p>
         </div>
     </div>
+</div>
 
     <!-- Complete Modal -->
     <div id="completeModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full bg-slate-950/90 backdrop-blur-sm flex items-center justify-center">
@@ -93,7 +85,7 @@
 
         async function loadInstallations() {
             try {
-                const response = await fetch('../api/installations.php');
+                const response = await fetch('../../api/installations.php');
                 const installations = await response.json();
                 
                 // Check if data changed
@@ -182,7 +174,7 @@
             if(!confirm('¿Iniciar el proceso de instalación para este cliente?')) return;
             
             try {
-                const response = await fetch('../api/installations.php', {
+                const response = await fetch('../../api/installations.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id, action: 'start' })
@@ -219,7 +211,7 @@
             btn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Procesando...';
 
             try {
-                const response = await fetch('../api/installations.php', {
+                const response = await fetch('../../api/installations.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id, notes, action: 'complete' })
@@ -241,5 +233,5 @@
             }
         }
     </script>
-</body>
-</html>
+    </script>
+<?php require_once '../../includes/footer.php'; ?>

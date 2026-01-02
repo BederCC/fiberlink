@@ -22,7 +22,7 @@
                             </button>
                         </div>
                         <!-- Dropdown menu -->
-                        <div class="z-50 hidden absolute right-0 top-10 my-4 text-base list-none bg-slate-800 divide-y divide-slate-700 rounded shadow-xl border border-slate-700" id="dropdown-user">
+                        <div class="z-50 hidden absolute right-0 top-10 my-4 text-base list-none bg-slate-800 divide-y divide-slate-700 rounded shadow-xl border border-slate-700" id="dropdown-user" style="display: none;">
                             <div class="px-4 py-3" role="none">
                                 <p class="text-sm text-white" role="none" id="user-name-display">
                                     Usuario
@@ -33,13 +33,18 @@
                             </div>
                             <ul class="py-1" role="none">
                                 <li>
-                                    <a href="dashboard.php" class="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white" role="menuitem">Dashboard</a>
+                                    <a href="#" id="navbar-dashboard-link" class="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white" role="menuitem">Dashboard</a>
                                 </li>
                                 <li>
                                     <a href="#" class="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white" role="menuitem">Configuración</a>
                                 </li>
                                 <li>
-                                    <a href="#" onclick="logout()" class="block px-4 py-2 text-sm text-red-400 hover:bg-slate-700 hover:text-red-300" role="menuitem">Cerrar Sesión</a>
+                                    <a href="<?php echo BASE_URL; ?>/api/logout.php" class="block px-4 py-2 text-sm text-red-400 hover:bg-slate-700 hover:text-red-300" role="menuitem">
+                                        <div class="flex items-center gap-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                                            Cerrar Sesión
+                                        </div>
+                                    </a>
                                 </li>
                             </ul>
                         </div>
@@ -48,3 +53,61 @@
             </div>
         </div>
     </nav>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userMenuBtn = document.getElementById('user-menu-button');
+            const userDropdown = document.getElementById('dropdown-user');
+
+
+
+            if (userMenuBtn && userDropdown) {
+                userMenuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (userDropdown.style.display === 'none' || userDropdown.style.display === '') {
+                        userDropdown.style.display = 'block';
+                        userDropdown.classList.remove('hidden'); // Just in case
+                    } else {
+                        userDropdown.style.display = 'none';
+                        userDropdown.classList.add('hidden'); // Just in case
+                    }
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                        userDropdown.style.display = 'none';
+                        userDropdown.classList.add('hidden');
+                    }
+                });
+            }
+
+            // Load user info
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user) {
+                document.getElementById('user-avatar').textContent = user.full_name.charAt(0).toUpperCase();
+                document.getElementById('user-name-display').textContent = user.full_name;
+                document.getElementById('user-role-display').textContent = user.role;
+
+                // Update dashboard link
+                const dashboardLink = document.getElementById('navbar-dashboard-link');
+                if (dashboardLink) {
+                    if (user.role === 'technician') {
+                        // If we are already in technician dir, just dashboard.php, else public/technician/dashboard.php
+                        if (window.location.pathname.includes('/technician/')) {
+                            dashboardLink.href = 'dashboard.php';
+                        } else {
+                            dashboardLink.href = 'technician/dashboard.php';
+                        }
+                    } else {
+                        // Admin/Staff
+                        if (window.location.pathname.includes('/technician/')) {
+                             dashboardLink.href = '../dashboard.php';
+                        } else {
+                             dashboardLink.href = 'dashboard.php';
+                        }
+                    }
+                }
+            }
+        });
+
+
+    </script>
