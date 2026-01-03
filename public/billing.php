@@ -78,7 +78,7 @@
     <div class="relative w-full max-w-2xl max-h-full">
         <div class="relative bg-slate-800 rounded-xl shadow-2xl border border-slate-700">
             <div class="p-6">
-                <h3 class="mb-5 text-lg font-normal text-white text-center">Generar Facturación Mensual</h3>
+                <h3 class="mb-5 text-lg font-normal text-white text-center">Generar Facturación Masiva</h3>
                 
                 <!-- Selection Step -->
                 <div id="stepSelect">
@@ -118,24 +118,24 @@
                 <!-- Preview Step -->
                 <div id="stepPreview" class="hidden">
                     <div class="mb-4">
-                        <h4 class="text-white font-medium mb-2">Resumen de Facturación</h4>
-                        <div class="bg-slate-900 rounded-lg p-4 border border-slate-700 max-h-60 overflow-y-auto">
+                        <h4 class="text-white font-medium mb-2">Vista Previa</h4>
+                        <div class="bg-slate-900 rounded-lg border border-slate-700 max-h-60 overflow-y-auto relative">
                             <table class="w-full text-sm text-left text-slate-400">
-                                <thead class="text-xs text-slate-500 uppercase bg-slate-800 sticky top-0">
+                                <thead class="text-xs text-slate-500 uppercase bg-slate-800">
                                     <tr>
-                                        <th class="px-4 py-2">Cliente</th>
-                                        <th class="px-4 py-2">Plan</th>
-                                        <th class="px-4 py-2 text-right">Monto</th>
+                                        <th class="sticky top-0 bg-slate-800 z-10 px-4 py-2 border-b border-slate-700">Cliente</th>
+                                        <th class="sticky top-0 bg-slate-800 z-10 px-4 py-2 border-b border-slate-700">Plan</th>
+                                        <th class="sticky top-0 bg-slate-800 z-10 px-4 py-2 text-right border-b border-slate-700">Monto</th>
                                     </tr>
                                 </thead>
                                 <tbody id="previewTableBody">
                                     <!-- Preview Rows -->
                                 </tbody>
-                                <tfoot class="border-t border-slate-700 bg-slate-800 sticky bottom-0">
+                                <tfoot class="bg-slate-800">
                                     <tr>
-                                        <th class="px-4 py-2 text-white">Total</th>
-                                        <th class="px-4 py-2"></th>
-                                        <th class="px-4 py-2 text-right text-white" id="previewTotal">S/ 0.00</th>
+                                        <th class="sticky bottom-0 bg-slate-800 z-10 px-4 py-2 text-white border-t border-slate-700">Total</th>
+                                        <th class="sticky bottom-0 bg-slate-800 z-10 px-4 py-2 border-t border-slate-700"></th>
+                                        <th class="sticky bottom-0 bg-slate-800 z-10 px-4 py-2 text-right text-white border-t border-slate-700" id="previewTotal">S/ 0.00</th>
                                     </tr>
                                 </tfoot>
                             </table>

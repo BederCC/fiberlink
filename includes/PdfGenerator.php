@@ -257,5 +257,330 @@ class PdfGenerator {
         // Output PDF
         return $pdf->Output('Hoja_Instalacion_' . $installation_id . '.pdf', $output);
     }
+    public function generateInvoicePdf($invoice_id, $output = 'I') {
+        // 1. Fetch Invoice & Client Details
+        $query = "SELECT i.*, c.fullname, c.dni_ruc, c.email, c.address, c.phone 
+                  FROM invoices i 
+                  JOIN clients c ON i.client_id = c.id 
+                  WHERE i.id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id", $invoice_id);
+        $stmt->execute();
+        $invoice = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$invoice) {
+            die('Factura no encontrada');
+        }
+
+        // 2. Fetch Invoice Items
+        $q_items = "SELECT * FROM invoice_items WHERE invoice_id = :id";
+        $s_items = $this->conn->prepare($q_items);
+        $s_items->bindParam(":id", $invoice_id);
+        $s_items->execute();
+        $items = $s_items->fetchAll(PDO::FETCH_ASSOC);
+
+        // 3. Fetch Payments
+        $q_payments = "SELECT * FROM payments WHERE invoice_id = :id";
+        $s_payments = $this->conn->prepare($q_payments);
+        $s_payments->bindParam(":id", $invoice_id);
+        $s_payments->execute();
+        $payments = $s_payments->fetchAll(PDO::FETCH_ASSOC);
+
+        // 4. Create PDF
+        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->SetCreator('FiberLink System');
+        $pdf->SetAuthor('FiberLink');
+        $pdf->SetTitle('Recibo ' . $invoice['invoice_number']);
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+        $pdf->SetMargins(10, 10, 10);
+        $pdf->SetAutoPageBreak(TRUE, 10);
+        $pdf->AddPage();
+
+        // --- CALCULATIONS ---
+        $total = floatval($invoice['total_amount']);
+        $base = $total / 1.18;
+        $igv = $total - $base;
+        $paid_amount = 0;
+        foreach ($payments as $p) {
+            $paid_amount += floatval($p['amount']);
+        }
+        $balance = $total - $paid_amount;
+        $status_text = ($balance <= 0) ? 'PAGADO' : 'PENDIENTE';
+        $header_color = ($balance <= 0) ? '#10b981' : '#ef4444'; // Green or Red
+
+        // --- STYLES ---
+        $html_styles = '
+        <style>
+            table { width: 100%; border-collapse: collapse; font-family: helvetica; font-size: 9pt; }
+            th { background-color: #f1f5f9; font-weight: bold; padding: 6px; text-align: center; }
+            td { padding: 6px; }
+            .header-bar { background-color: ' . $header_color . '; color: white; text-align: center; font-weight: bold; font-size: 14pt; padding: 5px; }
+            .section-title { font-weight: bold; background-color: #f1f5f9; padding: 5px; margin-bottom: 5px; }
+            .label { font-weight: bold; color: #64748b; font-size: 8pt; }
+            .value { color: #0f172a; font-size: 9pt; }
+            .total-row { font-weight: bold; }
+            .small-text { font-size: 8pt; color: #64748b; }
+        </style>
+        ';
+
+        // --- CONTENT ---
+        $html = $html_styles;
+
+        // Header Bar
+        $html .= '<div class="header-bar">' . $status_text . '</div><br>';
+
+        // Top Section (Logo & Receipt Info)
+        $html .= '
+        <table border="0">
+            <tr>
+                <td width="50%">
+                    <span style="font-size: 20pt; font-weight: bold; color: #0ea5e9;">FIBERLINK</span><br>
+                    <span style="font-size: 8pt;">EL FUTURO ES AHORA</span>
+                </td>
+                <td width="50%" style="text-align: right;">
+                    <strong>RECIBO # ' . $invoice['invoice_number'] . '</strong><br>
+                    <span class="small-text">Fecha emisión ' . date('d/m/Y', strtotime($invoice['issue_date'])) . '</span><br>
+                    <span class="small-text">Fecha vencimiento ' . date('d/m/Y', strtotime($invoice['due_date'])) . '</span>
+                </td>
+            </tr>
+        </table>
+        <br><br>
+        ';
+
+        // From / To
+        $html .= '
+        <table border="0">
+            <tr>
+                <td width="50%" style="border-right: 1px solid #e2e8f0;">
+                    <strong>De</strong><br>
+                    FIBERLINK EIRL<br>
+                    Ruc 20602045758<br>
+                    PRO. AV. ANTONIO LORENA 15<br>
+                    Teléfono 976 366 075
+                </td>
+                <td width="50%" style="padding-left: 10px;">
+                    <strong>Para</strong><br>
+                    ' . strtoupper($invoice['fullname']) . '<br>
+                    ' . $invoice['dni_ruc'] . '<br>
+                    ' . $invoice['address'] . '<br>
+                    N° Cel: ' . $invoice['phone'] . '
+                </td>
+            </tr>
+        </table>
+        <br><br>
+        ';
+
+        // Items Table
+        $html .= '
+        <table border="0" cellpadding="5">
+            <thead>
+                <tr style="background-color: #f1f5f9;">
+                    <th width="50%" style="text-align: left;">Descripción</th>
+                    <th width="15%" style="text-align: right;">Precio</th>
+                    <th width="10%" style="text-align: right;">Imp%</th>
+                    <th width="10%" style="text-align: center;">Cant.</th>
+                    <th width="15%" style="text-align: right;">Total</th>
+                </tr>
+            </thead>
+            <tbody>';
+        
+        foreach ($items as $item) {
+            $item_total = floatval($item['amount']);
+            $item_base = $item_total / 1.18;
+
+            $html .= '
+            <tr>
+                <td style="border-bottom: 1px solid #f1f5f9;">
+                    ' . $item['description'] . '<br>
+                    <span class="small-text">Facturación del ' . date('d/m/Y', strtotime($invoice['issue_date'])) . ' al ' . date('d/m/Y', strtotime($invoice['due_date'])) . '</span>
+                </td>
+                <td style="text-align: right; border-bottom: 1px solid #f1f5f9;">S/. ' . number_format($item_base, 2) . '</td>
+                <td style="text-align: right; border-bottom: 1px solid #f1f5f9;">18%</td>
+                <td style="text-align: center; border-bottom: 1px solid #f1f5f9;">1</td>
+                <td style="text-align: right; border-bottom: 1px solid #f1f5f9;">S/. ' . number_format($item_base, 2) . '</td>
+            </tr>';
+        }
+
+        $html .= '
+            </tbody>
+        </table>
+        ';
+
+        // Amount in Words
+        $html .= '
+        <div style="background-color: #e2e8f0; padding: 5px; font-weight: bold; font-size: 9pt; margin-top: 10px;">
+            SON: ' . $this->numtoletras($total) . ' SOL
+        </div>
+        <br><br>
+        ';
+        
+        $pdf->writeHTML($html, true, false, true, false, '');
+        $html = ''; // Reset HTML
+
+        // Barcode & Totals
+        // We need to position them side by side. 
+        // Barcode on Left (approx X=15, Y=current), Totals on Right (approx X=100)
+        
+        $y = $pdf->GetY();
+        $x = $pdf->GetX();
+        
+        // Barcode
+        $style = array(
+            'position' => '',
+            'align' => 'C',
+            'stretch' => false,
+            'fitwidth' => true,
+            'cellfitalign' => '',
+            'border' => false,
+            'hpadding' => 'auto',
+            'vpadding' => 'auto',
+            'fgcolor' => array(0,0,0),
+            'bgcolor' => false,
+            'text' => true,
+            'font' => 'helvetica',
+            'fontsize' => 8,
+            'stretchtext' => 4
+        );
+        // Width approx 50mm, Height 15mm
+        $pdf->write1DBarcode($invoice['invoice_number'], 'C128', 15, $y, 60, 18, 0.4, $style, 'N');
+        
+        // Totals Table (Right side)
+        // We can use writeHTMLCell for the table to position it
+        $totals_html = '
+        <table border="0" cellpadding="3">
+            <tr>
+                <td style="text-align: right; font-weight: bold;">SUBTOTAL :</td>
+                <td style="text-align: right;">S/. ' . number_format($base, 2) . '</td>
+            </tr>
+            <tr>
+                <td style="text-align: right; font-weight: bold;">IMPUESTO (18%) :</td>
+                <td style="text-align: right;">S/. ' . number_format($igv, 2) . '</td>
+            </tr>
+            <tr>
+                <td style="text-align: right; font-weight: bold;">DESCUENTO :</td>
+                <td style="text-align: right;">S/. 0.00</td>
+            </tr>
+            <tr>
+                <td style="text-align: right; font-weight: bold;">TOTAL :</td>
+                <td style="text-align: right;">S/. ' . number_format($total, 2) . '</td>
+            </tr>
+        </table>';
+        
+        $pdf->writeHTMLCell(90, '', 105, $y, $totals_html, 0, 1, 0, true, '', true);
+        
+        $pdf->Ln(10); // Spacing after barcode/totals section
+
+        // Transactions
+        $html .= '
+        <div style="text-align: center; font-weight: bold; margin-bottom: 5px;">Transacciones</div>
+        <table border="0" cellpadding="5">
+            <thead>
+                <tr style="background-color: #f1f5f9;">
+                    <th width="30%">Fecha</th>
+                    <th width="30%">Forma pago</th>
+                    <th width="20%">Nº transacción</th>
+                    <th width="20%" style="text-align: right;">Total</th>
+                </tr>
+            </thead>
+            <tbody>';
+        
+        if (count($payments) > 0) {
+            foreach ($payments as $pay) {
+                $html .= '
+                <tr>
+                    <td style="text-align: center; border-bottom: 1px solid #f1f5f9;">' . $pay['payment_date'] . '</td>
+                    <td style="text-align: center; border-bottom: 1px solid #f1f5f9;">' . ucfirst($pay['payment_method']) . '</td>
+                    <td style="text-align: center; border-bottom: 1px solid #f1f5f9;">' . ($pay['transaction_id'] ?: '-') . '</td>
+                    <td style="text-align: right; border-bottom: 1px solid #f1f5f9;">S/. ' . number_format($pay['amount'], 2) . '</td>
+                </tr>';
+            }
+        } else {
+            $html .= '<tr><td colspan="4" style="text-align: center;">No hay pagos registrados</td></tr>';
+        }
+
+        $html .= '
+                <tr style="background-color: #f1f5f9;">
+                    <td colspan="3" style="text-align: right; font-weight: bold;">Balance</td>
+                    <td style="text-align: right; font-weight: bold;">S/. ' . number_format($balance, 2) . '</td>
+                </tr>
+            </tbody>
+        </table>
+        ';
+
+        // Footer
+        $html .= '
+        <div style="position: absolute; bottom: 10px; width: 100%; text-align: center; font-size: 8pt; color: #64748b;">
+            PDF Generado ' . date('d/m/Y h:i a') . '
+        </div>
+        ';
+
+        $pdf->writeHTML($html, true, false, true, false, '');
+        return $pdf->Output('Recibo_' . $invoice['invoice_number'] . '.pdf', $output);
+    }
+
+    private function numtoletras($xcifra) {
+        $xarray = array(0 => "Cero",
+            1 => "UN", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE", "OCHO", "NUEVE",
+            "DIEZ", "ONCE", "DOCE", "TRECE", "CATORCE", "QUINCE", "DIECISEIS", "DIECISIETE", "DIECIOCHO", "DIECINUEVE",
+            "VEINTI", 30 => "TREINTA", 40 => "CUARENTA", 50 => "CINCUENTA", 60 => "SESENTA", 70 => "SETENTA", 80 => "OCHENTA", 90 => "NOVENTA",
+            100 => "CIENTO", 200 => "DOSCIENTOS", 300 => "TRESCIENTOS", 400 => "CUATROCIENTOS", 500 => "QUINIENTOS", 600 => "SEISCIENTOS", 700 => "SETECIENTOS", 800 => "OCHOCIENTOS", 900 => "NOVECIENTOS"
+        );
+        $xcifra = trim($xcifra);
+        $xaux_int = $xcifra;
+        $xdecimales = "00";
+        if (strpos($xcifra, ".") !== false) {
+            $xaux_int = substr($xcifra, 0, strpos($xcifra, "."));
+            $xdecimales = substr($xcifra, strpos($xcifra, ".") + 1);
+        }
+        
+        $valor = (int) $xaux_int;
+        if ($valor == 0) return "CERO";
+        
+        $str = "";
+        $miles = floor($valor / 1000);
+        $resto = $valor % 1000;
+        
+        if ($miles > 0) {
+            if ($miles == 1) $str .= "MIL ";
+            else $str .= $this->centenas($miles) . " MIL ";
+        }
+        
+        if ($resto > 0 || $valor == 0) {
+            $str .= $this->centenas($resto);
+        }
+        
+        return trim($str);
+    }
+
+    private function centenas($n) {
+        $c = floor($n / 100);
+        $resto = $n % 100;
+        $str = "";
+        if ($c > 0) {
+            if ($c == 1) {
+                if ($resto > 0) $str = "CIENTO ";
+                else $str = "CIEN ";
+            } else {
+                $centenas = ["", "CIENTO", "DOSCIENTOS", "TRESCIENTOS", "CUATROCIENTOS", "QUINIENTOS", "SEISCIENTOS", "SETECIENTOS", "OCHOCIENTOS", "NOVECIENTOS"];
+                $str = $centenas[$c] . " ";
+            }
+        }
+        if ($resto > 0) $str .= $this->decenas($resto);
+        return trim($str);
+    }
+
+    private function decenas($n) {
+        if ($n < 30) {
+            $unidades = ["", "UN", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE", "OCHO", "NUEVE", "DIEZ", "ONCE", "DOCE", "TRECE", "CATORCE", "QUINCE", "DIECISEIS", "DIECISIETE", "DIECIOCHO", "DIECINUEVE", "VEINTE", "VEINTIUNO", "VEINTIDOS", "VEINTITRES", "VEINTICUATRO", "VEINTICINCO", "VEINTISEIS", "VEINTISIETE", "VEINTIOCHO", "VEINTINUEVE"];
+            return $unidades[$n];
+        }
+        $d = floor($n / 10);
+        $u = $n % 10;
+        $decenas = ["", "DIEZ", "VEINTE", "TREINTA", "CUARENTA", "CINCUENTA", "SESENTA", "SETENTA", "OCHENTA", "NOVENTA"];
+        $str = $decenas[$d];
+        if ($u > 0) $str .= " Y " . ["", "UN", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE", "OCHO", "NUEVE"][$u];
+        return $str;
+    }
 }
 ?>

@@ -30,7 +30,7 @@ class Mailer {
         }
     }
 
-    public function sendPaymentReceipt($toEmail, $toName, $paymentData) {
+    public function sendPaymentReceipt($toEmail, $toName, $paymentData, $pdfContent = null, $filename = 'Recibo.pdf') {
         try {
             $this->mail->addAddress($toEmail, $toName);
 
@@ -38,26 +38,6 @@ class Mailer {
             $this->mail->isHTML(true);
             $this->mail->Subject = 'Comprobante de Pago - FiberLink';
             
-            // Calculations
-            $total = floatval(str_replace(',', '', $paymentData['amount']));
-            $base = $total / 1.18;
-            $igv = $total - $base;
-            
-            // Items Rows
-            $itemsHtml = '';
-            if (!empty($paymentData['items'])) {
-                foreach ($paymentData['items'] as $item) {
-                    $itemTotal = floatval($item['amount']);
-                    $itemBase = $itemTotal / 1.18;
-                    $itemsHtml .= "
-                    <tr>
-                        <td style='padding: 8px; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 12px;'>{$item['description']}</td>
-                        <td style='padding: 8px; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 12px; text-align: right;'>S/ " . number_format($itemBase, 2) . "</td>
-                        <td style='padding: 8px; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 12px; text-align: right;'>S/ " . number_format($itemBase, 2) . "</td>
-                    </tr>";
-                }
-            }
-
             $body = "
             <div style='font-family: Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff;'>
                 <!-- Header -->
@@ -68,7 +48,7 @@ class Mailer {
 
                 <div style='padding: 30px 20px;'>
                     <p style='color: #334155; font-size: 14px;'>Hola <strong>{$toName}</strong>,</p>
-                    <p style='color: #334155; font-size: 14px;'>Gracias por tu pago. Adjuntamos los detalles de tu transacción.</p>
+                    <p style='color: #334155; font-size: 14px;'>Gracias por tu pago. Adjuntamos tu recibo en formato PDF.</p>
                     
                     <!-- Invoice Info -->
                     <div style='background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin: 20px 0;'>
@@ -89,57 +69,36 @@ class Mailer {
                                 <td style='padding: 5px 0; color: #64748b; font-size: 12px;'>TRANSACCIÓN</td>
                                 <td style='padding: 5px 0; color: #0f172a; font-weight: bold; font-size: 12px; text-align: right;'>{$paymentData['transaction_id']}</td>
                             </tr>
+                             <tr>
+                                <td style='padding: 10px 0; color: #4f46e5; font-size: 14px; font-weight: bold; border-top: 1px solid #e2e8f0;'>TOTAL PAGADO</td>
+                                <td style='padding: 10px 0; color: #4f46e5; font-size: 14px; font-weight: bold; text-align: right; border-top: 1px solid #e2e8f0;'>S/ {$paymentData['amount']}</td>
+                            </tr>
                         </table>
                     </div>
 
-                    <!-- Items Table -->
-                    <table style='width: 100%; border-collapse: collapse; margin-bottom: 20px;'>
-                        <thead>
-                            <tr>
-                                <th style='padding: 8px; background-color: #f1f5f9; color: #475569; font-size: 10px; text-align: left; font-weight: bold; border-radius: 4px 0 0 4px;'>DESCRIPCIÓN</th>
-                                <th style='padding: 8px; background-color: #f1f5f9; color: #475569; font-size: 10px; text-align: right; font-weight: bold;'>P. UNIT</th>
-                                <th style='padding: 8px; background-color: #f1f5f9; color: #475569; font-size: 10px; text-align: right; font-weight: bold; border-radius: 0 4px 4px 0;'>TOTAL</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {$itemsHtml}
-                        </tbody>
-                    </table>
-
-                    <!-- Totals -->
-                    <table style='width: 100%; border-collapse: collapse;'>
-                        <tr>
-                            <td style='padding: 5px 0; color: #64748b; font-size: 12px; text-align: right;'>Op. Gravada:</td>
-                            <td style='padding: 5px 0; color: #334155; font-size: 12px; text-align: right; width: 100px;'>S/ " . number_format($base, 2) . "</td>
-                        </tr>
-                        <tr>
-                            <td style='padding: 5px 0; color: #64748b; font-size: 12px; text-align: right;'>I.G.V. (18%):</td>
-                            <td style='padding: 5px 0; color: #334155; font-size: 12px; text-align: right;'>S/ " . number_format($igv, 2) . "</td>
-                        </tr>
-                        <tr>
-                            <td style='padding: 10px 0; color: #4f46e5; font-size: 14px; font-weight: bold; text-align: right; border-top: 1px solid #e2e8f0;'>TOTAL PAGADO:</td>
-                            <td style='padding: 10px 0; color: #4f46e5; font-size: 14px; font-weight: bold; text-align: right; border-top: 1px solid #e2e8f0;'>S/ " . number_format($total, 2) . "</td>
-                        </tr>
-                    </table>
-
-
+                    <p style='color: #334155; font-size: 14px;'>Si tienes alguna duda, contáctanos a soporte@fiberlink.com.</p>
                 </div>
 
                 <!-- Footer -->
                 <div style='text-align: center; padding: 20px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; color: #94a3b8; font-size: 11px;'>
                     <p style='margin: 0;'>FiberLink Telecomunicaciones S.A.C.</p>
                     <p style='margin: 5px 0;'>Este correo es automático, por favor no responder.</p>
-                    <p style='margin: 0;'>&copy; " . date('Y') . " FiberLink. Todos los derechos reservados.</p>
                 </div>
             </div>
             ";
 
             $this->mail->Body    = $body;
-            $this->mail->AltBody = "Hola {$toName}, hemos recibido tu pago de S/ {$paymentData['amount']} para la factura {$paymentData['invoice_number']}. Gracias.";
+            $this->mail->AltBody = "Hola {$toName}, hemos recibido tu pago de S/ {$paymentData['amount']} para la factura {$paymentData['invoice_number']}. Adjuntamos el recibo.";
+
+            // Attach PDF if provided
+            if ($pdfContent) {
+                $this->mail->addStringAttachment($pdfContent, $filename, 'base64', 'application/pdf');
+            }
 
             $this->mail->send();
             // Clear addresses for next send
             $this->mail->clearAddresses();
+            $this->mail->clearAttachments();
             return true;
         } catch (Exception $e) {
             error_log("Message could not be sent. Mailer Error: {$this->mail->ErrorInfo}");

@@ -60,6 +60,7 @@ if(!empty($data->invoice_id) && !empty($data->amount)) {
         
         // 3. Send Email Receipt
         include_once '../includes/Mailer.php';
+        include_once '../includes/PdfGenerator.php';
         
         // Get Client & Invoice Details
         $q_details = "SELECT c.email, c.fullname, i.invoice_number 
@@ -72,12 +73,10 @@ if(!empty($data->invoice_id) && !empty($data->amount)) {
         $details = $s_details->fetch(PDO::FETCH_ASSOC);
         
         if($details && !empty($details['email'])) {
-            // Fetch Invoice Items
-            $q_items = "SELECT description, amount FROM invoice_items WHERE invoice_id = :id";
-            $s_items = $db->prepare($q_items);
-            $s_items->bindParam(":id", $data->invoice_id);
-            $s_items->execute();
-            $items = $s_items->fetchAll(PDO::FETCH_ASSOC);
+            // Generate PDF
+            $pdfGen = new PdfGenerator($db);
+            $pdfContent = $pdfGen->generateInvoicePdf($data->invoice_id, 'S'); // 'S' returns string
+            $filename = 'Recibo_' . $details['invoice_number'] . '.pdf';
 
             $mailer = new Mailer();
             $paymentData = [
@@ -85,14 +84,15 @@ if(!empty($data->invoice_id) && !empty($data->amount)) {
                 'amount' => number_format($data->amount, 2),
                 'date' => date('d/m/Y H:i'),
                 'method' => ucfirst($method),
-                'transaction_id' => $txn_id,
-                'items' => $items // Pass items to mailer
+                'transaction_id' => $txn_id
             ];
             
             $mailer->sendPaymentReceipt(
                 $details['email'], 
                 $details['fullname'], 
-                $paymentData
+                $paymentData,
+                $pdfContent,
+                $filename
             );
         }
         
