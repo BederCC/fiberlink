@@ -6,6 +6,7 @@ require '../vendor/autoload.php';
 
 class Mailer {
     private $mail;
+    private $lastError;
 
     public function __construct() {
         $config = require '../config/mail.php';
@@ -25,9 +26,13 @@ class Mailer {
             // Recipients
             $this->mail->setFrom($config['from_email'], $config['from_name']);
         } catch (Exception $e) {
-            // Log error
-            error_log("Mailer Error: {$this->mail->ErrorInfo}");
+            $this->lastError = "Mailer Error: {$this->mail->ErrorInfo}";
+            error_log($this->lastError);
         }
+    }
+
+    public function getLastError() {
+        return $this->lastError;
     }
 
     public function sendPaymentReceipt($toEmail, $toName, $paymentData, $pdfContent = null, $filename = 'Recibo.pdf') {
@@ -225,6 +230,43 @@ class Mailer {
             return true;
         } catch (Exception $e) {
             error_log("Message could not be sent. Mailer Error: {$this->mail->ErrorInfo}");
+            return false;
+        }
+    }
+    public function sendActivationEmail($toEmail, $toName, $link) {
+        try {
+            $this->mail->addAddress($toEmail, $toName);
+            $this->mail->isHTML(true);
+            $this->mail->Subject = 'Activa tu Cuenta - FiberLink';
+            
+            $body = "
+            <div style='font-family: Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff;'>
+                <div style='text-align: center; padding: 30px 20px; background-color: #f8fafc; border-bottom: 1px solid #e2e8f0;'>
+                    <h1 style='color: #4f46e5; margin: 0; font-size: 24px;'>FiberLink</h1>
+                    <p style='color: #64748b; margin: 5px 0; font-size: 14px;'>Activación de Cuenta</p>
+                </div>
+                <div style='padding: 30px 20px; text-align: center;'>
+                    <p style='color: #334155; font-size: 16px;'>Hola <strong>{$toName}</strong>,</p>
+                    <p style='color: #334155; font-size: 14px; margin-bottom: 30px;'>Para activar tu cuenta y acceder al portal de clientes, por favor haz clic en el siguiente botón:</p>
+                    
+                    <a href='{$link}' style='display: inline-block; padding: 12px 24px; background-color: #10b981; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;'>Activar Cuenta</a>
+                    
+                    <p style='color: #64748b; font-size: 12px; margin-top: 30px;'>Si no solicitaste esto, puedes ignorar este correo.</p>
+                </div>
+                <div style='text-align: center; padding: 20px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; color: #94a3b8; font-size: 11px;'>
+                    <p style='margin: 0;'>FiberLink Telecomunicaciones S.A.C.</p>
+                </div>
+            </div>";
+
+            $this->mail->Body = $body;
+            $this->mail->AltBody = "Hola {$toName}, activa tu cuenta en el siguiente enlace: {$link}";
+
+            $this->mail->send();
+            $this->mail->clearAddresses();
+            return true;
+        } catch (Exception $e) {
+            $this->lastError = "Message could not be sent. Mailer Error: {$this->mail->ErrorInfo}";
+            error_log($this->lastError);
             return false;
         }
     }
