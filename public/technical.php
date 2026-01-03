@@ -70,14 +70,91 @@
                 </tbody>
             </table>
         </div>
-    </div>
-</div>
+
+        <!-- Service Cutoff Countdown -->
+        <div class="mt-8">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="p-2 bg-amber-500/10 rounded-lg">
+                    <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold text-white">Próximos Cortes de Servicio</h3>
+            </div>
+            
+            <div class="relative overflow-x-auto rounded-lg border border-slate-700">
+                <table class="w-full text-sm text-left text-slate-400">
+                    <thead class="text-xs text-slate-300 uppercase bg-slate-800">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">Cliente</th>
+                            <th scope="col" class="px-6 py-3">Dirección</th>
+                            <th scope="col" class="px-6 py-3">Vencimiento</th>
+                            <th scope="col" class="px-6 py-3">Monto</th>
+                            <th scope="col" class="px-6 py-3">Tiempo Restante</th>
+                            <th scope="col" class="px-6 py-3">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cutoffTableBody">
+                        <!-- Data -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         loadServices();
+        loadCutoffCandidates();
         initTrafficChart();
     });
+
+    async function loadCutoffCandidates() {
+        try {
+            const response = await fetch('../api/cutoff_candidates.php');
+            const candidates = await response.json();
+            const tbody = document.getElementById('cutoffTableBody');
+            tbody.innerHTML = '';
+
+            if (candidates.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-slate-500">No hay cortes programados próximos.</td></tr>';
+                return;
+            }
+
+            candidates.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.className = 'bg-slate-800 border-b border-slate-700 hover:bg-slate-700 transition-colors';
+                
+                let timeText = '';
+                let timeClass = '';
+                let statusBadge = '';
+
+                if (c.days_remaining > 0) {
+                    timeText = `${c.days_remaining} días`;
+                    timeClass = 'text-amber-400 font-bold';
+                    statusBadge = '<span class="px-2 py-1 rounded-full text-xs bg-amber-500/10 text-amber-400">Por Vencer</span>';
+                } else if (c.days_remaining === 0) {
+                    timeText = 'HOY';
+                    timeClass = 'text-orange-500 font-bold animate-pulse';
+                    statusBadge = '<span class="px-2 py-1 rounded-full text-xs bg-orange-500/10 text-orange-400">Vence Hoy</span>';
+                } else {
+                    timeText = `Vencido hace ${Math.abs(c.days_remaining)} días`;
+                    timeClass = 'text-red-500 font-bold';
+                    statusBadge = '<span class="px-2 py-1 rounded-full text-xs bg-red-500/10 text-red-400">Corte Programado</span>';
+                }
+
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-medium text-white">${c.client}</td>
+                    <td class="px-6 py-4 text-xs">${c.address}</td>
+                    <td class="px-6 py-4">${c.due_date}</td>
+                    <td class="px-6 py-4 font-mono">S/ ${parseFloat(c.amount).toFixed(2)}</td>
+                    <td class="px-6 py-4 ${timeClass}">${timeText}</td>
+                    <td class="px-6 py-4">${statusBadge}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+        } catch (error) {
+            console.error('Error loading cutoff candidates:', error);
+        }
+    }
 
     async function loadServices() {
         try {

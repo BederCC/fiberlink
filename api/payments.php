@@ -56,6 +56,37 @@ if(!empty($data->invoice_id) && !empty($data->amount)) {
             $s_update = $db->prepare($q_update);
             $s_update->bindParam(":id", $data->invoice_id);
             $s_update->execute();
+
+            // --- AUTO-REACTIVATION LOGIC ---
+            // 1. Get Client ID from Invoice
+            $q_client = "SELECT client_id FROM invoices WHERE id = :id";
+            $s_client = $db->prepare($q_client);
+            $s_client->bindParam(":id", $data->invoice_id);
+            $s_client->execute();
+            $clientRow = $s_client->fetch(PDO::FETCH_ASSOC);
+
+            if ($clientRow) {
+                // 2. Check for suspended services for this client
+                // We assume if they pay a full invoice, we reactivate their main service(s)
+                $q_service = "SELECT id FROM services WHERE client_id = :cid AND service_status = 'suspended'";
+                $s_service = $db->prepare($q_service);
+                $s_service->bindParam(":cid", $clientRow['client_id']);
+                $s_service->execute();
+                $suspendedServices = $s_service->fetchAll(PDO::FETCH_ASSOC);
+
+                if (count($suspendedServices) > 0) {
+                    // 3. Reactivate Services
+                    $q_reactivate = "UPDATE services SET service_status = 'active' WHERE client_id = :cid AND service_status = 'suspended'";
+                    $s_reactivate = $db->prepare($q_reactivate);
+                    $s_reactivate->bindParam(":cid", $clientRow['client_id']);
+                    $s_reactivate->execute();
+
+                    // Log action (Optional but good practice)
+                    // In a real system, this would trigger the RouterOS API to enable the IP
+                    error_log("Auto-reactivated " . count($suspendedServices) . " services for client ID " . $clientRow['client_id']);
+                }
+            }
+            // -------------------------------
         }
         
         // 3. Send Email Receipt
