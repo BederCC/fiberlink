@@ -106,6 +106,11 @@ if (!isset($_SESSION['client_id'])) {
                                     </button>
                                 </div>
                                 <input type="hidden" id="selectedMethod" value="credit_card">
+                                
+                                <!-- Dynamic Fields -->
+                                <div id="paymentFields" class="mt-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                                    <!-- Fields injected via JS -->
+                                </div>
                             </div>
 
                             <button onclick="processPayment()" id="payBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition-colors shadow-lg shadow-indigo-500/30">
@@ -132,6 +137,7 @@ if (!isset($_SESSION['client_id'])) {
     <script>
         const clientId = <?php echo $_SESSION['client_id']; ?>;
         let selectedInvoice = null;
+        let paymentStartTime = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             loadDashboardData();
@@ -223,6 +229,7 @@ if (!isset($_SESSION['client_id'])) {
 
         function selectInvoice(inv) {
             selectedInvoice = inv;
+            paymentStartTime = Date.now(); // Start timer
             document.getElementById('payInvoiceNum').textContent = inv.invoice_number;
             document.getElementById('payAmount').textContent = `S/ ${parseFloat(inv.total_amount).toFixed(2)}`;
             
@@ -233,6 +240,9 @@ if (!isset($_SESSION['client_id'])) {
             if(window.innerWidth < 1024) {
                 document.getElementById('paymentForm').scrollIntoView({ behavior: 'smooth' });
             }
+            
+            // Initialize fields
+            selectMethod('visa');
         }
 
         function cancelPayment() {
@@ -252,15 +262,104 @@ if (!isset($_SESSION['client_id'])) {
                 btn.classList.add('border-indigo-500', 'bg-indigo-50');
             }
             document.getElementById('selectedMethod').value = method === 'visa' ? 'credit_card' : method;
+            
+            renderPaymentFields(method);
+            validateForm();
+        }
+
+        function renderPaymentFields(method) {
+            const container = document.getElementById('paymentFields');
+            if (method === 'visa' || method === 'credit_card') {
+                container.innerHTML = `
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Número de Tarjeta</label>
+                            <input type="text" id="cardNumber" class="w-full p-2 text-sm border border-slate-300 rounded focus:ring-indigo-500 focus:border-indigo-500" placeholder="0000 0000 0000 0000" maxlength="19" oninput="validateForm()">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-500 mb-1">Vencimiento</label>
+                                <input type="text" id="cardExpiry" class="w-full p-2 text-sm border border-slate-300 rounded focus:ring-indigo-500 focus:border-indigo-500" placeholder="MM/YY" maxlength="5" oninput="validateForm()">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-500 mb-1">CVV</label>
+                                <input type="text" id="cardCvv" class="w-full p-2 text-sm border border-slate-300 rounded focus:ring-indigo-500 focus:border-indigo-500" placeholder="123" maxlength="3" oninput="validateForm()">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Titular</label>
+                            <input type="text" id="cardName" class="w-full p-2 text-sm border border-slate-300 rounded focus:ring-indigo-500 focus:border-indigo-500" placeholder="Nombre como figura en la tarjeta" oninput="validateForm()">
+                        </div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="text-center space-y-4">
+                        <div class="bg-white p-2 inline-block rounded-lg border border-slate-200">
+                            <!-- Placeholder QR -->
+                            <div class="w-32 h-32 bg-slate-100 flex items-center justify-center text-slate-400 text-xs">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=FIBERLINK-PAGO-${Date.now()}" alt="QR Yape/Plin">
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500">Escanea el QR y realiza el pago por el monto exacto.</p>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1 text-left">Código de Operación</label>
+                            <input type="text" id="operationCode" class="w-full p-2 text-sm border border-slate-300 rounded focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: 12345678" maxlength="10" oninput="validateForm()">
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function validateForm() {
+            const method = document.getElementById('selectedMethod').value;
+            const btn = document.getElementById('payBtn');
+            let isValid = false;
+
+            if (method === 'credit_card') {
+                const num = document.getElementById('cardNumber')?.value || '';
+                const exp = document.getElementById('cardExpiry')?.value || '';
+                const cvv = document.getElementById('cardCvv')?.value || '';
+                const name = document.getElementById('cardName')?.value || '';
+                
+                // Basic length checks
+                isValid = num.length >= 16 && exp.length >= 4 && cvv.length >= 3 && name.length > 3;
+            } else {
+                const code = document.getElementById('operationCode')?.value || '';
+                isValid = code.length >= 6;
+            }
+
+            btn.disabled = !isValid;
+            if(isValid) {
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                btn.classList.add('hover:bg-indigo-700', 'shadow-lg');
+            } else {
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+                btn.classList.remove('hover:bg-indigo-700', 'shadow-lg');
+            }
         }
 
         async function processPayment() {
             if (!selectedInvoice) return;
             
+            // Double check validation
             const btn = document.getElementById('payBtn');
-            const originalText = btn.textContent;
+            if (btn.disabled) return;
+            
+            const method = document.getElementById('selectedMethod').value;
+            const originalText = btn.innerHTML;
+            
             btn.disabled = true;
-            btn.textContent = 'Procesando...';
+            btn.innerHTML = `
+                <svg class="animate-spin h-5 w-5 text-white inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Procesando pago...
+            `;
+
+            // Simulate Delay (3 seconds)
+            await new Promise(r => setTimeout(r, 3000));
 
             try {
                 const response = await fetch('api/payments.php', {
@@ -269,14 +368,16 @@ if (!isset($_SESSION['client_id'])) {
                     body: JSON.stringify({
                         invoice_id: selectedInvoice.id,
                         amount: selectedInvoice.total_amount,
-                        payment_method: document.getElementById('selectedMethod').value,
-                        transaction_id: 'WEB-' + Date.now(),
-                        notes: 'Pago desde Portal Clientes'
+                        payment_method: method,
+                        transaction_id: method === 'credit_card' ? 'CARD-' + Date.now() : document.getElementById('operationCode').value,
+                        notes: 'Pago desde Portal Clientes',
+                        search_timestamp: paymentStartTime
                     })
                 });
 
                 if (response.ok) {
-                    alert('¡Pago realizado con éxito!');
+                    const duration = ((Date.now() - paymentStartTime) / 1000).toFixed(1);
+                    alert(`¡Pago realizado con éxito!\nTiempo total: ${duration} segundos.`);
                     cancelPayment();
                     loadDashboardData();
                 } else {
@@ -286,8 +387,9 @@ if (!isset($_SESSION['client_id'])) {
                 console.error(error);
                 alert('Error de conexión');
             } finally {
-                btn.disabled = false;
-                btn.textContent = originalText;
+                // Re-validate to set correct state
+                validateForm();
+                btn.innerHTML = originalText;
             }
         }
     </script>

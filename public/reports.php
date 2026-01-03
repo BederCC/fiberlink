@@ -9,9 +9,21 @@
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-white">Reportes y Métricas</h1>
             <div class="flex gap-2">
-                <button onclick="exportData('excel')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors flex items-center gap-2">
+                <div class="relative">
+                    <button onclick="document.getElementById('exportDropdown').classList.toggle('hidden')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Exportar Reporte
+                    </button>
+                    <div id="exportDropdown" class="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl py-2 hidden z-10">
+                        <a href="#" onclick="exportData('metrics_excel')" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100">Excel (.xls)</a>
+                        <a href="#" onclick="exportData('metrics_pdf')" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100">PDF (.pdf)</a>
+                        <a href="#" onclick="exportData('payment_logs_pdf')" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 border-t border-slate-100">Logs de Pago (MikroTik Style)</a>
+                    </div>
+                </div>
+                
+                <button onclick="exportData('debts_excel')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    Exportar Excel
+                    Exportar Deudas
                 </button>
             </div>
         </div>
@@ -80,7 +92,7 @@
             const data = await response.json();
 
             // 1. Metrics
-            document.getElementById('avgTime').textContent = data.avg_payment_time;
+            document.getElementById('avgTime').textContent = data.avg_payment_time || '0';
 
             // 2. Income Chart
             const incomeCtx = document.getElementById('incomeChart').getContext('2d');
@@ -145,8 +157,28 @@
     }
 
     function exportData(type) {
-        if(type === 'excel') {
+        document.getElementById('exportDropdown').classList.add('hidden'); // Close dropdown
+        if(type === 'debts_excel') {
             window.open('../api/reports.php?action=export_debts', '_blank');
+        } else if (type === 'metrics_excel') {
+            window.open('../api/reports.php?action=export_metrics_excel', '_blank');
+        } else if (type === 'metrics_pdf') {
+            window.open('../api/reports.php?action=export_metrics_pdf', '_blank');
+        } else if (type === 'payment_logs_pdf') {
+            window.open('../api/reports.php?action=export_payment_logs_pdf', '_blank');
+        }
+    }
+
+    // Close dropdown when clicking outside
+    window.onclick = function(event) {
+        if (!event.target.matches('button') && !event.target.closest('button')) {
+            var dropdowns = document.getElementsByClassName("absolute right-0 mt-2 w-64");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (!openDropdown.classList.contains('hidden')) {
+                    openDropdown.classList.add('hidden');
+                }
+            }
         }
     }
 </script>

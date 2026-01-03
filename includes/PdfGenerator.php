@@ -582,5 +582,167 @@ class PdfGenerator {
         if ($u > 0) $str .= " Y " . ["", "UN", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE", "OCHO", "NUEVE"][$u];
         return $str;
     }
+    public function generateMetricsPdf($data, $output = 'I') {
+        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->SetCreator('FiberLink System');
+        $pdf->SetAuthor('FiberLink');
+        $pdf->SetTitle('Reporte de Métricas');
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+        $pdf->SetMargins(15, 15, 15);
+        $pdf->SetAutoPageBreak(TRUE, 15);
+        $pdf->AddPage();
+
+        // Title
+        $pdf->SetFont('helvetica', 'B', 20);
+        $pdf->SetTextColor(79, 70, 229); // Indigo-600
+        $pdf->Cell(0, 10, 'Reporte de Métricas y Desempeño', 0, 1, 'C');
+        $pdf->SetFont('helvetica', '', 10);
+        $pdf->SetTextColor(100, 116, 139); // Slate-500
+        $pdf->Cell(0, 5, 'Generado el ' . date('d/m/Y H:i'), 0, 1, 'C');
+        $pdf->Ln(10);
+
+        // 1. Average Payment Time
+        $pdf->SetFont('helvetica', 'B', 14);
+        $pdf->SetTextColor(30, 41, 59); // Slate-800
+        $pdf->Cell(0, 10, 'Tiempo Promedio de Pago', 0, 1);
+        
+        $pdf->SetFont('helvetica', '', 12);
+        $pdf->SetFillColor(241, 245, 249); // Slate-100
+        $pdf->Cell(0, 15, $data['avg_payment_time'] . ' segundos', 0, 1, 'L', true);
+        $pdf->Ln(5);
+
+        // 2. Service Status
+        $pdf->SetFont('helvetica', 'B', 14);
+        $pdf->Cell(0, 10, 'Estado de Servicios', 0, 1);
+        
+        $html_status = '<table border="1" cellpadding="5">
+            <tr style="background-color: #e2e8f0; font-weight: bold;">
+                <th>Estado</th>
+                <th>Cantidad</th>
+            </tr>';
+        foreach ($data['status'] as $s) {
+            $html_status .= '<tr>
+                <td>' . ucfirst($s['service_status']) . '</td>
+                <td>' . $s['count'] . '</td>
+            </tr>';
+        }
+        $html_status .= '</table>';
+        $pdf->writeHTML($html_status, true, false, true, false, '');
+        $pdf->Ln(5);
+
+        // 3. Income (Last 6 Months)
+        $pdf->SetFont('helvetica', 'B', 14);
+        $pdf->Cell(0, 10, 'Ingresos Mensuales (Últimos 6 meses)', 0, 1);
+        
+        $html_income = '<table border="1" cellpadding="5">
+            <tr style="background-color: #e2e8f0; font-weight: bold;">
+                <th>Mes</th>
+                <th>Total (S/)</th>
+            </tr>';
+        foreach ($data['income'] as $inc) {
+            $html_income .= '<tr>
+                <td>' . $inc['month'] . '</td>
+                <td>S/ ' . number_format($inc['total'], 2) . '</td>
+            </tr>';
+        }
+        $html_income .= '</table>';
+        $pdf->writeHTML($html_income, true, false, true, false, '');
+        $pdf->Ln(5);
+
+        // 4. Top Debtors
+        $pdf->SetFont('helvetica', 'B', 14);
+        $pdf->Cell(0, 10, 'Top Deudores', 0, 1);
+        
+        $html_debtors = '<table border="1" cellpadding="5">
+            <tr style="background-color: #e2e8f0; font-weight: bold;">
+                <th>Cliente</th>
+                <th>Deuda Total (S/)</th>
+            </tr>';
+        foreach ($data['debtors'] as $d) {
+            $html_debtors .= '<tr>
+                <td>' . $d['fullname'] . '</td>
+                <td style="color: #ef4444;">S/ ' . number_format($d['debt'], 2) . '</td>
+            </tr>';
+        }
+        $html_debtors .= '</table>';
+        $pdf->writeHTML($html_debtors, true, false, true, false, '');
+
+        return $pdf->Output('Reporte_Metricas.pdf', $output);
+    }
+
+    public function generatePaymentLogPdf($data, $output = 'I') {
+        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->SetCreator('FiberLink System');
+        $pdf->SetAuthor('FiberLink');
+        $pdf->SetTitle('Log de Tiempos de Pago');
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+        $pdf->SetMargins(10, 10, 10);
+        $pdf->SetAutoPageBreak(TRUE, 10);
+        $pdf->AddPage();
+        
+        // Set Text Color to Black
+        $pdf->SetTextColor(0, 0, 0);
+
+        // Header "WinBox" style
+        $pdf->SetFillColor(240, 240, 240);
+        $pdf->SetFont('courier', 'B', 10);
+        $pdf->Cell(0, 8, 'Log - Payment Metrics', 1, 1, 'L', true);
+        $pdf->Ln(2);
+
+        // Table Header
+        $pdf->SetFont('courier', 'B', 9);
+        $pdf->SetFillColor(220, 220, 220);
+        $pdf->Cell(45, 6, 'Time', 1, 0, 'L', true);
+        $pdf->Cell(35, 6, 'Topics', 1, 0, 'L', true);
+        $pdf->Cell(0, 6, 'Message', 1, 1, 'L', true);
+
+        // Rows
+        $pdf->SetFont('courier', '', 9);
+        $fill = false;
+
+        $total_seconds = 0;
+        $count = 0;
+
+        foreach ($data as $row) {
+            $total_seconds += $row['duration_seconds'];
+            $count++;
+
+            // Format time like MikroTik: MMM/dd/Y HH:mm:ss
+            $time = date('M/d/Y H:i:s', strtotime($row['payment_timestamp']));
+            
+            // Message: user "Name" paid INV-001 in Xs
+            $message = sprintf('user "%s" paid %s in %ss', 
+                $row['fullname'], 
+                $row['invoice_number'], 
+                $row['duration_seconds']
+            );
+
+            // Alternating colors (very subtle)
+            $bg_color = $fill ? 245 : 255;
+            $pdf->SetFillColor($bg_color, $bg_color, $bg_color);
+
+            $pdf->Cell(45, 6, $time, 'LR', 0, 'L', true);
+            $pdf->Cell(35, 6, 'payment,info', 'LR', 0, 'L', true);
+            $pdf->Cell(0, 6, $message, 'LR', 1, 'L', true);
+            
+            $fill = !$fill;
+        }
+        
+        // Bottom line
+        $pdf->Cell(0, 0, '', 'T', 1, 'L', true);
+
+        // Average Summary
+        if ($count > 0) {
+            $avg = number_format($total_seconds / $count, 2);
+            $pdf->Ln(5);
+            $pdf->SetFont('courier', 'B', 10);
+            $pdf->SetFillColor(220, 220, 220);
+            $pdf->Cell(0, 8, ">>> AVERAGE PAYMENT TIME: {$avg}s <<<", 1, 1, 'C', true);
+        }
+
+        return $pdf->Output('Payment_Logs.pdf', $output);
+    }
 }
 ?>
