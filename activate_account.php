@@ -19,6 +19,16 @@
                 <p class="text-slate-400 text-sm">Ingresa tu documento para comenzar</p>
             </div>
 
+            <!-- Role Notification -->
+            <div class="mb-6 p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-xl flex items-start gap-3">
+                <div class="p-1.5 bg-indigo-500/20 rounded-lg text-indigo-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <p class="text-[11px] text-slate-300 leading-relaxed">
+                    <span class="text-indigo-400 font-semibold">Nota:</span> Se enviará un enlace de acceso al correo electrónico que proporcionó durante la solicitud de instalación de su servicio.
+                </p>
+            </div>
+
             <!-- Step 1: DNI Input -->
             <form id="checkForm" class="space-y-6">
                 <div>

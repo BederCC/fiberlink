@@ -283,7 +283,7 @@
                 <div class="h-px flex-1 bg-slate-800"></div>
             </div>
             <p class="text-[10px] text-slate-500 italic">Módulo externo: Interfaz diseñada para que el cliente gestione su propio servicio.</p>
-            <a href="../client_login.php" class="mt-2 text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 group">
+            <a href="../client_login.php" target="_blank" rel="noopener noreferrer" class="mt-2 text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 group">
                 Acceder al Portal del Cliente
                 <svg class="w-3 h-3 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
             </a>
