@@ -1,4 +1,10 @@
 <?php require_once '../includes/header.php'; ?>
+<script>
+    const userData = JSON.parse(localStorage.getItem('user'));
+    if (userData && userData.role === 'technician') {
+        window.location.href = 'technician/dashboard.php';
+    }
+</script>
 <?php require_once '../includes/navbar.php'; ?>
 <?php require_once '../includes/sidebar.php'; ?>
 

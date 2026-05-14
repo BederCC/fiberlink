@@ -63,7 +63,6 @@
                         <select id="role" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5">
                             <option value="admin">Administrador</option>
                             <option value="technician">Técnico</option>
-                            <option value="sales">Ventas</option>
                         </select>
                     </div>
                     <div>

@@ -24,7 +24,7 @@
                 }
                 ?>
                 
-                <!-- Dashboard Link -->
+                <!-- Common Dashboard Link -->
                 <li>
                     <a href="<?php echo $is_technician_dir ? 'dashboard.php' : 'dashboard.php'; ?>" class="<?php echo getLinkClass('dashboard.php', $current_page); ?>">
                         <svg class="<?php echo getIconClass('dashboard.php', $current_page); ?>" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
@@ -35,9 +35,7 @@
                     </a>
                 </li>
 
-                <!-- Admin/Staff Links (Hidden for Technicians via JS/PHP logic if needed, but for now showing all or filtering) -->
-                <!-- We will use a class 'admin-only' to hide these via JS for technicians -->
-                
+                <!-- Admin Specific Links -->
                 <li class="admin-only">
                     <a href="<?php echo $base_path; ?>services.php" class="<?php echo getLinkClass('services.php', $current_page); ?>">
                         <svg class="<?php echo getIconClass('services.php', $current_page); ?>" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -48,25 +46,6 @@
                         <span class="flex-1 ms-3 whitespace-nowrap">Instalaciones (Admin)</span>
                     </a>
                 </li>
-
-                <!-- Technician Specific Link -->
-                <li class="technician-only hidden">
-                    <a href="<?php echo $is_technician_dir ? 'installation_simulator.php' : 'technician/installation_simulator.php'; ?>" class="<?php echo getLinkClass('installation_simulator.php', $current_page); ?>">
-                        <svg class="<?php echo getIconClass('installation_simulator.php', $current_page); ?>" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0c0 .884-.56 1.6-1.357 1.894M14 6a2.003 2.003 0 011.357 1.894M10 16v-1m4 1v-1m-4-3v-1m4 1v-1" />
-                        </svg>
-                        <span class="flex-1 ms-3 whitespace-nowrap">Simulador Campo</span>
-                    </a>
-                </li>
-                <li class="technician-only hidden">
-                    <a href="<?php echo $is_technician_dir ? 'installations_history.php' : 'technician/installations_history.php'; ?>" class="<?php echo getLinkClass('installations_history.php', $current_page); ?>">
-                        <svg class="<?php echo getIconClass('installations_history.php', $current_page); ?>" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                        </svg>
-                        <span class="flex-1 ms-3 whitespace-nowrap">Historial</span>
-                    </a>
-                </li>
-
                 <li class="admin-only">
                     <a href="<?php echo $base_path; ?>billing.php" class="<?php echo getLinkClass('billing.php', $current_page); ?>">
                         <svg class="<?php echo getIconClass('billing.php', $current_page); ?>" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -116,11 +95,37 @@
                     </a>
                 </li>
                 <li class="admin-only">
+                    <a href="<?php echo $base_path; ?>documentation.php" class="<?php echo getLinkClass('documentation.php', $current_page); ?>">
+                        <svg class="<?php echo getIconClass('documentation.php', $current_page); ?>" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18 18.247 18.477 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        <span class="flex-1 ms-3 whitespace-nowrap">Documentación</span>
+                    </a>
+                </li>
+                <li class="admin-only">
                     <a href="<?php echo $base_path; ?>users.php" class="<?php echo getLinkClass('users.php', $current_page); ?>">
                         <svg class="<?php echo getIconClass('users.php', $current_page); ?>" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1-3 3 3.004 3.004 0 0 1 3-3Zm5.793 12.574C15.666 15.854 13.97 15 10 15s-5.666.854-5.793 2.574A8.013 8.013 0 0 1 2 10a8 8 0 1 1 16 0 8.013 8.013 0 0 1-2.207 7.574Z"/>
                         </svg>
                         <span class="flex-1 ms-3 whitespace-nowrap">Usuarios</span>
+                    </a>
+                </li>
+
+                <!-- Technician Specific Links -->
+                <li class="technician-only hidden">
+                    <a href="<?php echo $is_technician_dir ? 'installations.php' : 'technician/installations.php'; ?>" class="<?php echo getLinkClass('installations.php', $current_page); ?>">
+                        <svg class="<?php echo getIconClass('installations.php', $current_page); ?>" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <span class="flex-1 ms-3 whitespace-nowrap">Instalaciones (Técnico)</span>
+                    </a>
+                </li>
+                <li class="technician-only hidden">
+                    <a href="<?php echo $is_technician_dir ? 'installations_history.php' : 'technician/installations_history.php'; ?>" class="<?php echo getLinkClass('installations_history.php', $current_page); ?>">
+                        <svg class="<?php echo getIconClass('installations_history.php', $current_page); ?>" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                        </svg>
+                        <span class="flex-1 ms-3 whitespace-nowrap">Historial Técnico</span>
                     </a>
                 </li>
             </ul>
@@ -129,11 +134,14 @@
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 const user = JSON.parse(localStorage.getItem('user'));
-                if (user && user.role === 'technician') {
-                    // Hide admin links
-                    document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
-                    // Show technician links
-                    document.querySelectorAll('.technician-only').forEach(el => el.classList.remove('hidden'));
+                if (user) {
+                    if (user.role === 'technician') {
+                        document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+                        document.querySelectorAll('.technician-only').forEach(el => el.classList.remove('hidden'));
+                    } else if (user.role === 'admin') {
+                        document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+                        document.querySelectorAll('.technician-only').forEach(el => el.classList.add('hidden'));
+                    }
                 }
             });
         </script>

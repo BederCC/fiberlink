@@ -1,0 +1,902 @@
+[
+    {
+        "id": 1,
+        "client_name": "FERDINAN CRUZ ESCUDERO",
+        "dni": "48652102",
+        "invoice_id": 2072,
+        "search_timestamp": "2026-01-26 09:08:15",
+        "payment_timestamp": "2026-01-26 09:09:47",
+        "duration_seconds": 92
+    },
+    {
+        "id": 2,
+        "client_name": "ADELAIDA CURO QUISPE",
+        "dni": "46637998",
+        "invoice_id": 3295,
+        "search_timestamp": "2026-01-04 21:56:37",
+        "payment_timestamp": "2026-01-04 21:58:13",
+        "duration_seconds": 96
+    },
+    {
+        "id": 3,
+        "client_name": "BETZABE KARINA SULLCA QUISPE",
+        "dni": "41456192",
+        "invoice_id": 1823,
+        "search_timestamp": "2026-01-24 13:10:23",
+        "payment_timestamp": "2026-01-24 13:11:55",
+        "duration_seconds": 92
+    },
+    {
+        "id": 4,
+        "client_name": "ISMAEL QUISPE SAPANA",
+        "dni": "42025451",
+        "invoice_id": 9384,
+        "search_timestamp": "2026-01-08 21:28:20",
+        "payment_timestamp": "2026-01-08 21:29:21",
+        "duration_seconds": 61
+    },
+    {
+        "id": 5,
+        "client_name": "HECTOR CCARHUASLLA USUCACHI",
+        "dni": "41494036",
+        "invoice_id": 6335,
+        "search_timestamp": "2026-01-22 15:49:57",
+        "payment_timestamp": "2026-01-22 15:51:05",
+        "duration_seconds": 68
+    },
+    {
+        "id": 6,
+        "client_name": "LUIS ABAD CCANA SULLCA",
+        "dni": "24695753",
+        "invoice_id": 6919,
+        "search_timestamp": "2026-01-29 21:40:48",
+        "payment_timestamp": "2026-01-29 21:42:00",
+        "duration_seconds": 72
+    },
+    {
+        "id": 7,
+        "client_name": "JUANA EDUVIJES PAZ PUMA",
+        "dni": "43252203",
+        "invoice_id": 1635,
+        "search_timestamp": "2026-01-15 18:43:39",
+        "payment_timestamp": "2026-01-15 18:45:04",
+        "duration_seconds": 85
+    },
+    {
+        "id": 8,
+        "client_name": "BERTHA CCA\u00d1IHUA ZU\u00d1IGA - KS",
+        "dni": "40996957",
+        "invoice_id": 3831,
+        "search_timestamp": "2026-01-18 18:09:43",
+        "payment_timestamp": "2026-01-18 18:11:10",
+        "duration_seconds": 87
+    },
+    {
+        "id": 9,
+        "client_name": "LUCHO CHAMPI DUE\u00d1AS",
+        "dni": "24977884",
+        "invoice_id": 5904,
+        "search_timestamp": "2026-01-08 15:01:53",
+        "payment_timestamp": "2026-01-08 15:03:22",
+        "duration_seconds": 89
+    },
+    {
+        "id": 10,
+        "client_name": "JAVIER AUCCAPUMA LLOCLLA - PUNTO 01",
+        "dni": "45268683",
+        "invoice_id": 5268,
+        "search_timestamp": "2026-01-12 18:15:20",
+        "payment_timestamp": "2026-01-12 18:18:51",
+        "duration_seconds": 211
+    },
+    {
+        "id": 11,
+        "client_name": "LALO ENRIQUE VARGAS GAMARRA",
+        "dni": "75848045",
+        "invoice_id": 9960,
+        "search_timestamp": "2026-01-23 20:44:14",
+        "payment_timestamp": "2026-01-23 20:45:01",
+        "duration_seconds": 47
+    },
+    {
+        "id": 12,
+        "client_name": "ROSSY LUZ HUARAYO ORTOGORIN",
+        "dni": "75206158",
+        "invoice_id": 5398,
+        "search_timestamp": "2026-01-23 18:41:42",
+        "payment_timestamp": "2026-01-23 18:42:47",
+        "duration_seconds": 65
+    },
+    {
+        "id": 13,
+        "client_name": "YULI KATERYNE APAZA CAVIEDES",
+        "dni": "72800240",
+        "invoice_id": 6322,
+        "search_timestamp": "2026-01-07 11:26:05",
+        "payment_timestamp": "2026-01-07 11:29:11",
+        "duration_seconds": 186
+    },
+    {
+        "id": 14,
+        "client_name": "C.M. SEASO S.R.L.",
+        "dni": "20490611968",
+        "invoice_id": 5824,
+        "search_timestamp": "2026-01-17 09:44:30",
+        "payment_timestamp": "2026-01-17 09:45:38",
+        "duration_seconds": 68
+    },
+    {
+        "id": 15,
+        "client_name": "NILDA HUAMANI JUSKCA",
+        "dni": "75730368",
+        "invoice_id": 1105,
+        "search_timestamp": "2026-01-30 18:18:45",
+        "payment_timestamp": "2026-01-30 18:21:43",
+        "duration_seconds": 178
+    },
+    {
+        "id": 16,
+        "client_name": "GRACIELA BANDORA VILLENA",
+        "dni": "77294928",
+        "invoice_id": 5037,
+        "search_timestamp": "2026-01-26 08:26:05",
+        "payment_timestamp": "2026-01-26 08:27:48",
+        "duration_seconds": 103
+    },
+    {
+        "id": 17,
+        "client_name": "EDY HERMOZA HUAMANI",
+        "dni": "76239217",
+        "invoice_id": 9633,
+        "search_timestamp": "2026-01-22 16:12:50",
+        "payment_timestamp": "2026-01-22 16:14:12",
+        "duration_seconds": 82
+    },
+    {
+        "id": 18,
+        "client_name": "JUAN DE DIOS YUCRA SALOMA",
+        "dni": "45376256",
+        "invoice_id": 6644,
+        "search_timestamp": "2026-01-18 11:31:04",
+        "payment_timestamp": "2026-01-18 11:32:27",
+        "duration_seconds": 83
+    },
+    {
+        "id": 19,
+        "client_name": "MARIO RAMOS VI\u00d1ALVA",
+        "dni": "24998630",
+        "invoice_id": 6701,
+        "search_timestamp": "2026-01-28 10:18:49",
+        "payment_timestamp": "2026-01-28 10:19:52",
+        "duration_seconds": 63
+    },
+    {
+        "id": 20,
+        "client_name": "EVANGELINA TTITO CUSIMAYTA DE ROCCA",
+        "dni": "23958619",
+        "invoice_id": 5551,
+        "search_timestamp": "2026-01-09 14:28:17",
+        "payment_timestamp": "2026-01-09 14:29:57",
+        "duration_seconds": 100
+    },
+    {
+        "id": 21,
+        "client_name": "LENNIN WASHINGTON MONTA\u00d1EZ MOLERO",
+        "dni": "74159080",
+        "invoice_id": 2370,
+        "search_timestamp": "2026-01-08 22:06:32",
+        "payment_timestamp": "2026-01-08 22:07:55",
+        "duration_seconds": 83
+    },
+    {
+        "id": 22,
+        "client_name": "FACT- LP HOTELES S.A.",
+        "dni": "20606790890",
+        "invoice_id": 6826,
+        "search_timestamp": "2026-01-05 14:28:12",
+        "payment_timestamp": "2026-01-05 14:29:12",
+        "duration_seconds": 60
+    },
+    {
+        "id": 23,
+        "client_name": "SAUL AYALA AGUILAR",
+        "dni": "46877486",
+        "invoice_id": 7721,
+        "search_timestamp": "2026-01-29 12:28:22",
+        "payment_timestamp": "2026-01-29 12:29:34",
+        "duration_seconds": 72
+    },
+    {
+        "id": 24,
+        "client_name": "ELIANA SICUS FERNANDEZ",
+        "dni": "23996429",
+        "invoice_id": 8172,
+        "search_timestamp": "2026-01-16 22:12:36",
+        "payment_timestamp": "2026-01-16 22:14:01",
+        "duration_seconds": 85
+    },
+    {
+        "id": 25,
+        "client_name": "FACT - MULTISERVICIOS J.R. NEUMATICVILLACAR S.R.L. - PUNTO 2",
+        "dni": "20603931301",
+        "invoice_id": 4853,
+        "search_timestamp": "2026-01-31 09:56:44",
+        "payment_timestamp": "2026-01-31 09:57:55",
+        "duration_seconds": 71
+    },
+    {
+        "id": 26,
+        "client_name": "YUDIDF ESTEFANI UGARTE NINA",
+        "dni": "73811355",
+        "invoice_id": 8576,
+        "search_timestamp": "2026-01-12 12:03:22",
+        "payment_timestamp": "2026-01-12 12:04:29",
+        "duration_seconds": 67
+    },
+    {
+        "id": 27,
+        "client_name": "MARUJA YEPEZ PANTOJA DE MONTA\u00d1EZ",
+        "dni": "23916423",
+        "invoice_id": 3563,
+        "search_timestamp": "2026-01-04 10:55:57",
+        "payment_timestamp": "2026-01-04 10:57:31",
+        "duration_seconds": 94
+    },
+    {
+        "id": 28,
+        "client_name": "CAP. MORONI E.I.R.L.",
+        "dni": "20600504313",
+        "invoice_id": 1229,
+        "search_timestamp": "2026-01-26 16:22:56",
+        "payment_timestamp": "2026-01-26 16:24:07",
+        "duration_seconds": 71
+    },
+    {
+        "id": 29,
+        "client_name": "GUSTAVO PALACIO CONCHA",
+        "dni": "42323534",
+        "invoice_id": 7295,
+        "search_timestamp": "2026-01-30 21:16:46",
+        "payment_timestamp": "2026-01-30 21:17:49",
+        "duration_seconds": 63
+    },
+    {
+        "id": 30,
+        "client_name": "B\/V - JAMIL DANILO SALDIVAR SECCA",
+        "dni": "45398136",
+        "invoice_id": 6885,
+        "search_timestamp": "2026-01-06 12:29:57",
+        "payment_timestamp": "2026-01-06 12:31:27",
+        "duration_seconds": 90
+    },
+    {
+        "id": 31,
+        "client_name": "JOSEFA CASTRO CONDORI",
+        "dni": "45425282",
+        "invoice_id": 7692,
+        "search_timestamp": "2026-01-23 11:23:14",
+        "payment_timestamp": "2026-01-23 11:24:47",
+        "duration_seconds": 93
+    },
+    {
+        "id": 32,
+        "client_name": "AURORA ACERO SUAREZ",
+        "dni": "46775679",
+        "invoice_id": 4020,
+        "search_timestamp": "2026-01-06 09:34:40",
+        "payment_timestamp": "2026-01-06 09:36:17",
+        "duration_seconds": 97
+    },
+    {
+        "id": 33,
+        "client_name": "RUTH MARISOL SALDIVAR SECCA",
+        "dni": "40363794",
+        "invoice_id": 5627,
+        "search_timestamp": "2026-01-23 09:51:09",
+        "payment_timestamp": "2026-01-23 09:51:56",
+        "duration_seconds": 47
+    },
+    {
+        "id": 34,
+        "client_name": "INGRID JOSELYN IBA\u00d1EZ RAMIREZ",
+        "dni": "47096474",
+        "invoice_id": 6186,
+        "search_timestamp": "2026-01-12 15:14:22",
+        "payment_timestamp": "2026-01-12 15:17:03",
+        "duration_seconds": 161
+    },
+    {
+        "id": 35,
+        "client_name": "MARCELINO CURO CONDORI",
+        "dni": "24717593",
+        "invoice_id": 8565,
+        "search_timestamp": "2026-01-05 10:25:05",
+        "payment_timestamp": "2026-01-05 10:27:40",
+        "duration_seconds": 155
+    },
+    {
+        "id": 36,
+        "client_name": "EDHIT VILLALOBOS JAQUEHUA",
+        "dni": "41268582",
+        "invoice_id": 7787,
+        "search_timestamp": "2026-01-06 20:28:09",
+        "payment_timestamp": "2026-01-06 20:29:54",
+        "duration_seconds": 105
+    },
+    {
+        "id": 37,
+        "client_name": "MARIA PURIFICACION ROCCA ROQUE",
+        "dni": "41416860",
+        "invoice_id": 8150,
+        "search_timestamp": "2026-01-02 11:23:11",
+        "payment_timestamp": "2026-01-02 11:24:55",
+        "duration_seconds": 104
+    },
+    {
+        "id": 38,
+        "client_name": "B\/V - MOISES RAUL MAMANI ARIAS",
+        "dni": "75795120",
+        "invoice_id": 5269,
+        "search_timestamp": "2026-01-17 20:35:38",
+        "payment_timestamp": "2026-01-17 20:36:53",
+        "duration_seconds": 75
+    },
+    {
+        "id": 39,
+        "client_name": "DEYVID HUAMANI CHAMPA",
+        "dni": "76295898",
+        "invoice_id": 8082,
+        "search_timestamp": "2026-01-15 11:29:23",
+        "payment_timestamp": "2026-01-15 11:30:24",
+        "duration_seconds": 61
+    },
+    {
+        "id": 40,
+        "client_name": "AMERICO SUMIRE NINA",
+        "dni": "45272088",
+        "invoice_id": 7372,
+        "search_timestamp": "2026-01-11 08:52:51",
+        "payment_timestamp": "2026-01-11 08:54:15",
+        "duration_seconds": 84
+    },
+    {
+        "id": 41,
+        "client_name": "GARY ELIAS CHAHUAYO GUEVARA",
+        "dni": "70399506",
+        "invoice_id": 5969,
+        "search_timestamp": "2026-01-24 21:22:57",
+        "payment_timestamp": "2026-01-24 21:24:43",
+        "duration_seconds": 106
+    },
+    {
+        "id": 42,
+        "client_name": "GREGORIA ROCCA CONDORI",
+        "dni": "25216560",
+        "invoice_id": 3462,
+        "search_timestamp": "2026-01-07 21:51:47",
+        "payment_timestamp": "2026-01-07 21:52:30",
+        "duration_seconds": 43
+    },
+    {
+        "id": 43,
+        "client_name": "DIONICIA PAUCAR VARGAS",
+        "dni": "44681358",
+        "invoice_id": 4826,
+        "search_timestamp": "2026-01-02 22:10:01",
+        "payment_timestamp": "2026-01-02 22:11:14",
+        "duration_seconds": 73
+    },
+    {
+        "id": 44,
+        "client_name": "FACT- TICOM PER\u00da E.I.R.L.",
+        "dni": "20611368659",
+        "invoice_id": 8950,
+        "search_timestamp": "2026-01-08 17:46:51",
+        "payment_timestamp": "2026-01-08 17:49:02",
+        "duration_seconds": 131
+    },
+    {
+        "id": 45,
+        "client_name": "LENNIN WASHINGTON MONTA\u00d1EZ MOLERO",
+        "dni": "74159080",
+        "invoice_id": 8568,
+        "search_timestamp": "2026-01-06 16:00:36",
+        "payment_timestamp": "2026-01-06 16:03:10",
+        "duration_seconds": 154
+    },
+    {
+        "id": 46,
+        "client_name": "TANIA TINCO CCORIHUAMAN",
+        "dni": "40808074",
+        "invoice_id": 8033,
+        "search_timestamp": "2026-01-04 10:01:20",
+        "payment_timestamp": "2026-01-04 10:03:32",
+        "duration_seconds": 132
+    },
+    {
+        "id": 47,
+        "client_name": "CENTRO DE SALUD  INDEPENDENCIA - GRATIS",
+        "dni": "000000",
+        "invoice_id": 9247,
+        "search_timestamp": "2026-01-26 18:35:33",
+        "payment_timestamp": "2026-01-26 18:37:37",
+        "duration_seconds": 124
+    },
+    {
+        "id": 48,
+        "client_name": "VICENTE HUAMANI PORTILLA",
+        "dni": "10739946595",
+        "invoice_id": 8165,
+        "search_timestamp": "2026-01-22 16:48:01",
+        "payment_timestamp": "2026-01-22 16:49:20",
+        "duration_seconds": 79
+    },
+    {
+        "id": 49,
+        "client_name": "RUBEN ANTONIO MOLERO QUISPE",
+        "dni": "42678474",
+        "invoice_id": 9471,
+        "search_timestamp": "2026-01-21 11:11:09",
+        "payment_timestamp": "2026-01-21 11:12:57",
+        "duration_seconds": 108
+    },
+    {
+        "id": 50,
+        "client_name": "NICANOR VILLA CCONOHUILLCA",
+        "dni": "23866772",
+        "invoice_id": 7828,
+        "search_timestamp": "2026-01-03 12:15:40",
+        "payment_timestamp": "2026-01-03 12:17:23",
+        "duration_seconds": 103
+    },
+    {
+        "id": 51,
+        "client_name": "ROMEL ANTHONY SANI FERRO",
+        "dni": "70210697",
+        "invoice_id": 1057,
+        "search_timestamp": "2026-01-12 15:57:11",
+        "payment_timestamp": "2026-01-12 15:59:01",
+        "duration_seconds": 110
+    },
+    {
+        "id": 52,
+        "client_name": "ELIZABETH FLORES BACILIO",
+        "dni": "72226916",
+        "invoice_id": 2036,
+        "search_timestamp": "2026-01-21 12:41:40",
+        "payment_timestamp": "2026-01-21 12:43:09",
+        "duration_seconds": 89
+    },
+    {
+        "id": 53,
+        "client_name": "BRAND COMPANY S.A.C.",
+        "dni": "20605556851",
+        "invoice_id": 1062,
+        "search_timestamp": "2026-01-11 12:32:10",
+        "payment_timestamp": "2026-01-11 12:33:49",
+        "duration_seconds": 99
+    },
+    {
+        "id": 54,
+        "client_name": "GABY PATRICIA TITO VILLENA",
+        "dni": "43837397",
+        "invoice_id": 4832,
+        "search_timestamp": "2026-01-08 16:28:12",
+        "payment_timestamp": "2026-01-08 16:29:53",
+        "duration_seconds": 101
+    },
+    {
+        "id": 55,
+        "client_name": "ISMAEL RAMOS QUISPE",
+        "dni": "46805039",
+        "invoice_id": 9193,
+        "search_timestamp": "2026-01-29 14:17:32",
+        "payment_timestamp": "2026-01-29 14:18:59",
+        "duration_seconds": 87
+    },
+    {
+        "id": 56,
+        "client_name": "PILAR LOPEZ CORNEJO",
+        "dni": "24006061",
+        "invoice_id": 7719,
+        "search_timestamp": "2026-01-04 20:25:44",
+        "payment_timestamp": "2026-01-04 20:27:32",
+        "duration_seconds": 108
+    },
+    {
+        "id": 57,
+        "client_name": "PERCY HUAMANI ORCCOTOMA",
+        "dni": "42699497",
+        "invoice_id": 4679,
+        "search_timestamp": "2026-01-17 17:07:44",
+        "payment_timestamp": "2026-01-17 17:09:33",
+        "duration_seconds": 109
+    },
+    {
+        "id": 58,
+        "client_name": "GICELA LLANCAY DUE\u00d1AS",
+        "dni": "80039798",
+        "invoice_id": 8342,
+        "search_timestamp": "2026-01-15 11:01:13",
+        "payment_timestamp": "2026-01-15 11:02:15",
+        "duration_seconds": 62
+    },
+    {
+        "id": 59,
+        "client_name": "B\/V - MIGUEL ANGEL HUAMANTTICA BACA - OFICINA",
+        "dni": "48783806",
+        "invoice_id": 9781,
+        "search_timestamp": "2026-01-03 19:42:05",
+        "payment_timestamp": "2026-01-03 19:43:05",
+        "duration_seconds": 60
+    },
+    {
+        "id": 60,
+        "client_name": "HEBER VALER MISME",
+        "dni": "24006438",
+        "invoice_id": 3664,
+        "search_timestamp": "2026-01-12 11:23:22",
+        "payment_timestamp": "2026-01-12 11:24:23",
+        "duration_seconds": 61
+    },
+    {
+        "id": 61,
+        "client_name": "RIVALDO ROJO HUALLPA",
+        "dni": "74804477",
+        "invoice_id": 2781,
+        "search_timestamp": "2026-01-16 14:53:15",
+        "payment_timestamp": "2026-01-16 14:54:21",
+        "duration_seconds": 66
+    },
+    {
+        "id": 62,
+        "client_name": "JOSE MANUEL BUENDIA LEON",
+        "dni": "74095590",
+        "invoice_id": 1582,
+        "search_timestamp": "2026-01-16 10:05:08",
+        "payment_timestamp": "2026-01-16 10:05:58",
+        "duration_seconds": 50
+    },
+    {
+        "id": 63,
+        "client_name": "C.M. PACHACUTEQ - FACT.",
+        "dni": "20602438792",
+        "invoice_id": 9438,
+        "search_timestamp": "2026-01-28 11:00:30",
+        "payment_timestamp": "2026-01-28 11:01:32",
+        "duration_seconds": 62
+    },
+    {
+        "id": 64,
+        "client_name": "WILMER TORRES NU\u00d1EZ",
+        "dni": "44902660",
+        "invoice_id": 4629,
+        "search_timestamp": "2026-01-30 12:08:55",
+        "payment_timestamp": "2026-01-30 12:10:11",
+        "duration_seconds": 76
+    },
+    {
+        "id": 65,
+        "client_name": "CRISTIAN CAHUA QUISPE",
+        "dni": "44783979",
+        "invoice_id": 7923,
+        "search_timestamp": "2026-01-13 09:15:11",
+        "payment_timestamp": "2026-01-13 09:16:36",
+        "duration_seconds": 85
+    },
+    {
+        "id": 66,
+        "client_name": "MARIO QUISPE QUILLAHUAMAN",
+        "dni": "42700365",
+        "invoice_id": 9600,
+        "search_timestamp": "2026-01-06 15:01:25",
+        "payment_timestamp": "2026-01-06 15:02:07",
+        "duration_seconds": 42
+    },
+    {
+        "id": 67,
+        "client_name": "MARIA GUTIERREZ AUCCAPUMA",
+        "dni": "42318278",
+        "invoice_id": 1486,
+        "search_timestamp": "2026-01-21 12:41:23",
+        "payment_timestamp": "2026-01-21 12:42:53",
+        "duration_seconds": 90
+    },
+    {
+        "id": 68,
+        "client_name": "RODRIGO SAICO PAPEL",
+        "dni": "70809643",
+        "invoice_id": 5855,
+        "search_timestamp": "2026-01-15 15:41:15",
+        "payment_timestamp": "2026-01-15 15:43:00",
+        "duration_seconds": 105
+    },
+    {
+        "id": 69,
+        "client_name": "MIGUEL ANGEL GARCIA HUAMAN",
+        "dni": "71847243",
+        "invoice_id": 5354,
+        "search_timestamp": "2026-01-28 22:28:42",
+        "payment_timestamp": "2026-01-28 22:29:52",
+        "duration_seconds": 70
+    },
+    {
+        "id": 70,
+        "client_name": "NORBERTO ZU\u00d1IGA SAIRE - CABINA",
+        "dni": "23996233",
+        "invoice_id": 6980,
+        "search_timestamp": "2026-01-22 16:00:51",
+        "payment_timestamp": "2026-01-22 16:02:15",
+        "duration_seconds": 84
+    },
+    {
+        "id": 71,
+        "client_name": "AMERICO ESCOBAR LEON",
+        "dni": "44510744",
+        "invoice_id": 1659,
+        "search_timestamp": "2026-01-03 15:13:31",
+        "payment_timestamp": "2026-01-03 15:15:14",
+        "duration_seconds": 103
+    },
+    {
+        "id": 72,
+        "client_name": "JANET PEREZ GARCIA",
+        "dni": "10085469",
+        "invoice_id": 6749,
+        "search_timestamp": "2026-01-23 16:52:52",
+        "payment_timestamp": "2026-01-23 16:54:12",
+        "duration_seconds": 80
+    },
+    {
+        "id": 73,
+        "client_name": "MARIA TERESA QUISPE QUISPE",
+        "dni": "23948682",
+        "invoice_id": 4040,
+        "search_timestamp": "2026-01-06 15:21:37",
+        "payment_timestamp": "2026-01-06 15:24:51",
+        "duration_seconds": 194
+    },
+    {
+        "id": 74,
+        "client_name": "JORGE CCANAHUIRE FUENTES",
+        "dni": "42329814",
+        "invoice_id": 9823,
+        "search_timestamp": "2026-01-11 11:35:23",
+        "payment_timestamp": "2026-01-11 11:37:39",
+        "duration_seconds": 136
+    },
+    {
+        "id": 75,
+        "client_name": "JOEL RICARDO LENES TUCO",
+        "dni": "73312927",
+        "invoice_id": 6672,
+        "search_timestamp": "2026-01-31 22:27:11",
+        "payment_timestamp": "2026-01-31 22:28:37",
+        "duration_seconds": 86
+    },
+    {
+        "id": 76,
+        "client_name": "ROMEL LEONEL CHALCO CRUZ",
+        "dni": "60844316",
+        "invoice_id": 2727,
+        "search_timestamp": "2026-01-17 08:37:43",
+        "payment_timestamp": "2026-01-17 08:39:23",
+        "duration_seconds": 100
+    },
+    {
+        "id": 77,
+        "client_name": "MARISOL SANCHEZ AGUILAR",
+        "dni": "44783956",
+        "invoice_id": 9317,
+        "search_timestamp": "2026-01-19 18:34:27",
+        "payment_timestamp": "2026-01-19 18:35:48",
+        "duration_seconds": 81
+    },
+    {
+        "id": 78,
+        "client_name": "JOEL HUILLCA LIMA",
+        "dni": "73637585",
+        "invoice_id": 3981,
+        "search_timestamp": "2026-01-10 08:28:40",
+        "payment_timestamp": "2026-01-10 08:30:01",
+        "duration_seconds": 81
+    },
+    {
+        "id": 79,
+        "client_name": "GILBERTO ESTRADA VERGARA",
+        "dni": "23855487",
+        "invoice_id": 5138,
+        "search_timestamp": "2026-01-02 15:57:04",
+        "payment_timestamp": "2026-01-02 15:58:29",
+        "duration_seconds": 85
+    },
+    {
+        "id": 80,
+        "client_name": "OFICINA PUKIN - FIBERLINK GRATIS",
+        "dni": "20602045758",
+        "invoice_id": 6393,
+        "search_timestamp": "2026-01-31 13:03:45",
+        "payment_timestamp": "2026-01-31 13:05:17",
+        "duration_seconds": 92
+    },
+    {
+        "id": 81,
+        "client_name": "MARTA LLAJA CASTILLO",
+        "dni": "23852710",
+        "invoice_id": 3278,
+        "search_timestamp": "2026-01-02 12:35:04",
+        "payment_timestamp": "2026-01-02 12:36:14",
+        "duration_seconds": 70
+    },
+    {
+        "id": 82,
+        "client_name": "JEAN FERNANDO CHIPANA CCARHUASLLA",
+        "dni": "77330814",
+        "invoice_id": 7473,
+        "search_timestamp": "2026-01-31 11:35:09",
+        "payment_timestamp": "2026-01-31 11:38:00",
+        "duration_seconds": 171
+    },
+    {
+        "id": 83,
+        "client_name": "RAUL QUISPE PILLCO",
+        "dni": "74764129",
+        "invoice_id": 8682,
+        "search_timestamp": "2026-01-02 16:12:03",
+        "payment_timestamp": "2026-01-02 16:12:41",
+        "duration_seconds": 38
+    },
+    {
+        "id": 84,
+        "client_name": "RONALDO BECKHAN ZUNIGA ROMERO",
+        "dni": "75796854",
+        "invoice_id": 3658,
+        "search_timestamp": "2026-01-27 14:24:16",
+        "payment_timestamp": "2026-01-27 14:25:55",
+        "duration_seconds": 99
+    },
+    {
+        "id": 85,
+        "client_name": "PERCY HUAMAN BORDA",
+        "dni": "41811823",
+        "invoice_id": 3999,
+        "search_timestamp": "2026-01-23 13:34:07",
+        "payment_timestamp": "2026-01-23 13:36:21",
+        "duration_seconds": 134
+    },
+    {
+        "id": 86,
+        "client_name": "DARIO ALBERTO CJUIRO NINAN",
+        "dni": "42563073",
+        "invoice_id": 1432,
+        "search_timestamp": "2026-01-13 22:14:12",
+        "payment_timestamp": "2026-01-13 22:17:31",
+        "duration_seconds": 199
+    },
+    {
+        "id": 87,
+        "client_name": "NORMA VARGAS GUILLEN",
+        "dni": "23847474",
+        "invoice_id": 2166,
+        "search_timestamp": "2026-01-22 21:09:12",
+        "payment_timestamp": "2026-01-22 21:10:49",
+        "duration_seconds": 97
+    },
+    {
+        "id": 88,
+        "client_name": "SHIRLEY YAMILETH CAMAQUI FLORES",
+        "dni": "73908673",
+        "invoice_id": 1985,
+        "search_timestamp": "2026-01-14 20:35:04",
+        "payment_timestamp": "2026-01-14 20:36:15",
+        "duration_seconds": 71
+    },
+    {
+        "id": 89,
+        "client_name": "FABIOLA LLASAC HUACACHI  RETIRADO",
+        "dni": "75001942",
+        "invoice_id": 6114,
+        "search_timestamp": "2026-01-28 11:36:37",
+        "payment_timestamp": "2026-01-28 11:38:06",
+        "duration_seconds": 89
+    },
+    {
+        "id": 90,
+        "client_name": "B\/V - HERMELINDA LERMA PACOMPIA",
+        "dni": "40865909",
+        "invoice_id": 7029,
+        "search_timestamp": "2026-01-04 09:11:30",
+        "payment_timestamp": "2026-01-04 09:12:48",
+        "duration_seconds": 78
+    },
+    {
+        "id": 91,
+        "client_name": "JULIA CCAHUANA HUAMAN",
+        "dni": "23959268",
+        "invoice_id": 9702,
+        "search_timestamp": "2026-01-05 11:58:27",
+        "payment_timestamp": "2026-01-05 12:00:15",
+        "duration_seconds": 108
+    },
+    {
+        "id": 92,
+        "client_name": "AMERICO SUMIRE NINA",
+        "dni": "45272088",
+        "invoice_id": 2860,
+        "search_timestamp": "2026-01-11 13:49:53",
+        "payment_timestamp": "2026-01-11 13:53:10",
+        "duration_seconds": 197
+    },
+    {
+        "id": 93,
+        "client_name": "LUZ ISABEL QUISPE AGUIRRE",
+        "dni": "76239199",
+        "invoice_id": 1249,
+        "search_timestamp": "2026-01-28 16:30:15",
+        "payment_timestamp": "2026-01-28 16:30:54",
+        "duration_seconds": 39
+    },
+    {
+        "id": 94,
+        "client_name": "VALENTIN DAVILA QUISPE",
+        "dni": "40813259",
+        "invoice_id": 6028,
+        "search_timestamp": "2026-01-11 11:14:05",
+        "payment_timestamp": "2026-01-11 11:15:16",
+        "duration_seconds": 71
+    },
+    {
+        "id": 95,
+        "client_name": "RUTH JACKELINE SINCHI CUSI",
+        "dni": "48337450",
+        "invoice_id": 9514,
+        "search_timestamp": "2026-01-21 21:21:07",
+        "payment_timestamp": "2026-01-21 21:23:40",
+        "duration_seconds": 153
+    },
+    {
+        "id": 96,
+        "client_name": "NILA VALDERRAMA SANDOVAL",
+        "dni": "44334679",
+        "invoice_id": 1958,
+        "search_timestamp": "2026-01-20 13:19:53",
+        "payment_timestamp": "2026-01-20 13:21:06",
+        "duration_seconds": 73
+    },
+    {
+        "id": 97,
+        "client_name": "CRISTIAN ALEX PERALTA ANAYA",
+        "dni": "72166292",
+        "invoice_id": 8774,
+        "search_timestamp": "2026-01-04 11:27:43",
+        "payment_timestamp": "2026-01-04 11:29:02",
+        "duration_seconds": 79
+    },
+    {
+        "id": 98,
+        "client_name": "YHON GUEVARA NOA",
+        "dni": "48114045",
+        "invoice_id": 4231,
+        "search_timestamp": "2026-01-20 09:34:11",
+        "payment_timestamp": "2026-01-20 09:35:21",
+        "duration_seconds": 70
+    },
+    {
+        "id": 99,
+        "client_name": "CATALINA LLANOS CUBA",
+        "dni": "41709415",
+        "invoice_id": 1822,
+        "search_timestamp": "2026-01-11 19:23:54",
+        "payment_timestamp": "2026-01-11 19:25:08",
+        "duration_seconds": 74
+    },
+    {
+        "id": 100,
+        "client_name": "CIRILO CHAVEZ PUMA",
+        "dni": "80186165",
+        "invoice_id": 7257,
+        "search_timestamp": "2026-01-26 12:11:26",
+        "payment_timestamp": "2026-01-26 12:12:51",
+        "duration_seconds": 85
+    }
+]
