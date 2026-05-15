@@ -3,6 +3,9 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require '../vendor/autoload.php';
+if (!defined('BASE_URL')) {
+    require_once __DIR__ . '/../config.php';
+}
 
 class Mailer {
     private $mail;
@@ -172,7 +175,7 @@ class Mailer {
                     </div>
 
                     <div style='text-align: center; margin-top: 30px;'>
-                        <a href='http://localhost/fiberlink/payment_simulator.php' style='display: inline-block; padding: 12px 24px; background-color: #4f46e5; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px;'>Pagar Ahora</a>
+                        <a href='" . BASE_URL . "/client_login.php' style='display: inline-block; padding: 12px 24px; background-color: #4f46e5; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px;'>Pagar Ahora</a>
                     </div>
                 </div>
 
