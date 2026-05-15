@@ -31,6 +31,10 @@
                 <div class="text-center mb-8">
                     <h1 class="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent mb-2">FiberLink</h1>
                     <p class="text-slate-400 text-sm">Portal Administrativo</p>
+                    <div class="mt-2 space-y-1">
+                        <p class="text-[10px] text-slate-500 italic">User: <span class="text-indigo-400/80">admin</span></p>
+                        <p class="text-[10px] text-slate-500 italic">Pass: <span class="text-indigo-400/80">admin123</span></p>
+                    </div>
                 </div>
 
                 <form id="adminForm" class="space-y-5">
