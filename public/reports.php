@@ -1,4 +1,5 @@
 <?php require_once '../includes/header.php'; ?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <?php require_once '../includes/navbar.php'; ?>
 <?php require_once '../includes/sidebar.php'; ?>
 
@@ -77,6 +78,21 @@
                 </table>
             </div>
         </div>
+
+        <!-- Activity Logs Card -->
+        <div class="bg-slate-800 rounded-xl border border-slate-700 p-4 mt-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-slate-400"></i> Bitácora de Actividades del Portal
+                </h3>
+                <button onclick="loadActivityLogs()" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-xs transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-rotate-right"></i> Actualizar Logs
+                </button>
+            </div>
+            <div class="bg-slate-900 border border-slate-700/80 rounded-lg p-4 font-mono text-xs text-slate-300 max-h-96 overflow-y-auto whitespace-pre-wrap leading-relaxed" id="activityLogsBox">
+                Cargando bitácora...
+            </div>
+        </div>
     </div>
 </div>
 
@@ -84,6 +100,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         loadReportData();
+        loadActivityLogs();
     });
 
     async function loadReportData() {
@@ -179,6 +196,24 @@
                     openDropdown.classList.add('hidden');
                 }
             }
+        }
+    }
+
+    async function loadActivityLogs() {
+        const box = document.getElementById('activityLogsBox');
+        if (!box) return;
+        box.textContent = 'Cargando bitácora...';
+        try {
+            const response = await fetch('../api/get_activity_logs.php');
+            const text = await response.text();
+            box.textContent = text;
+            // Scroll to bottom
+            setTimeout(() => {
+                box.scrollTop = box.scrollHeight;
+            }, 10);
+        } catch (error) {
+            console.error('Error loading activity logs:', error);
+            box.textContent = 'Error al cargar los logs de actividad.';
         }
     }
 </script>
