@@ -1,0 +1,10 @@
+<?php
+return [
+    'smtp_host' => 'TU_SMTP_HOST_AQUI',       // Ejemplo: smtp.hostinger.com o smtp.gmail.com
+    'smtp_port' => 465,                       // Puerto: 465 (SSL) o 587 (TLS)
+    'smtp_user' => 'TU_CORREO_SMTP_AQUI',     // Correo del servidor (ej: contacto@tudominio.com)
+    'smtp_pass' => 'TU_CONTRASENA_SMTP_AQUI', // Contraseña del correo o app password
+    'from_email' => 'TU_CORREO_REMITENTE_AQUI',
+    'from_name' => 'TU_NOMBRE_REMITENTE_AQUI' // Ejemplo: FiberLink Facturación
+];
+?>

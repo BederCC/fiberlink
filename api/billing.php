@@ -230,6 +230,7 @@ switch($method) {
                 }
             }
             
+            writeActivityLog("Generated " . $count . " massive invoices for period: " . $month . "/" . $year);
             http_response_code(201);
             echo json_encode(array("message" => "Proceso completado.", "generated_count" => $count));
             

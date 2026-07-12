@@ -1,4 +1,5 @@
 <?php require_once '../includes/header.php'; ?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <?php require_once '../includes/navbar.php'; ?>
 <?php require_once '../includes/sidebar.php'; ?>
 
@@ -19,34 +20,16 @@
                 </button>
                 
                 <!-- Report Export Buttons -->
-                <a href="../api/export_invoices.php?format=pdf" target="_blank" class="flex-1 sm:flex-none px-4 py-2 bg-rose-600/20 text-rose-400 border border-rose-500/30 hover:bg-rose-600 hover:text-white rounded-lg transition-all flex items-center justify-center gap-2 text-sm font-medium">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <path d="M7 13h1.5a1.5 1.5 0 000-3H7v5"></path>
-                        <path d="M11 10h1a2 2 0 010 4h-1v-4"></path>
-                        <path d="M15 10h2m-2 2h1.5M15 10v5"></path>
-                    </svg>
+                <a href="../api/export_invoices.php?format=pdf" target="_blank" class="flex-1 sm:flex-none px-4 py-2 bg-red-700 hover:bg-red-800 text-white rounded-lg transition-colors flex items-center justify-center gap-2 text-sm font-medium shadow-md">
+                    <i class="fa-solid fa-file-pdf text-base"></i>
                     <span class="whitespace-nowrap">Reporte PDF</span>
                 </a>
-                <a href="../api/export_invoices.php?format=excel" target="_blank" class="flex-1 sm:flex-none px-4 py-2 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600 hover:text-white rounded-lg transition-all flex items-center justify-center gap-2 text-sm font-medium">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <path d="M7 10l3 5m0-5l-3 5"></path>
-                        <path d="M11.5 10v5h2.5"></path>
-                        <path d="M18 10.5h-1.5a1 1 0 000 2h1.5a1 1 0 010 2H16.5"></path>
-                    </svg>
+                <a href="../api/export_invoices.php?format=excel" target="_blank" class="flex-1 sm:flex-none px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg transition-colors flex items-center justify-center gap-2 text-sm font-medium shadow-md">
+                    <i class="fa-solid fa-file-excel text-base"></i>
                     <span class="whitespace-nowrap">Reporte Excel</span>
                 </a>
-                <a href="../api/export_invoices.php?format=csv" target="_blank" class="flex-1 sm:flex-none px-4 py-2 bg-cyan-600/20 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-600 hover:text-white rounded-lg transition-all flex items-center justify-center gap-2 text-sm font-medium">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <path d="M9 10.5h-1.5a1.5 1.5 0 000 3H9"></path>
-                        <path d="M13.5 10.5h-1a1 1 0 000 2h1a1 1 0 010 2h-1"></path>
-                        <path d="M15.5 10l1.5 5 1.5-5"></path>
-                    </svg>
+                <a href="../api/export_invoices.php?format=csv" target="_blank" class="flex-1 sm:flex-none px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2 text-sm font-medium shadow-md">
+                    <i class="fa-solid fa-file-csv text-base"></i>
                     <span class="whitespace-nowrap">Reporte CSV</span>
                 </a>
             </div>
@@ -243,8 +226,8 @@
 </div>
 
 <!-- Reminder Modal -->
-<div id="reminderModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full bg-slate-900/80 backdrop-blur-sm flex items-center justify-center">
-    <div class="relative w-full max-w-md max-h-full">
+<div id="reminderModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
+    <div id="reminderModalWrapper" class="relative w-full max-w-md max-h-full transition-all duration-300">
         <div class="relative bg-slate-800 rounded-xl shadow-2xl border border-slate-700">
             <div class="p-6">
                 <h3 class="mb-5 text-lg font-normal text-white text-center">Enviar Recordatorios de Pago</h3>
@@ -257,11 +240,19 @@
                     <p class="mt-2 text-xs text-slate-400">Esta acción puede tardar unos segundos dependiendo de la cantidad de correos.</p>
                 </div>
 
-                <div class="text-center">
-                    <button onclick="sendReminders()" type="button" class="text-white bg-amber-600 hover:bg-amber-700 focus:ring-4 focus:outline-none focus:ring-amber-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
-                        Confirmar Envío
+                <div id="logsContainer" class="hidden mt-4 mb-6 text-left">
+                    <h4 class="text-white font-medium text-sm mb-2"><i class="fa-solid fa-clock-rotate-left mr-1 text-slate-400"></i> Historial de Envíos (Últimos logs):</h4>
+                    <pre id="logsContent" class="bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-slate-300 overflow-y-auto max-h-60 font-mono whitespace-pre-wrap"></pre>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-center gap-2">
+                    <button onclick="sendReminders()" type="button" class="px-4 py-2 text-white bg-amber-600 hover:bg-amber-700 font-medium rounded-lg text-sm transition-colors flex items-center justify-center gap-1 shadow-md">
+                        <i class="fa-solid fa-paper-plane text-xs mr-1"></i> Confirmar Envío
                     </button>
-                    <button onclick="closeModal('reminderModal')" type="button" class="text-slate-400 bg-transparent hover:bg-slate-700 hover:text-white rounded-lg border border-slate-600 text-sm font-medium px-5 py-2.5 hover:text-white focus:z-10">
+                    <button onclick="toggleLogsView()" type="button" class="px-4 py-2 text-white bg-slate-700 hover:bg-slate-600 font-medium rounded-lg text-sm transition-colors flex items-center justify-center gap-1 shadow-md">
+                        <i class="fa-solid fa-list-ul text-xs mr-1"></i> Ver Logs
+                    </button>
+                    <button onclick="closeModal('reminderModal')" type="button" class="px-4 py-2 text-slate-400 bg-transparent hover:bg-slate-700 hover:text-white rounded-lg border border-slate-600 text-sm font-medium transition-colors">
                         Cancelar
                     </button>
                 </div>
@@ -574,7 +565,41 @@
     }
 
     function openReminderModal() {
+        const container = document.getElementById('logsContainer');
+        if (container) container.classList.add('hidden');
+        const wrapper = document.getElementById('reminderModalWrapper');
+        if (wrapper) {
+            wrapper.classList.remove('max-w-2xl');
+            wrapper.classList.add('max-w-md');
+        }
         document.getElementById('reminderModal').classList.remove('hidden');
+    }
+
+    async function toggleLogsView() {
+        const container = document.getElementById('logsContainer');
+        const wrapper = document.getElementById('reminderModalWrapper');
+        
+        if (container.classList.contains('hidden')) {
+            try {
+                const response = await fetch('../api/get_reminder_logs.php');
+                const text = await response.text();
+                document.getElementById('logsContent').textContent = text;
+                container.classList.remove('hidden');
+                wrapper.classList.replace('max-w-md', 'max-w-2xl');
+                
+                // Scroll to bottom
+                setTimeout(() => {
+                    const logsContent = document.getElementById('logsContent');
+                    logsContent.scrollTop = logsContent.scrollHeight;
+                }, 10);
+            } catch (error) {
+                console.error(error);
+                alert('Error al cargar logs');
+            }
+        } else {
+            container.classList.add('hidden');
+            wrapper.classList.replace('max-w-2xl', 'max-w-md');
+        }
     }
 
     async function sendReminders() {

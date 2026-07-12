@@ -62,6 +62,7 @@ switch($method) {
                     $s_serv->bindParam(":id", $data->id);
                     $s_serv->execute();
                     
+                    writeActivityLog("Started installation ID: " . $data->id);
                     $db->commit();
                     http_response_code(200);
                     echo json_encode(array("message" => "Instalación iniciada."));
@@ -179,6 +180,7 @@ switch($method) {
                         }
                     }
                     
+                    writeActivityLog("Completed installation ID: " . $data->id);
                     $db->commit();
 
                     // --- Post-Commit Actions (Email) ---

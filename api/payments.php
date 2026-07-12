@@ -145,6 +145,7 @@ if(!empty($data->invoice_id) && !empty($data->amount)) {
             }
         }
         
+        writeActivityLog("Registered payment of S/ " . number_format($data->amount, 2) . " for invoice ID: " . $data->invoice_id . " (Txn ID: " . $txn_id . ", Method: " . $method . ")");
         http_response_code(201);
         echo json_encode(array("message" => "Pago registrado y recibo enviado."));
     } else {

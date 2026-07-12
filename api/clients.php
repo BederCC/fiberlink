@@ -86,6 +86,7 @@ switch($method) {
             $stmt->bindParam(":coordinates", $data->coordinates);
             
             if($stmt->execute()) {
+                writeActivityLog("Created client: " . $data->fullname . " (DNI/RUC: " . $data->dni_ruc . ")");
                 http_response_code(201);
                 echo json_encode(array("message" => "Cliente creado exitosamente."));
             } else {
@@ -115,6 +116,7 @@ switch($method) {
             $stmt->bindParam(":id", $data->id);
             
             if($stmt->execute()) {
+                writeActivityLog("Updated client ID: " . $data->id . " - Name: " . $data->fullname . " (Status: " . $data->status . ")");
                 http_response_code(200);
                 echo json_encode(array("message" => "Cliente actualizado exitosamente."));
             } else {
@@ -133,6 +135,7 @@ switch($method) {
             $stmt->bindParam(":id", $data->id);
             
             if($stmt->execute()) {
+                writeActivityLog("Deleted client ID: " . $data->id);
                 http_response_code(200);
                 echo json_encode(array("message" => "Cliente eliminado."));
             } else {

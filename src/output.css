@@ -447,6 +447,9 @@
   .mt-auto {
     margin-top: auto;
   }
+  .mr-1 {
+    margin-right: calc(var(--spacing) * 1);
+  }
   .mr-2 {
     margin-right: calc(var(--spacing) * 2);
   }
@@ -1149,6 +1152,9 @@
       background-color: color-mix(in oklab, var(--color-emerald-600) 20%, transparent);
     }
   }
+  .bg-emerald-700 {
+    background-color: var(--color-emerald-700);
+  }
   .bg-indigo-50 {
     background-color: var(--color-indigo-50);
   }
@@ -1227,6 +1233,9 @@
       background-color: color-mix(in oklab, var(--color-red-500) 10%, transparent);
     }
   }
+  .bg-red-700 {
+    background-color: var(--color-red-700);
+  }
   .bg-rose-600 {
     background-color: var(--color-rose-600);
   }
@@ -1253,6 +1262,9 @@
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--color-slate-500) 10%, transparent);
     }
+  }
+  .bg-slate-600 {
+    background-color: var(--color-slate-600);
   }
   .bg-slate-700 {
     background-color: var(--color-slate-700);
@@ -1312,6 +1324,12 @@
     background-color: color-mix(in srgb, oklch(12.9% 0.042 264.695) 50%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--color-slate-950) 50%, transparent);
+    }
+  }
+  .bg-slate-950\/80 {
+    background-color: color-mix(in srgb, oklch(12.9% 0.042 264.695) 80%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-slate-950) 80%, transparent);
     }
   }
   .bg-slate-950\/90 {
@@ -1410,6 +1428,9 @@
   }
   .bg-clip-text {
     background-clip: text;
+  }
+  .fill-current {
+    fill: currentcolor;
   }
   .object-contain {
     object-fit: contain;
@@ -1614,6 +1635,9 @@
   }
   .whitespace-nowrap {
     white-space: nowrap;
+  }
+  .whitespace-pre-wrap {
+    white-space: pre-wrap;
   }
   .text-amber-400 {
     color: var(--color-amber-400);
@@ -2216,6 +2240,13 @@
       }
     }
   }
+  .hover\:bg-emerald-800 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-emerald-800);
+      }
+    }
+  }
   .hover\:bg-indigo-700 {
     &:hover {
       @media (hover: hover) {
@@ -2244,6 +2275,13 @@
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-red-600);
+      }
+    }
+  }
+  .hover\:bg-red-800 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-red-800);
       }
     }
   }

@@ -23,8 +23,20 @@ if(!empty($data->username) && !empty($data->password)) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if(password_verify($data->password, $row['password'])) {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            $_SESSION['user'] = array(
+                "id" => $row['id'],
+                "username" => $row['username'],
+                "full_name" => $row['full_name'],
+                "role" => $row['role']
+            );
+            
             // Generate a simple token (in production use JWT)
             $token = bin2hex(random_bytes(16));
+            
+            writeActivityLog("Logged in");
             
             // Start session or store token in DB if needed, for now just return success
             http_response_code(200);

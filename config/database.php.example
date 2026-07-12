@@ -1,0 +1,61 @@
+<?php
+class Database {
+    private $host = "TU_HOST_AQUI"; // Ejemplo: localhost
+    private $db_name = "TU_BASE_DE_DATOS_AQUI"; // Ejemplo: fiberlink
+    private $username = "TU_USUARIO_AQUI"; // Ejemplo: root
+    private $password = "TU_CONTRASENA_AQUI"; // Ejemplo: vacio o contraseña
+    public $conn;
+
+    public function getConnection() {
+        $this->conn = null;
+
+        try {
+            $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
+            $this->conn->exec("set names utf8");
+            $this->conn->exec("SET time_zone = '-05:00'");
+        } catch(PDOException $exception) {
+            echo "Connection error: " . $exception->getMessage();
+        }
+
+        return $this->conn;
+    }
+}
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!function_exists('writeActivityLog')) {
+    function writeActivityLog($action) {
+        $log_dir = __DIR__ . '/../logs';
+        if (!is_dir($log_dir)) {
+            mkdir($log_dir, 0777, true);
+        }
+        $log_file = $log_dir . '/activity.log';
+        
+        $user = 'Anonymous/System';
+        
+        // 1. Check HTTP header from fetch interceptor
+        if (isset($_SERVER['HTTP_X_LOGGED_USER'])) {
+            $user_info = json_decode(urldecode($_SERVER['HTTP_X_LOGGED_USER']), true);
+            if ($user_info && !empty($user_info['username'])) {
+                $user = $user_info['username'] . ' (' . $user_info['full_name'] . ')';
+                
+                // Synchronize PHP Session
+                if (session_status() === PHP_SESSION_NONE) {
+                    session_start();
+                }
+                $_SESSION['user'] = $user_info;
+            }
+        } 
+        // 2. Fallback to existing PHP Session
+        elseif (isset($_SESSION['user']) && !empty($_SESSION['user']['username'])) {
+            $user = $_SESSION['user']['username'] . ' (' . $_SESSION['user']['full_name'] . ')';
+        }
+        
+        $timestamp = date('Y-m-d H:i:s');
+        $log_entry = "[$timestamp] USER: $user | ACTION: $action\n";
+        file_put_contents($log_file, $log_entry, FILE_APPEND);
+    }
+}
+?>

@@ -2,8 +2,19 @@
 // This script is intended to be run by a CRON JOB once a day
 // Example: 0 9 * * * php /path/to/api/cron_reminders.php
 
-include_once '../config/database.php';
-include_once '../includes/Mailer.php';
+include_once __DIR__ . '/../config.php';
+include_once __DIR__ . '/../config/database.php';
+include_once __DIR__ . '/../includes/Mailer.php';
+
+function logMessage($message) {
+    $log_dir = __DIR__ . '/../logs';
+    if (!is_dir($log_dir)) {
+        mkdir($log_dir, 0777, true);
+    }
+    $log_file = $log_dir . '/reminders.log';
+    $timestamp = date('Y-m-d H:i:s');
+    file_put_contents($log_file, "[$timestamp] $message\n", FILE_APPEND);
+}
 
 $database = new Database();
 $db = $database->getConnection();
@@ -41,6 +52,8 @@ $stmt->bindParam(":target_date", $target_date);
 $stmt->execute();
 $invoices = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+logMessage("Starting Reminder Process (Type: " . ($_GET['type'] ?? 'default') . ", Target Date: $target_date). Total invoices to process: " . count($invoices));
+
 $count = 0;
 
 foreach ($invoices as $inv) {
@@ -57,11 +70,14 @@ foreach ($invoices as $inv) {
     
     if($mailer->sendReminder($inv['email'], $inv['fullname'], $invoiceData)) {
         echo "Sent successfully.\n";
+        logMessage("SUCCESS: Sent reminder to {$inv['fullname']} ({$inv['email']}) for Invoice {$inv['invoice_number']} (Due: {$inv['due_date']}, Amount: S/ " . number_format($inv['total_amount'], 2) . ")");
         $count++;
     } else {
         echo "Failed to send.\n";
+        logMessage("FAILED: Failed to send reminder to {$inv['fullname']} ({$inv['email']}) for Invoice {$inv['invoice_number']}");
     }
 }
 
 echo "Processed $count reminders.\n";
+logMessage("Finished. Processed $count successfully out of " . count($invoices) . " total targets.");
 ?>

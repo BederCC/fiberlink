@@ -46,6 +46,7 @@ switch($method) {
             $stmt->bindParam(":stock", $stock);
             
             if($stmt->execute()) {
+                writeActivityLog("Created product: " . $data->name . " (Price: S/ " . number_format($data->price, 2) . ", Stock: " . $stock . ")");
                 http_response_code(201);
                 echo json_encode(array("message" => "Producto creado exitosamente."));
             } else {
@@ -75,6 +76,7 @@ switch($method) {
             $stmt->bindParam(":id", $data->id);
             
             if($stmt->execute()) {
+                writeActivityLog("Updated product ID: " . $data->id . " - Name: " . $data->name . " (Price: S/ " . number_format($data->price, 2) . ", Stock: " . $stock . ")");
                 http_response_code(200);
                 echo json_encode(array("message" => "Producto actualizado exitosamente."));
             } else {
@@ -96,6 +98,7 @@ switch($method) {
             $stmt->bindParam(":id", $data->id);
             
             if($stmt->execute()) {
+                writeActivityLog("Deleted product ID: " . $data->id);
                 http_response_code(200);
                 echo json_encode(array("message" => "Producto eliminado."));
             } else {

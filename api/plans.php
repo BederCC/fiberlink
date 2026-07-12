@@ -43,6 +43,7 @@ switch($method) {
             $stmt->bindParam(":description", $data->description);
             
             if($stmt->execute()) {
+                writeActivityLog("Created plan: " . $data->name . " (" . $data->speed_mbps . " Mbps, S/ " . number_format($data->price, 2) . ")");
                 http_response_code(201);
                 echo json_encode(array("message" => "Plan creado exitosamente."));
             } else {
@@ -69,6 +70,7 @@ switch($method) {
             $stmt->bindParam(":id", $data->id);
             
             if($stmt->execute()) {
+                writeActivityLog("Updated plan ID: " . $data->id . " - Name: " . $data->name . " (" . $data->speed_mbps . " Mbps, S/ " . number_format($data->price, 2) . ")");
                 http_response_code(200);
                 echo json_encode(array("message" => "Plan actualizado exitosamente."));
             } else {
@@ -87,6 +89,7 @@ switch($method) {
             $stmt->bindParam(":id", $data->id);
             
             if($stmt->execute()) {
+                writeActivityLog("Deleted plan ID: " . $data->id);
                 http_response_code(200);
                 echo json_encode(array("message" => "Plan eliminado."));
             } else {

@@ -14,6 +14,33 @@
         if (!localStorage.getItem('token')) {
             window.location.href = '<?php echo BASE_URL; ?>/index.php';
         }
+
+        // Global Fetch Interceptor to sync logged user info with backend audit log
+        (function() {
+            const originalFetch = window.fetch;
+            window.fetch = function(input, init) {
+                init = init || {};
+                init.headers = init.headers || {};
+                
+                const userStr = localStorage.getItem('user');
+                if (userStr) {
+                    try {
+                        const user = JSON.parse(userStr);
+                        if (user && user.username) {
+                            const encodedUser = encodeURIComponent(JSON.stringify(user));
+                            if (init.headers instanceof Headers) {
+                                init.headers.set('X-Logged-User', encodedUser);
+                            } else {
+                                init.headers['X-Logged-User'] = encodedUser;
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Error parsing user from localStorage:', e);
+                    }
+                }
+                return originalFetch(input, init);
+            };
+        })();
     </script>
     <style>
         body { font-family: 'Outfit', sans-serif; }

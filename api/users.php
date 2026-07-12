@@ -48,6 +48,7 @@ switch($method) {
             $stmt->bindParam(":status", $status);
             
             if($stmt->execute()) {
+                writeActivityLog("Created user: " . $data->username . " (Role: " . $role . ", Name: " . $data->full_name . ")");
                 http_response_code(201);
                 echo json_encode(array("message" => "Usuario creado exitosamente."));
             } else {
@@ -87,6 +88,7 @@ switch($method) {
             }
             
             if($stmt->execute()) {
+                writeActivityLog("Updated user ID: " . $data->id . " - Username: " . $data->username . " (Role: " . $data->role . ")");
                 http_response_code(200);
                 echo json_encode(array("message" => "Usuario actualizado exitosamente."));
             } else {
@@ -110,6 +112,7 @@ switch($method) {
             $stmt->bindParam(":id", $data->id);
             
             if($stmt->execute()) {
+                writeActivityLog("Deleted user ID: " . $data->id);
                 http_response_code(200);
                 echo json_encode(array("message" => "Usuario eliminado."));
             } else {

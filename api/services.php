@@ -139,6 +139,7 @@ switch($method) {
 
                 // Invoice will be generated upon completion in api/installations.php
                 
+                writeActivityLog("Created service for client ID: " . $data->client_id . " (Service ID: $service_id)");
                 $db->commit();
                 http_response_code(201);
                 echo json_encode(array("message" => "Servicio registrado pendiente de instalación."));
@@ -246,6 +247,7 @@ switch($method) {
                     }
                 }
 
+                writeActivityLog("Updated service ID: " . $data->id . " for client ID: " . $data->client_id);
                 $db->commit();
                 http_response_code(200);
                 echo json_encode(array("message" => "Servicio actualizado exitosamente."));
