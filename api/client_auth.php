@@ -4,6 +4,7 @@ header("Content-Type: application/json; charset=UTF-8");
 
 include_once '../config/database.php';
 include_once '../includes/Mailer.php';
+include_once '../config.php';
 
 $database = new Database();
 $db = $database->getConnection();
@@ -111,7 +112,7 @@ if ($action === 'login') {
     if ($stmtToken->execute()) {
         // 4. Send Email
         $mailer = new Mailer();
-        $link = "http://" . $_SERVER['HTTP_HOST'] . "/fiberlink/set_password.php?token=" . $token;
+        $link = BASE_URL . "/set_password.php?token=" . $token;
         
         if ($mailer->sendActivationEmail($user['email'] ?? $data->email, $user['fullname'], $link)) {
             echo json_encode(["message" => "Enlace enviado"]);
