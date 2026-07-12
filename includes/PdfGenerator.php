@@ -340,8 +340,9 @@ class PdfGenerator {
                 </td>
                 <td width="50%" style="text-align: right;">
                     <strong>RECIBO # ' . $invoice['invoice_number'] . '</strong><br>
-                    <span class="small-text">Fecha emisión ' . date('d/m/Y', strtotime($invoice['issue_date'])) . '</span><br>
-                    <span class="small-text">Fecha vencimiento ' . date('d/m/Y', strtotime($invoice['due_date'])) . '</span>
+                    <span class="small-text">Fecha emisión (Documento): ' . date('d/m/Y', strtotime($invoice['issue_date'])) . '</span><br>
+                    <span class="small-text">Vencimiento de pago (Límite): ' . date('d/m/Y', strtotime($invoice['due_date'])) . '</span><br>
+                    <span style="font-size: 7pt; color: #94a3b8; font-style: italic;">* Fechas de generación del recibo y límite de pago</span>
                 </td>
             </tr>
         </table>
@@ -392,8 +393,8 @@ class PdfGenerator {
             $html .= '
             <tr>
                 <td style="border-bottom: 1px solid #f1f5f9;">
-                    ' . $item['description'] . '<br>
-                    <span class="small-text">Facturación del ' . date('d/m/Y', strtotime($invoice['issue_date'])) . ' al ' . date('d/m/Y', strtotime($invoice['due_date'])) . '</span>
+                    ' . $item['description'] . '
+                    ' . ($invoice['type'] === 'monthly' ? '<br><span class="small-text">Facturación del ' . date('d/m/Y', strtotime($invoice['due_date'] . ' -1 month +1 day')) . ' al ' . date('d/m/Y', strtotime($invoice['due_date'])) . '</span>' : '') . '
                 </td>
                 <td style="text-align: right; border-bottom: 1px solid #f1f5f9;">S/. ' . number_format($item_base, 2) . '</td>
                 <td style="text-align: right; border-bottom: 1px solid #f1f5f9;">18%</td>
@@ -743,6 +744,135 @@ class PdfGenerator {
         }
 
         return $pdf->Output('Payment_Logs.pdf', $output);
+    }
+
+    public function generateInvoicesReportPdf($invoices, $output = 'I') {
+        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->SetCreator('FiberLink System');
+        $pdf->SetAuthor('FiberLink');
+        $pdf->SetTitle('Reporte de Facturación');
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+        $pdf->SetMargins(10, 10, 10);
+        $pdf->SetAutoPageBreak(TRUE, 10);
+        $pdf->AddPage();
+
+        // Totals calculations
+        $total_count = count($invoices);
+        $total_amount = 0;
+        $total_paid = 0;
+        $total_unpaid = 0;
+        foreach ($invoices as $inv) {
+            $amount = floatval($inv['total_amount']);
+            $total_amount += $amount;
+            if ($inv['status'] === 'paid') {
+                $total_paid += $amount;
+            } else {
+                $total_unpaid += $amount;
+            }
+        }
+
+        // Title
+        $pdf->SetFont('helvetica', 'B', 16);
+        $pdf->SetTextColor(79, 70, 229); // Indigo-600
+        $pdf->Cell(0, 10, 'Reporte de Facturación y Pagos - FiberLink', 0, 1, 'C');
+        $pdf->SetFont('helvetica', '', 9);
+        $pdf->SetTextColor(100, 116, 139); // Slate-500
+        $pdf->Cell(0, 5, 'Generado el ' . date('d/m/Y h:i a'), 0, 1, 'C');
+        $pdf->Ln(5);
+
+        // Summary block HTML
+        $html_summary = '
+        <table border="0" cellpadding="6" style="width: 100%; font-family: helvetica;">
+            <tr style="background-color: #f8fafc;">
+                <td width="25%" style="border: 1px solid #e2e8f0; text-align: center;">
+                    <span style="font-size: 8pt; color: #64748b;">Total Facturas</span><br>
+                    <span style="font-size: 13pt; font-weight: bold; color: #1e293b;">' . $total_count . '</span>
+                </td>
+                <td width="25%" style="border: 1px solid #e2e8f0; text-align: center;">
+                    <span style="font-size: 8pt; color: #64748b;">Total Facturado</span><br>
+                    <span style="font-size: 13pt; font-weight: bold; color: #4f46e5;">S/ ' . number_format($total_amount, 2) . '</span>
+                </td>
+                <td width="25%" style="border: 1px solid #e2e8f0; text-align: center;">
+                    <span style="font-size: 8pt; color: #64748b;">Total Cobrado</span><br>
+                    <span style="font-size: 13pt; font-weight: bold; color: #10b981;">S/ ' . number_format($total_paid, 2) . '</span>
+                </td>
+                <td width="25%" style="border: 1px solid #e2e8f0; text-align: center;">
+                    <span style="font-size: 8pt; color: #64748b;">Total Pendiente/Vencido</span><br>
+                    <span style="font-size: 13pt; font-weight: bold; color: #ef4444;">S/ ' . number_format($total_unpaid, 2) . '</span>
+                </td>
+            </tr>
+        </table>
+        <br><br>
+        ';
+        
+        $pdf->writeHTML($html_summary, true, false, true, false, '');
+
+        // Invoices Table
+        $html_table = '
+        <table border="0" cellpadding="5" style="width: 100%; font-family: helvetica; font-size: 8pt;">
+            <thead>
+                <tr style="background-color: #4f46e5; color: #ffffff; font-weight: bold;">
+                    <th width="15%" style="text-align: left;">N° Factura</th>
+                    <th width="28%" style="text-align: left;">Cliente</th>
+                    <th width="14%" style="text-align: center;">DNI/RUC</th>
+                    <th width="11%" style="text-align: center;">Emisión</th>
+                    <th width="11%" style="text-align: center;">Vencimiento</th>
+                    <th width="11%" style="text-align: right;">Monto</th>
+                    <th width="10%" style="text-align: center;">Estado</th>
+                </tr>
+            </thead>
+            <tbody>';
+
+        $fill = false;
+        foreach ($invoices as $inv) {
+            $bg_color = $fill ? '#f8fafc' : '#ffffff';
+            
+            $status_style = '';
+            $status_text = '';
+            switch ($inv['status']) {
+                case 'paid':
+                    $status_style = 'color: #10b981; font-weight: bold;';
+                    $status_text = 'PAGADO';
+                    break;
+                case 'unpaid':
+                    $status_style = 'color: #f59e0b; font-weight: bold;';
+                    $status_text = 'PENDIENTE';
+                    break;
+                case 'overdue':
+                    $status_style = 'color: #ef4444; font-weight: bold;';
+                    $status_text = 'VENCIDO';
+                    break;
+                case 'cancelled':
+                    $status_style = 'color: #94a3b8;';
+                    $status_text = 'CANCELADO';
+                    break;
+                default:
+                    $status_text = strtoupper($inv['status']);
+            }
+
+            $html_table .= '
+            <tr style="background-color: ' . $bg_color . ';">
+                <td style="border-bottom: 1px solid #e2e8f0;">' . $inv['invoice_number'] . '</td>
+                <td style="border-bottom: 1px solid #e2e8f0;">' . htmlspecialchars($inv['fullname']) . '</td>
+                <td style="border-bottom: 1px solid #e2e8f0; text-align: center;">' . $inv['dni_ruc'] . '</td>
+                <td style="border-bottom: 1px solid #e2e8f0; text-align: center;">' . date('d/m/Y', strtotime($inv['issue_date'])) . '</td>
+                <td style="border-bottom: 1px solid #e2e8f0; text-align: center;">' . date('d/m/Y', strtotime($inv['due_date'])) . '</td>
+                <td style="border-bottom: 1px solid #e2e8f0; text-align: right;">S/ ' . number_format($inv['total_amount'], 2) . '</td>
+                <td style="border-bottom: 1px solid #e2e8f0; text-align: center; ' . $status_style . '">' . $status_text . '</td>
+            </tr>';
+            $fill = !$fill;
+        }
+
+        $html_table .= '
+            </tbody>
+        </table>
+        ';
+
+        $pdf->writeHTML($html_table, true, false, true, false, '');
+
+        // Output
+        return $pdf->Output('Reporte_Facturas_' . date('Ymd_His') . '.pdf', $output);
     }
 }
 ?>

@@ -13,10 +13,42 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
                     <span class="whitespace-nowrap">Recordatorios</span>
                 </button>
-                <button onclick="openGenerateModal()" class="flex-1 sm:flex-none px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2 text-sm">
+                <button onclick="openGenerateModal()" class="flex-1 sm:flex-none px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2 text-sm mr-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                     <span class="whitespace-nowrap">Generar Facturas</span>
                 </button>
+                
+                <!-- Report Export Buttons -->
+                <a href="../api/export_invoices.php?format=pdf" target="_blank" class="flex-1 sm:flex-none px-4 py-2 bg-rose-600/20 text-rose-400 border border-rose-500/30 hover:bg-rose-600 hover:text-white rounded-lg transition-all flex items-center justify-center gap-2 text-sm font-medium">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <path d="M7 13h1.5a1.5 1.5 0 000-3H7v5"></path>
+                        <path d="M11 10h1a2 2 0 010 4h-1v-4"></path>
+                        <path d="M15 10h2m-2 2h1.5M15 10v5"></path>
+                    </svg>
+                    <span class="whitespace-nowrap">Reporte PDF</span>
+                </a>
+                <a href="../api/export_invoices.php?format=excel" target="_blank" class="flex-1 sm:flex-none px-4 py-2 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600 hover:text-white rounded-lg transition-all flex items-center justify-center gap-2 text-sm font-medium">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <path d="M7 10l3 5m0-5l-3 5"></path>
+                        <path d="M11.5 10v5h2.5"></path>
+                        <path d="M18 10.5h-1.5a1 1 0 000 2h1.5a1 1 0 010 2H16.5"></path>
+                    </svg>
+                    <span class="whitespace-nowrap">Reporte Excel</span>
+                </a>
+                <a href="../api/export_invoices.php?format=csv" target="_blank" class="flex-1 sm:flex-none px-4 py-2 bg-cyan-600/20 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-600 hover:text-white rounded-lg transition-all flex items-center justify-center gap-2 text-sm font-medium">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <path d="M9 10.5h-1.5a1.5 1.5 0 000 3H9"></path>
+                        <path d="M13.5 10.5h-1a1 1 0 000 2h1a1 1 0 010 2h-1"></path>
+                        <path d="M15.5 10l1.5 5 1.5-5"></path>
+                    </svg>
+                    <span class="whitespace-nowrap">Reporte CSV</span>
+                </a>
             </div>
         </div>
 
@@ -33,6 +65,18 @@
             <div class="p-4 bg-slate-800 rounded-xl border border-slate-700">
                 <p class="text-slate-400 text-sm">Vencido</p>
                 <p class="text-2xl font-bold text-red-400" id="totalOverdue">S/ 0.00</p>
+            </div>
+        </div>
+
+        <!-- Search and Filter Bar -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+            <div class="relative w-full md:max-w-md">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-slate-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                    </svg>
+                </div>
+                <input type="text" id="searchInput" oninput="debounceSearch()" class="block w-full p-2.5 ps-10 text-sm text-slate-200 border border-slate-700 rounded-lg bg-slate-800/50 focus:ring-indigo-500 focus:border-indigo-500 placeholder-slate-500" placeholder="Buscar por cliente, DNI, factura, fecha o monto...">
             </div>
         </div>
 
@@ -123,6 +167,9 @@
                             <table class="w-full text-sm text-left text-slate-400">
                                 <thead class="text-xs text-slate-500 uppercase bg-slate-800">
                                     <tr>
+                                        <th class="sticky top-0 bg-slate-800 z-10 px-4 py-2 border-b border-slate-700 w-10">
+                                            <input type="checkbox" id="selectAllPreview" checked onclick="toggleAllPreview(this)" class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-slate-900">
+                                        </th>
                                         <th class="sticky top-0 bg-slate-800 z-10 px-4 py-2 border-b border-slate-700">Cliente</th>
                                         <th class="sticky top-0 bg-slate-800 z-10 px-4 py-2 border-b border-slate-700">Plan</th>
                                         <th class="sticky top-0 bg-slate-800 z-10 px-4 py-2 text-right border-b border-slate-700">Monto</th>
@@ -133,6 +180,7 @@
                                 </tbody>
                                 <tfoot class="bg-slate-800">
                                     <tr>
+                                        <th class="sticky bottom-0 bg-slate-800 z-10 px-4 py-2 border-t border-slate-700"></th>
                                         <th class="sticky bottom-0 bg-slate-800 z-10 px-4 py-2 text-white border-t border-slate-700">Total</th>
                                         <th class="sticky bottom-0 bg-slate-800 z-10 px-4 py-2 border-t border-slate-700"></th>
                                         <th class="sticky bottom-0 bg-slate-800 z-10 px-4 py-2 text-right text-white border-t border-slate-700" id="previewTotal">S/ 0.00</th>
@@ -234,10 +282,28 @@
     let previousStatuses = {};
     let currentPage = 1;
     const limit = 20;
+    let searchQuery = '';
+    let searchTimeout;
+
+    function debounceSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            searchQuery = document.getElementById('searchInput').value;
+            currentPage = 1;
+            
+            // Update export links dynamically with search query
+            const encodedSearch = encodeURIComponent(searchQuery);
+            document.querySelector('a[href*="export_invoices.php?format=pdf"]').setAttribute('href', `../api/export_invoices.php?format=pdf&search=${encodedSearch}`);
+            document.querySelector('a[href*="export_invoices.php?format=excel"]').setAttribute('href', `../api/export_invoices.php?format=excel&search=${encodedSearch}`);
+            document.querySelector('a[href*="export_invoices.php?format=csv"]').setAttribute('href', `../api/export_invoices.php?format=csv&search=${encodedSearch}`);
+            
+            loadInvoices();
+        }, 300);
+    }
 
     async function loadInvoices() {
         try {
-            const response = await fetch(`../api/billing.php?page=${currentPage}&limit=${limit}`);
+            const response = await fetch(`../api/billing.php?page=${currentPage}&limit=${limit}&search=${encodeURIComponent(searchQuery)}`);
             const result = await response.json();
             
             // Handle new response structure
@@ -395,11 +461,20 @@
             let total = 0;
 
             if (data.length > 0) {
+                // Reset select all checkbox state
+                const masterCheckbox = document.getElementById('selectAllPreview');
+                if (masterCheckbox) {
+                    masterCheckbox.checked = true;
+                    masterCheckbox.indeterminate = false;
+                }
                 data.forEach(item => {
                     const price = parseFloat(item.price);
                     total += price;
                     tbody.innerHTML += `
-                        <tr class="border-b border-slate-800">
+                        <tr class="border-b border-slate-800 hover:bg-slate-800/30 transition-colors">
+                            <td class="px-4 py-2">
+                                <input type="checkbox" name="selectService" value="${item.id}" checked onchange="updatePreviewSummary()" class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-slate-900">
+                            </td>
                             <td class="px-4 py-2 text-white">${item.fullname}</td>
                             <td class="px-4 py-2 text-slate-500">${item.plan_name}</td>
                             <td class="px-4 py-2 text-right text-emerald-400 font-medium">S/ ${price.toFixed(2)}</td>
@@ -408,7 +483,7 @@
                 });
                 document.getElementById('previewCount').textContent = `${data.length} facturas a generar`;
             } else {
-                tbody.innerHTML = `<tr><td colspan="3" class="px-4 py-4 text-center text-slate-500">No hay servicios pendientes de facturación para este periodo.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-4 text-center text-slate-500">No hay servicios pendientes de facturación para este periodo.</td></tr>`;
                 document.getElementById('previewCount').textContent = `0 facturas a generar`;
             }
 
@@ -431,10 +506,12 @@
         const year = document.getElementById('genYear').value;
         const btn = document.querySelector('#stepPreview button[onclick="confirmGeneration()"]');
         
-        // Check if there is anything to generate
-        const countText = document.getElementById('previewCount').textContent;
-        if (countText.startsWith('0')) {
-            alert('No hay facturas para generar.');
+        // Check selected checkboxes
+        const checkboxes = document.querySelectorAll('input[name="selectService"]:checked');
+        const serviceIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
+        
+        if (serviceIds.length === 0) {
+            alert('Por favor selecciona al menos una factura para generar.');
             return;
         }
 
@@ -445,7 +522,7 @@
             const response = await fetch('../api/billing.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ month, year })
+                body: JSON.stringify({ month, year, service_ids: serviceIds })
             });
 
             const data = await response.json();
@@ -518,6 +595,38 @@
         } finally {
             btn.disabled = false;
             btn.textContent = 'Confirmar Envío';
+        }
+    }
+
+    function toggleAllPreview(master) {
+        const checkboxes = document.querySelectorAll('input[name="selectService"]');
+        checkboxes.forEach(cb => {
+            cb.checked = master.checked;
+        });
+        updatePreviewSummary();
+    }
+
+    function updatePreviewSummary() {
+        const checkboxes = document.querySelectorAll('input[name="selectService"]');
+        let total = 0;
+        let count = 0;
+        checkboxes.forEach(cb => {
+            if (cb.checked) {
+                const row = cb.closest('tr');
+                const priceCell = row.querySelector('td:last-child').textContent;
+                const price = parseFloat(priceCell.replace(/[^\d.]/g, ''));
+                total += price;
+                count++;
+            }
+        });
+        
+        document.getElementById('previewTotal').textContent = `S/ ${total.toFixed(2)}`;
+        document.getElementById('previewCount').textContent = `${count} facturas a generar`;
+        
+        const master = document.getElementById('selectAllPreview');
+        if (master) {
+            master.checked = count === checkboxes.length;
+            master.indeterminate = count > 0 && count < checkboxes.length;
         }
     }
 </script>

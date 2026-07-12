@@ -74,6 +74,21 @@ switch($method) {
         $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
         $offset = ($page - 1) * $limit;
 
+        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+        
+        $where = "";
+        if (isset($_GET['dni'])) {
+            $where = " WHERE c.dni_ruc = :dni AND i.status != 'paid'";
+        } elseif (!empty($search)) {
+            $where = " WHERE i.invoice_number LIKE :search 
+                       OR c.fullname LIKE :search 
+                       OR c.dni_ruc LIKE :search 
+                       OR i.issue_date LIKE :search 
+                       OR i.due_date LIKE :search 
+                       OR i.total_amount LIKE :search 
+                       OR i.status LIKE :search";
+        }
+
         // 1. Get Totals and Count
         $countQuery = "SELECT 
                         COUNT(*) as total_records,
@@ -81,15 +96,15 @@ switch($method) {
                         SUM(CASE WHEN i.status = 'unpaid' THEN i.total_amount ELSE 0 END) as total_unpaid,
                         SUM(CASE WHEN i.status = 'overdue' THEN i.total_amount ELSE 0 END) as total_overdue
                        FROM invoices i 
-                       JOIN clients c ON i.client_id = c.id";
+                       JOIN clients c ON i.client_id = c.id
+                       $where";
         
-        if(isset($_GET['dni'])) {
-            $countQuery .= " WHERE c.dni_ruc = :dni AND i.status != 'paid'";
-        }
-
         $stmtCount = $db->prepare($countQuery);
-        if(isset($_GET['dni'])) {
+        if (isset($_GET['dni'])) {
             $stmtCount->bindParam(":dni", $_GET['dni']);
+        } elseif (!empty($search)) {
+            $searchTerm = "%$search%";
+            $stmtCount->bindParam(":search", $searchTerm);
         }
         $stmtCount->execute();
         $stats = $stmtCount->fetch(PDO::FETCH_ASSOC);
@@ -97,11 +112,8 @@ switch($method) {
         // 2. Get Paginated Data
         $query = "SELECT i.*, c.fullname, c.dni_ruc 
                   FROM invoices i 
-                  JOIN clients c ON i.client_id = c.id";
-        
-        if(isset($_GET['dni'])) {
-            $query .= " WHERE c.dni_ruc = :dni AND i.status != 'paid'";
-        }
+                  JOIN clients c ON i.client_id = c.id
+                  $where";
         
         // Sort by Status (Overdue > Unpaid > Paid) then Date
         $query .= " ORDER BY 
@@ -117,8 +129,11 @@ switch($method) {
         
         $stmt = $db->prepare($query);
         
-        if(isset($_GET['dni'])) {
+        if (isset($_GET['dni'])) {
             $stmt->bindParam(":dni", $_GET['dni']);
+        } elseif (!empty($search)) {
+            $searchTerm = "%$search%";
+            $stmt->bindParam(":search", $searchTerm);
         }
         
         $stmt->bindParam(":limit", $limit, PDO::PARAM_INT);
@@ -152,7 +167,7 @@ switch($method) {
             $year = $data->year;
             
             // Find active services that don't have a MONTHLY invoice for this month/year
-            $query = "SELECT s.client_id, s.plan_id, p.price, p.name as plan_name 
+            $query = "SELECT s.id, s.client_id, s.plan_id, p.price, p.name as plan_name 
                       FROM services s 
                       JOIN plans p ON s.plan_id = p.id 
                       WHERE s.service_status = 'active' 
@@ -169,6 +184,15 @@ switch($method) {
             $stmt->execute();
             
             $services_to_bill = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Filter by selected service IDs if provided
+            if (isset($data->service_ids) && is_array($data->service_ids)) {
+                $selected_ids = array_map('intval', $data->service_ids);
+                $services_to_bill = array_filter($services_to_bill, function($service) use ($selected_ids) {
+                    return in_array(intval($service['id']), $selected_ids);
+                });
+            }
+            
             $count = 0;
             
             foreach($services_to_bill as $service) {
