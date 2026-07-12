@@ -132,13 +132,14 @@ if ($action === 'login') {
         exit;
     }
 
-    $query = "SELECT id FROM clients WHERE reset_token = :token AND reset_expires > NOW()";
+    $query = "SELECT id, reset_expires FROM clients WHERE reset_token = :token";
     $stmt = $db->prepare($query);
     $stmt->bindParam(":token", $data->token);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user) {
+    $now = date('Y-m-d H:i:s');
+    if ($user && $user['reset_expires'] > $now) {
         $hash = password_hash($data->password, PASSWORD_DEFAULT);
         $update = "UPDATE clients SET password = :pass, reset_token = NULL, reset_expires = NULL WHERE id = :id";
         $stmtUpdate = $db->prepare($update);
