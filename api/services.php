@@ -41,10 +41,11 @@ switch($method) {
 
             echo json_encode($service);
         } else {
-            $query = "SELECT s.*, c.fullname, p.name as plan_name, p.speed_mbps 
+            $query = "SELECT s.*, c.fullname, p.name as plan_name, p.speed_mbps, i.id as installation_id 
                       FROM services s 
                       JOIN clients c ON s.client_id = c.id 
                       JOIN plans p ON s.plan_id = p.id 
+                      LEFT JOIN installations i ON i.service_id = s.id
                       ORDER BY s.id DESC";
             $stmt = $db->prepare($query);
             $stmt->execute();
