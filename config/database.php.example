@@ -1,13 +1,47 @@
 <?php
 class Database {
-    private $host = "TU_HOST_AQUI"; // Ejemplo: localhost
-    private $db_name = "TU_BASE_DE_DATOS_AQUI"; // Ejemplo: fiberlink
-    private $username = "TU_USUARIO_AQUI"; // Ejemplo: root
-    private $password = "TU_CONTRASENA_AQUI"; // Ejemplo: vacio o contraseña
+    private $host;
+    private $db_name;
+    private $username;
+    private $password;
     public $conn;
 
     public function getConnection() {
         $this->conn = null;
+
+        // Detect if environment is local (development)
+        $is_local = false;
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' || PHP_OS_FAMILY === 'Windows') {
+            $is_local = true;
+        } elseif (isset($_SERVER['HTTP_HOST'])) {
+            $http_host = $_SERVER['HTTP_HOST'];
+            if (
+                strpos($http_host, 'localhost') !== false || 
+                strpos($http_host, '127.0.0.1') !== false || 
+                strpos($http_host, '::1') !== false || 
+                preg_match('/^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/', $http_host) ||
+                preg_match('/\.local$/', $http_host) ||
+                preg_match('/\.test$/', $http_host)
+            ) {
+                $is_local = true;
+            }
+        }
+
+        if ($is_local) {
+            $this->host = "localhost";
+            $this->db_name = "fiberlink";
+            $this->username = "root";
+            $this->password = "";
+        } else {
+            // =================================================================
+            // CREDENCIALES DE PRODUCCIÓN (HOSTINGER)
+            // Reemplace estos valores con los de su base de datos en Hostinger:
+            // =================================================================
+            $this->host = "localhost"; // Generalmente 'localhost' en Hostinger
+            $this->db_name = "CAMBIAR_POR_SU_BASE_DE_DATOS_HOSTINGER"; 
+            $this->username = "CAMBIAR_POR_SU_USUARIO_HOSTINGER";     
+            $this->password = "CAMBIAR_POR_SU_CONTRASENA_HOSTINGER";   
+        }
 
         try {
             $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
