@@ -83,7 +83,7 @@
         <div class="bg-slate-800 rounded-xl border border-slate-700 p-4 mt-6">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
                 <h3 class="text-lg font-semibold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-clock-rotate-left text-slate-400"></i> Bitácora de Actividades del Portal
+                    <i class="fa-solid fa-clock-rotate-left text-slate-400"></i> Actividades del Portal
                 </h3>
                 <button onclick="loadActivityLogs()" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-xs transition-colors flex items-center gap-1.5">
                     <i class="fa-solid fa-rotate-right"></i> Actualizar Logs
