@@ -17,12 +17,12 @@ if (!$db) {
 }
 
 try {
-    // 1. Obtener todas las facturas no pagadas previas al 1 de Junio de 2026
-    $cutoff_date = '2026-06-01';
+    // 1. Obtener todas las facturas no pagadas previas o iguales al 16 de Junio de 2026
+    $cutoff_date = '2026-06-16';
     
     $q_inv = "SELECT id, client_id, total_amount, invoice_number 
               FROM invoices 
-              WHERE issue_date < :cutoff AND status != 'paid'";
+              WHERE issue_date <= :cutoff AND status != 'paid'";
     $stmt = $db->prepare($q_inv);
     $stmt->bindParam(":cutoff", $cutoff_date);
     $stmt->execute();
@@ -31,7 +31,7 @@ try {
     if (empty($invoices)) {
         echo json_encode([
             "status" => "success",
-            "message" => "No se encontraron facturas pendientes anteriores al " . date('d/m/Y', strtotime($cutoff_date)) . "."
+            "message" => "No se encontraron facturas pendientes anteriores o iguales al " . date('d/m/Y', strtotime($cutoff_date)) . "."
         ]);
         exit;
     }
