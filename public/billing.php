@@ -508,7 +508,7 @@
 
         btn.disabled = true;
 
-        const batchSize = 15; // 15 invoices per batch is safe and fast
+        const batchSize = 5; // Reduced to 5 invoices per batch for maximum server safety
         const totalInvoices = serviceIds.length;
         let generatedCount = 0;
         let errors = 0;
@@ -536,18 +536,37 @@
                 const batchIds = serviceIds.slice(i, i + batchSize);
                 btn.textContent = `Generando (${generatedCount}/${totalInvoices})...`;
                 
-                const response = await fetch('../api/billing.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ month, year, service_ids: batchIds })
-                });
+                let success = false;
+                let retries = 2; // Up to 2 retries per failed batch
+                let data = null;
 
-                if (response.ok) {
-                    const data = await response.json();
+                while (!success && retries >= 0) {
+                    try {
+                        const response = await fetch('../api/billing.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ month, year, service_ids: batchIds })
+                        });
+
+                        if (response.ok) {
+                            data = await response.json();
+                            success = true;
+                        } else {
+                            throw new Error('Server returned non-OK status');
+                        }
+                    } catch (err) {
+                        console.warn(`Error generating batch (Retries remaining: ${retries}):`, err);
+                        retries--;
+                        if (retries >= 0) {
+                            // Wait 1.5 seconds before retrying
+                            await new Promise(resolve => setTimeout(resolve, 1500));
+                        }
+                    }
+                }
+
+                if (success && data) {
                     generatedCount += data.generated_count;
                 } else {
-                    const errData = await response.json().catch(() => ({}));
-                    console.error('Error in batch:', errData.message || 'Unknown error');
                     errors += batchIds.length;
                 }
 
@@ -563,12 +582,17 @@
                 if (progressStatus) {
                     progressStatus.textContent = `Procesados: ${processed} / ${totalInvoices} ${errors > 0 ? `(${errors} errores)` : ''}`;
                 }
+
+                // Add a small delay (500ms) between batches to let the server breathe
+                if (i + batchSize < totalInvoices) {
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
             }
 
             if (errors === 0) {
-                alert(`Generación completada con éxito. ${generatedCount} facturas creadas.`);
+                alert(`Generación masiva completada con éxito. ${generatedCount} facturas creadas.`);
             } else {
-                alert(`Generación completada con observaciones. ${generatedCount} creadas, ${errors} fallaron.`);
+                alert(`Generación completada. ${generatedCount} facturas creadas, ${errors} fallaron.`);
             }
             
             progressContainer.classList.add('hidden');
