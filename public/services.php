@@ -8,10 +8,16 @@
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
             <h1 class="text-2xl font-bold text-white text-center sm:text-left">Servicios Activos (Instalaciones)</h1>
-            <button onclick="openNewServiceModal()" class="w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                Nueva Instalación
-            </button>
+            <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                <button onclick="createTestInstallation()" class="w-full sm:w-auto px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    Instalación de Prueba
+                </button>
+                <button onclick="openNewServiceModal()" class="w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Nueva Instalación
+                </button>
+            </div>
         </div>
 
         <!-- Table -->
@@ -19,6 +25,7 @@
             <table class="w-full text-sm text-left text-slate-400">
                 <thead class="text-xs text-slate-300 uppercase bg-slate-800">
                     <tr>
+                        <th scope="col" class="px-6 py-3 w-16 text-center">N°</th>
                         <th scope="col" class="px-6 py-3">Cliente</th>
                         <th scope="col" class="px-6 py-3">Plan</th>
                         <th scope="col" class="px-6 py-3">IP / MAC</th>
@@ -169,10 +176,11 @@
             const tbody = document.getElementById('servicesTableBody');
             tbody.innerHTML = '';
 
-            services.forEach(service => {
+            services.forEach((service, index) => {
                 const tr = document.createElement('tr');
                 tr.className = 'bg-slate-800 border-b border-slate-700 hover:bg-slate-700 transition-colors';
                 tr.innerHTML = `
+                    <td class="px-6 py-4 text-center font-semibold text-slate-400">${index + 1}</td>
                     <td class="px-6 py-4 font-medium text-white">${service.fullname}</td>
                     <td class="px-6 py-4">
                         <span class="bg-indigo-500/10 text-indigo-400 text-xs font-medium px-2.5 py-0.5 rounded">${service.plan_name} (${service.speed_mbps} Mbps)</span>
@@ -444,6 +452,32 @@
             openModal('serviceModal');
         } catch (error) {
             console.error('Error fetching service:', error);
+        }
+    }
+
+    async function createTestInstallation() {
+        const qtyStr = prompt('¿Cuántas instalaciones de prueba desea generar? (Ej: 1 al 10)', '1');
+        if (qtyStr === null) return; // Cancelado
+        
+        const count = parseInt(qtyStr);
+        if (isNaN(count) || count <= 0) {
+            alert('Por favor, ingrese una cantidad válida mayor a 0.');
+            return;
+        }
+        
+        try {
+            const response = await fetch(`../api/create_test_installation.php?count=${count}`);
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                alert(data.message);
+                loadServices(); // Recargar la tabla
+            } else {
+                alert('Error: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Error creating test installation:', error);
+            alert('Error de red al crear la instalación de prueba.');
         }
     }
 </script>
