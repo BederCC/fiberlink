@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informe Técnico de Arquitectura - FiberLink</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            950: '#03121e',
+                        },
+                        slate: {
+                            850: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Mermaid.js for Diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                background: '#0f172a',
+                primaryColor: '#0ea5e9',
+                primaryTextColor: '#fff',
+                lineColor: '#64748b',
+                secondaryColor: '#1e293b'
+            }
+        });
+    </script>
+
+    <style>
+        html, main {
+            scroll-behavior: smooth;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #0ea5e9;
+        }
+
+        /* Agrandar el gráfico SVG del diagrama en pantalla completa */
+        #diagramContainer.fixed svg {
+            width: 85vw !important;
+            max-width: 1400px !important;
+            height: auto !important;
+            max-height: 80vh !important;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-950 text-slate-300 font-sans min-h-screen selection:bg-brand-500 selection:text-white">
+
+    <!-- Sidebar Layout -->
+    <div class="flex min-h-screen">
+
+        <!-- Sidebar Navigation -->
+        <aside
+            class="w-64 bg-slate-900 border-r border-slate-800 flex-shrink-0 sticky top-0 h-screen overflow-y-auto custom-scrollbar">
+            <div class="p-6">
+                <div class="flex items-center gap-3 mb-6">
+                    <div>
+                        <h1 class="text-xl font-bold text-white font-outfit tracking-wide">FiberLink</h1>
+                        <span class="text-xs text-brand-500 font-semibold tracking-wider uppercase">Doc. de
+                            Arquitectura</span>
+                    </div>
+                </div>
+
+                <nav class="space-y-1">
+                    <a href="#overview"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-all font-medium text-sm">
+                        <i class="fa-solid fa-circle-info w-5 text-slate-400"></i> General e Idioma
+                    </a>
+                    <a href="#architecture"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-all font-medium text-sm">
+                        <i class="fa-solid fa-network-wired w-5 text-slate-400"></i> Arquitectura
+                    </a>
+                    <a href="#directories"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-all font-medium text-sm">
+                        <i class="fa-solid fa-folder-tree w-5 text-slate-400"></i> Estructura de Archivos
+                    </a>
+                    <a href="#database"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-all font-medium text-sm">
+                        <i class="fa-solid fa-database w-5 text-slate-400"></i> Base de Datos (MySQL)
+                    </a>
+                    <a href="#diagram"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-all font-medium text-sm">
+                        <i class="fa-solid fa-diagram-project w-5 text-slate-400"></i> Diagrama ER
+                    </a>
+                    <a href="#workflows"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-all font-medium text-sm">
+                        <i class="fa-solid fa-gears w-5 text-slate-400"></i> Flujos Claves
+                    </a>
+                    <a href="#installation"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-all font-medium text-sm">
+                        <i class="fa-solid fa-download w-5 text-slate-400"></i> Guía de Instalación
+                    </a>
+                    <a href="#deployment"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-all font-medium text-sm">
+                        <i class="fa-solid fa-cloud-arrow-up w-5 text-slate-400"></i> Despliegue (Hostinger)
+                    </a>
+                </nav>
+            </div>
+
+            <div class="p-6 mt-auto border-t border-slate-800 bg-slate-900/50">
+                <div class="text-xs text-slate-500">
+                    <p class="font-semibold text-slate-400">Versión del Sistema</p>
+                    <p>v1.3 (Julio 2026)</p>
+                    <p class="mt-2 font-semibold text-slate-400">Desarrollo</p>
+                    <p>XAMPP / PHP 8.0+</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 bg-slate-950 p-6 md:p-12 overflow-y-auto">
+
+            <!-- Hero Header -->
+            <header class="mb-12">
+                <div
+                    class="bg-gradient-to-r from-slate-900 via-brand-950 to-slate-900 border border-slate-800 rounded-2xl p-8 relative overflow-hidden">
+                    <div
+                        class="absolute right-0 bottom-0 top-0 w-1/3 bg-gradient-to-l from-brand-500/10 to-transparent blur-3xl pointer-events-none">
+                    </div>
+                    <span
+                        class="px-3 py-1 bg-brand-500/10 text-brand-500 border border-brand-500/20 rounded-full text-xs font-semibold uppercase tracking-wider">Documentación
+                        Oficial</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-white mt-4 font-outfit">Informe Técnico del
+                        Sistema</h2>
+                    <p class="text-slate-400 mt-2 max-w-2xl text-sm md:text-base">Análisis completo de la arquitectura
+                        del portal de gestión de ISP FiberLink, incluyendo la estructura de directorios, el modelo de
+                        base de datos relacional y los flujos de optimización de facturación masiva.</p>
+                </div>
+            </header>
+
+            <!-- 1. General e Idioma -->
+            <section id="overview" class="mb-16 scroll-mt-6">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-500 flex items-center justify-center">
+                        <i class="fa-solid fa-code text-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white font-outfit">Tecnologías e Idioma</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Backend Card -->
+                    <div
+                        class="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-slate-700 transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs font-bold text-brand-500 uppercase tracking-wide">Servidor
+                                (Backend)</span>
+                            <i class="fa-brands fa-php text-3xl text-indigo-400"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white mb-2">PHP 8.0+</h4>
+                        <p class="text-sm text-slate-400">Toda la lógica de negocio, manejo de base de datos relacional
+                            (PDO), envío de correos automatizados (SMTP/PHPMailer) y generación de reportes en PDF
+                            (TCPDF) está escrita enteramente en **PHP puro (Vanilla PHP)**.</p>
+                    </div>
+                    <!-- Frontend Card -->
+                    <div
+                        class="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-slate-700 transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs font-bold text-brand-500 uppercase tracking-wide">Diseño
+                                (Frontend)</span>
+                            <i class="fa-brands fa-css3-alt text-3xl text-sky-400"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white mb-2">Tailwind CSS & JS</h4>
+                        <p class="text-sm text-slate-400">La interfaz de usuario es responsiva, moderna y limpia.
+                            Utiliza clases utilitarias de **Tailwind CSS** (vía CDN o local) junto con **JavaScript
+                            nativo (ES6)** para solicitudes asíncronas dinámicas (Fetch API) y animaciones de control.
+                        </p>
+                    </div>
+                    <!-- Database Card -->
+                    <div
+                        class="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-slate-700 transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs font-bold text-brand-500 uppercase tracking-wide">Base de datos</span>
+                            <i class="fa-solid fa-database text-3xl text-emerald-400"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white mb-2">MariaDB / MySQL</h4>
+                        <p class="text-sm text-slate-400">Los datos persistentes de clientes, facturas, productos,
+                            servicios y registros de actividad del portal se gestionan en un motor relacional de base de
+                            datos **MySQL** optimizado con índices y claves foráneas.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Arquitectura -->
+            <section id="architecture" class="mb-16 scroll-mt-6">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-500 flex items-center justify-center">
+                        <i class="fa-solid fa-network-wired text-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white font-outfit">Arquitectura del Sistema</h3>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 md:p-8">
+                    <h4 class="text-lg font-bold text-white mb-4">Modelo Cliente-Servidor Desacoplado</h4>
+                    <p class="text-sm md:text-base text-slate-400 mb-6 leading-relaxed">
+                        La aplicación implementa una arquitectura **Cliente-Servidor clásica**. El servidor expone
+                        puntos de acceso estructurados en formato **JSON** a través de archivos controladores API en la
+                        carpeta <code class="text-brand-500 font-mono">/api</code>. El cliente (el navegador) carga las
+                        páginas HTML estáticas en la carpeta <code class="text-brand-500 font-mono">/public</code>,
+                        interactúa con el usuario y se comunica con el servidor a través de peticiones HTTP asíncronas
+                        asiladas empleando JavaScript nativo (<code class="text-brand-500 font-mono">fetch()</code>).
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                        <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg">
+                            <h5 class="font-bold text-white mb-2"><i
+                                    class="fa-solid fa-server mr-2 text-brand-500"></i>El Servidor (PHP + MySQL)</h5>
+                            <ul class="list-disc pl-5 text-sm text-slate-400 space-y-2">
+                                <li><strong>PDO (PHP Data Objects)</strong>: Proporciona una capa segura contra
+                                    inyecciones SQL usando consultas preparadas.</li>
+                                <li><strong>Servicios REST-like</strong>: APIs ligeras que capturan cabeceras
+                                    personalizadas y retornan respuestas con códigos de estado HTTP (200, 201, 400, 401,
+                                    503).</li>
+                                <li><strong>Módulo de PDF & SMTP</strong>: Generación de facturas físicas con TCPDF y
+                                    envío por SMTP de Hostinger.</li>
+                            </ul>
+                        </div>
+                        <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg">
+                            <h5 class="font-bold text-white mb-2"><i
+                                    class="fa-solid fa-desktop mr-2 text-brand-500"></i>El Cliente (Navegador)</h5>
+                            <ul class="list-disc pl-5 text-sm text-slate-400 space-y-2">
+                                <li><strong>Renderizado Dinámico</strong>: Las tablas de la interfaz se cargan
+                                    dinámicamente mediante consultas a las APIs locales, reduciendo el tráfico y
+                                    mejorando el tiempo de respuesta.</li>
+                                <li><strong>Barra de Progreso y Batching</strong>: Segmentación de grandes tareas en
+                                    lotes controlados para no saturar las capacidades del servidor del hosting
+                                    compartido.</li>
+                                <li><strong>Persistencia de Sesión</strong>: Control mediante sesiones de servidor
+                                    estándar (<code class="text-brand-500 font-mono">session_start()</code>).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Estructura de Archivos -->
+            <section id="directories" class="mb-16 scroll-mt-6">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-500 flex items-center justify-center">
+                        <i class="fa-solid fa-folder-tree text-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white font-outfit">Estructura de Directorios</h3>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 md:p-8">
+                    <p class="text-sm text-slate-400 mb-6">Árbol de directorios principal del sistema y la explicación
+                        técnica de las carpetas y archivos más importantes:</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Left tree view -->
+                        <div
+                            class="font-mono text-sm bg-slate-950 p-4 rounded-lg border border-slate-800 text-slate-300 overflow-x-auto">
+                            <div class="text-white font-bold"><i class="fa-solid fa-folder-open text-amber-500"></i>
+                                fiberlink/</div>
+                            <div class="pl-4">├── <i class="fa-solid fa-folder text-amber-500"></i> api/ <span
+                                    class="text-slate-500">// APIs Controladoras (REST JSON)</span></div>
+                            <div class="pl-8">├── billing.php</div>
+                            <div class="pl-8">├── clients.php</div>
+                            <div class="pl-8">├── create_test_installation.php</div>
+                            <div class="pl-8">├── installations.php</div>
+                            <div class="pl-8">├── mark_past_invoices_paid.php</div>
+                            <div class="pl-8">└── services.php</div>
+                            <div class="pl-4">├── <i class="fa-solid fa-folder text-amber-500"></i> config/ <span
+                                    class="text-slate-500">// Archivos de configuración</span></div>
+                            <div class="pl-8">├── database.php</div>
+                            <div class="pl-8">└── mail.php</div>
+                            <div class="pl-4">├── <i class="fa-solid fa-folder text-amber-500"></i> includes/ <span
+                                    class="text-slate-500">// Vistas compartidas y utilidades</span></div>
+                            <div class="pl-8">├── Mailer.php</div>
+                            <div class="pl-8">├── navbar.php</div>
+                            <div class="pl-8">├── PdfGenerator.php</div>
+                            <div class="pl-8">└── sidebar.php</div>
+                            <div class="pl-4">├── <i class="fa-solid fa-folder text-amber-500"></i> logs/ <span
+                                    class="text-slate-500">// Registro de actividades y auditoría</span></div>
+                            <div class="pl-8">└── activity.log</div>
+                            <div class="pl-4">├── <i class="fa-solid fa-folder text-amber-500"></i> public/ <span
+                                    class="text-slate-500">// Interfaz de Usuario y Vistas</span></div>
+                            <div class="pl-8">├── billing.php</div>
+                            <div class="pl-8">├── reports.php</div>
+                            <div class="pl-8">└── services.php</div>
+                            <div class="pl-4">├── database.sql <span class="text-slate-500">// Esquema de base de datos
+                                    relacional</span></div>
+                            <div class="pl-4">└── config.php <span class="text-slate-500">// Centralizador de URL y
+                                    constantes</span></div>
+                        </div>
+
+                        <!-- Right explanations list -->
+                        <div class="space-y-4">
+                            <div class="p-3 bg-slate-950/50 rounded border border-slate-800">
+                                <strong class="text-white text-sm"><i
+                                        class="fa-solid fa-folder text-brand-500 mr-1.5"></i>/api</strong>
+                                <p class="text-xs text-slate-400 mt-1">Contiene los scripts que responden solicitudes
+                                    AJAX. Estos archivos cargan el archivo de conexión, ejecutan las consultas a la base
+                                    de datos y retornan respuestas con codificación JSON.</p>
+                            </div>
+                            <div class="p-3 bg-slate-950/50 rounded border border-slate-800">
+                                <strong class="text-white text-sm"><i
+                                        class="fa-solid fa-folder text-brand-500 mr-1.5"></i>/config</strong>
+                                <p class="text-xs text-slate-400 mt-1">Guarda los archivos de acceso a base de datos y
+                                    credenciales del servicio SMTP. Destaca <code
+                                        class="text-brand-500">database.php</code>, el cual posee lógica de doble
+                                    entorno automatizada (Local vs Producción).</p>
+                            </div>
+                            <div class="p-3 bg-slate-950/50 rounded border border-slate-800">
+                                <strong class="text-white text-sm"><i
+                                        class="fa-solid fa-folder text-brand-500 mr-1.5"></i>/includes</strong>
+                                <p class="text-xs text-slate-400 mt-1">Centraliza clases utilitarias del sistema: <code
+                                        class="text-brand-500">PdfGenerator.php</code> (para emitir PDF con TCPDF) y
+                                    <code class="text-brand-500">Mailer.php</code> (para notificar y enviar comprobantes
+                                    por correo electrónico).</p>
+                            </div>
+                            <div class="p-3 bg-slate-950/50 rounded border border-slate-800">
+                                <strong class="text-white text-sm"><i
+                                        class="fa-solid fa-folder text-brand-500 mr-1.5"></i>/public</strong>
+                                <p class="text-xs text-slate-400 mt-1">Módulos principales del panel de administración
+                                    del ISP (Facturas, Clientes, Servicios Activos y Reportes de Rendimiento).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Base de Datos (MySQL) -->
+            <section id="database" class="mb-16 scroll-mt-6">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-500 flex items-center justify-center">
+                        <i class="fa-solid fa-database text-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white font-outfit">Estructura de Base de Datos</h3>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 md:p-8">
+                    <p class="text-sm text-slate-400 mb-6">El sistema relacional consta de las siguientes tablas
+                        estructuradas:</p>
+
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-sm text-left text-slate-400 border border-slate-800 rounded-lg">
+                            <thead class="text-xs text-slate-300 uppercase bg-slate-800/80">
+                                <tr>
+                                    <th class="px-4 py-3">Tabla</th>
+                                    <th class="px-4 py-3">Descripción</th>
+                                    <th class="px-4 py-3">Claves Importantes / Relaciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800">
+                                <tr>
+                                    <td class="px-4 py-3.5 font-semibold text-white">clients</td>
+                                    <td class="px-4 py-3.5 text-xs">Mantiene la información personal de los abonados
+                                        (DNI/RUC, teléfono, dirección, coordenadas GPS).</td>
+                                    <td class="px-4 py-3.5 text-xs text-brand-500">PK: id (Auto-incremental) | UNIQUE:
+                                        dni_ruc</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3.5 font-semibold text-white">services</td>
+                                    <td class="px-4 py-3.5 text-xs">Registra los servicios asignados a cada cliente,
+                                        detallando IP, dirección MAC física, modelo del router y estado de conexión.
+                                    </td>
+                                    <td class="px-4 py-3.5 text-xs text-slate-400"><span class="text-brand-500">FK:
+                                            client_id</span> (hacia clients.id), <span class="text-brand-500">FK:
+                                            plan_id</span> (hacia plans.id)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3.5 font-semibold text-white">plans</td>
+                                    <td class="px-4 py-3.5 text-xs">Especifica el catálogo de velocidades (Mbps) y
+                                        precios de planes de fibra óptica mensual.</td>
+                                    <td class="px-4 py-3.5 text-xs text-brand-500">PK: id</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3.5 font-semibold text-white">installations</td>
+                                    <td class="px-4 py-3.5 text-xs">Bitácora de campo que asigna instalaciones a
+                                        técnicos y registra costos de mano de obra y estado de las obras.</td>
+                                    <td class="px-4 py-3.5 text-xs text-slate-400"><span class="text-brand-500">FK:
+                                            client_id</span> (hacia clients), <span class="text-brand-500">FK:
+                                            technician_id</span> (hacia users)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3.5 font-semibold text-white">installation_details</td>
+                                    <td class="px-4 py-3.5 text-xs">Tabla intermedia para registrar los equipos y
+                                        accesorios consumidos en una instalación.</td>
+                                    <td class="px-4 py-3.5 text-xs text-slate-400"><span class="text-brand-500">FK:
+                                            service_id</span> (hacia services), <span class="text-brand-500">FK:
+                                            product_id</span> (hacia products)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3.5 font-semibold text-white">products</td>
+                                    <td class="px-4 py-3.5 text-xs">Catálogo de equipos y materiales en stock (Routers,
+                                        repetidores, cables de fibra drop, conectores).</td>
+                                    <td class="px-4 py-3.5 text-xs text-brand-500">PK: id</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3.5 font-semibold text-white">invoices</td>
+                                    <td class="px-4 py-3.5 text-xs">Facturas comerciales generadas de manera recurrente
+                                        (mensuales) o de instalación única.</td>
+                                    <td class="px-4 py-3.5 text-xs text-slate-400"><span class="text-brand-500">FK:
+                                            client_id</span> (hacia clients) | UNIQUE: invoice_number</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3.5 font-semibold text-white">invoice_items</td>
+                                    <td class="px-4 py-3.5 text-xs">Detalle de conceptos facturados por cada recibo
+                                        comercial generado.</td>
+                                    <td class="px-4 py-3.5 text-xs text-slate-400"><span class="text-brand-500">FK:
+                                            invoice_id</span> (hacia invoices) (ON DELETE CASCADE)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3.5 font-semibold text-white">payments</td>
+                                    <td class="px-4 py-3.5 text-xs">Registros de cobros procesados asociados a facturas
+                                        específicas con su forma de pago y ID de operación.</td>
+                                    <td class="px-4 py-3.5 text-xs text-slate-400"><span class="text-brand-500">FK:
+                                            invoice_id</span> (hacia invoices), <span class="text-brand-500">FK:
+                                            created_by</span> (hacia users)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3.5 font-semibold text-white">payment_metrics</td>
+                                    <td class="px-4 py-3.5 text-xs">Control de tiempo transcurrido desde la consulta
+                                        hasta la realización del pago.</td>
+                                    <td class="px-4 py-3.5 text-xs text-slate-400"><span class="text-brand-500">FK:
+                                            invoice_id</span> (hacia invoices)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3.5 font-semibold text-white">users</td>
+                                    <td class="px-4 py-3.5 text-xs">Control de accesos y credenciales con roles
+                                        definidos (admin, técnico, ventas).</td>
+                                    <td class="px-4 py-3.5 text-xs text-brand-500">PK: id | UNIQUE: username</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Diagrama ER -->
+            <section id="diagram" class="mb-16 scroll-mt-6">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-500 flex items-center justify-center">
+                        <i class="fa-solid fa-diagram-project text-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white font-outfit">Diagrama de Relación Entidad-Relación (ER)
+                    </h3>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 md:p-8 flex flex-col items-center">
+                    <p class="text-sm text-slate-400 mb-8 self-start">Este diagrama representa gráficamente cómo están
+                        relacionadas las tablas del sistema FiberLink:</p>
+
+                    <div id="diagramCard" class="w-full relative">
+                        <button onclick="toggleZoomDiagram()" class="absolute top-4 right-4 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white rounded-lg px-3 py-1.5 text-xs transition-all flex items-center gap-1.5 z-10 shadow-md">
+                            <i class="fa-solid fa-expand text-xs"></i> <span id="zoomBtnText">Agrandar</span>
+                        </button>
+                        <div id="diagramContainer" class="w-full overflow-x-auto custom-scrollbar flex justify-center bg-slate-950 p-6 rounded-lg border border-slate-800 transition-all duration-300">
+                            <div class="mermaid">
+                                erDiagram
+                                clients ||--o{ services : "tiene asignado"
+                                clients ||--o{ installations : "solicita"
+                                clients ||--o{ invoices : "recibe"
+
+                                plans ||--o{ services : "define precio/velocidad"
+
+                                services ||--o{ installation_details : "detalla materiales"
+                                products ||--o{ installation_details : "consumido en"
+
+                                invoices ||--o{ invoice_items : "se desglosa en"
+                                invoices ||--o{ payments : "registra cobros para"
+                                invoices ||--o{ payment_metrics : "registra tiempo de"
+
+                                users ||--o{ installations : "ejecuta"
+                                users ||--o{ payments : "cobra"
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. Flujos Claves -->
+            <section id="workflows" class="mb-16 scroll-mt-6">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-500 flex items-center justify-center">
+                        <i class="fa-solid fa-gears text-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white font-outfit">Flujos Claves y Optimizaciones</h3>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Flow 1 -->
+                    <div
+                        class="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-slate-700 transition-all">
+                        <div class="flex items-start gap-4">
+                            <div class="p-3 bg-brand-500/10 text-brand-500 rounded-lg">
+                                <i class="fa-solid fa-bolt-lightning text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white mb-2">Doble Entorno Dinámico Auto-Detectado</h4>
+                                <p class="text-sm text-slate-400 leading-relaxed">
+                                    Para evitar que al subir cambios del entorno local se rompa la conexión de
+                                    producción, la clase <code
+                                        class="text-brand-500 font-semibold font-mono">Database</code> en <code
+                                        class="text-brand-500 font-mono">config/database.php</code> analiza las
+                                    variables de entorno del servidor. Si el sistema operativo es Windows (XAMPP) o el
+                                    dominio es local (ej. <code class="text-brand-500 font-mono">localhost</code>, <code
+                                        class="text-brand-500 font-mono">127.0.0.1</code>, <code
+                                        class="text-brand-500 font-mono">.local</code>), el script se conecta
+                                    automáticamente con la base de datos de desarrollo. Si se ejecuta en Linux
+                                    (Hostinger), se conecta usando las credenciales del host web, evitando
+                                    modificaciones de código repetitivas.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flow 2 -->
+                    <div
+                        class="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-slate-700 transition-all">
+                        <div class="flex items-start gap-4">
+                            <div class="p-3 bg-brand-500/10 text-brand-500 rounded-lg">
+                                <i class="fa-solid fa-hourglass-half text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white mb-2">Facturación Masiva Segura (Batching &
+                                    Retries)</h4>
+                                <p class="text-sm text-slate-400 leading-relaxed">
+                                    Generar cientos de facturas en una sola llamada satura los límites de tiempo de
+                                    ejecución del servidor. En <code
+                                        class="text-brand-500 font-mono">public/billing.php</code>, el cliente procesa
+                                    la generación por lotes de **5 facturas a la vez**. Entre cada lote se aplica una
+                                    pausa de **500 ms** para liberar bloqueos. Adicionalmente, cuenta con un sistema de
+                                    **reintento automático** (hasta 2 intentos con 1.5s de espera ante fallos
+                                    temporales), visualizando el proceso en una barra de progreso que indica el
+                                    porcentaje y estado exacto en tiempo real.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flow 3 -->
+                    <div
+                        class="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-slate-700 transition-all">
+                        <div class="flex items-start gap-4">
+                            <div class="p-3 bg-brand-500/10 text-brand-500 rounded-lg">
+                                <i class="fa-solid fa-envelope-open-text text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white mb-2">Automatización de Pago y Envío de
+                                    Comprobantes</h4>
+                                <p class="text-sm text-slate-400 leading-relaxed">
+                                    Al registrarse un pago total sobre una factura en <code
+                                        class="text-brand-500 font-mono">api/payments.php</code>, el sistema
+                                    automáticamente:
+                                    <span class="block mt-2 font-mono text-slate-500 text-xs">
+                                        1. Cambia el estado de la factura a 'paid'.<br>
+                                        2. Identifica si el cliente poseía servicios 'suspended' (suspendidos) y los
+                                        reactiva a 'active'.<br>
+                                        3. Invoca la clase PdfGenerator para estructurar el PDF con TCPDF.<br>
+                                        4. Utiliza Mailer para notificar al cliente vía email adjuntando el comprobante
+                                        en formato PDF.
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+    <!-- 7. Guía de Instalación Local -->
+    <section id="installation" class="mb-16 scroll-mt-6">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-500 flex items-center justify-center">
+                <i class="fa-solid fa-download text-lg"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-white font-outfit">Guía de Instalación y Pruebas Local</h3>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 md:p-8 space-y-8">
+
+            <!-- Requirements -->
+            <div>
+                <h4 class="text-white font-bold mb-3 flex items-center gap-2">
+                    <span class="text-xs bg-brand-500/20 text-brand-500 px-2 py-0.5 rounded font-mono">1</span>
+                    Herramientas y Requisitos Previos
+                </h4>
+                <p class="text-sm text-slate-400 mb-4">Antes de comenzar, asegúrate de descargar e instalar los
+                    siguientes programas en tu computadora:</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 text-center">
+                        <i class="fa-solid fa-server text-2xl text-amber-500 mb-2"></i>
+                        <h5 class="text-white text-sm font-semibold mb-1">XAMPP</h5>
+                        <p class="text-xs text-slate-500">Servidor Apache, PHP 8.0+ y base de datos MariaDB/MySQL.</p>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 text-center">
+                        <i class="fa-solid fa-code text-2xl text-blue-500 mb-2"></i>
+                        <h5 class="text-white text-sm font-semibold mb-1">VS Code</h5>
+                        <p class="text-xs text-slate-500">Editor de código recomendado para editar configuraciones.</p>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 text-center">
+                        <i class="fa-brands fa-node-js text-2xl text-emerald-500 mb-2"></i>
+                        <h5 class="text-white text-sm font-semibold mb-1">Node.js</h5>
+                        <p class="text-xs text-slate-500">Requerido para gestionar paquetes y compilar Tailwind CSS.</p>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 text-center">
+                        <i class="fa-solid fa-box-open text-2xl text-indigo-500 mb-2"></i>
+                        <h5 class="text-white text-sm font-semibold mb-1">Composer</h5>
+                        <p class="text-xs text-slate-500">Gestor de dependencias de PHP para las utilidades de correo y
+                            PDF.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Steps -->
+            <div class="space-y-6">
+                <h4 class="text-white font-bold flex items-center gap-2">
+                    <span class="text-xs bg-brand-500/20 text-brand-500 px-2 py-0.5 rounded font-mono">2</span>
+                    Pasos de Instalación y Despliegue
+                </h4>
+
+                <!-- Step A -->
+                <div class="p-4 bg-slate-950 border border-slate-800/80 rounded-lg">
+                    <h5 class="text-white font-semibold text-sm mb-2"><i
+                            class="fa-solid fa-folder-open text-brand-500 mr-2"></i>Paso A: Ubicación en htdocs</h5>
+                    <p class="text-xs text-slate-400 mb-2">
+                        Descarga o clona el repositorio desde GitHub y mueve la carpeta completa de <code
+                            class="text-brand-500">fiberlink</code> al directorio de publicación web de XAMPP:
+                    </p>
+                    <pre class="bg-slate-900 text-slate-300 font-mono text-xs p-2.5 rounded border border-slate-800">Windows:  C:\\xampp\\htdocs\\fiberlink
+Linux:    /opt/lampp/htdocs/fiberlink</pre>
+                </div>
+
+                <!-- Step B -->
+                <div class="p-4 bg-slate-950 border border-slate-800/80 rounded-lg">
+                    <h5 class="text-white font-semibold text-sm mb-2"><i
+                            class="fa-solid fa-table text-brand-500 mr-2"></i>Paso B: Importación de Base de Datos</h5>
+                    <ol class="list-decimal pl-5 text-xs text-slate-400 space-y-1">
+                        <li>Inicia el panel de control de <strong>XAMPP</strong> y activa los módulos
+                            <strong>Apache</strong> y <strong>MySQL</strong>.</li>
+                        <li>Ingresa a tu navegador y entra a <strong>phpMyAdmin</strong>: <code
+                                class="text-brand-500">http://localhost/phpmyadmin/</code>.</li>
+                        <li>Crea una nueva base de datos llamada <code class="text-brand-500 font-bold">fiberlink</code>
+                            (con cotejamiento <code class="text-slate-300">utf8mb4_general_ci</code>).</li>
+                        <li>Haz clic sobre tu nueva base de datos, ve a la pestaña de <strong>Importar</strong>,
+                            selecciona el archivo <code class="text-brand-500 font-mono">database.sql</code> (ubicado en
+                            la raíz del proyecto) y haz clic en <strong>Importar / Continuar</strong>.</li>
+                    </ol>
+                </div>
+
+                <!-- Step C -->
+                <div class="p-4 bg-slate-950 border border-slate-800/80 rounded-lg">
+                    <h5 class="text-white font-semibold text-sm mb-2"><i
+                            class="fa-solid fa-file-signature text-brand-500 mr-2"></i>Paso C: Configuración de Archivos
+                        de Entorno</h5>
+                    <p class="text-xs text-slate-400 mb-3">
+                        En la carpeta <code class="text-brand-500">config/</code> del proyecto, copia y renombra los
+                        archivos de ejemplo:
+                    </p>
+                    <ul class="list-disc pl-5 text-xs text-slate-400 space-y-3">
+                        <li>
+                            <strong>Base de Datos</strong>: Duplica <code
+                                class="text-slate-200">config/database.php.example</code> y renombralo como <code
+                                class="text-brand-500 font-bold">config/database.php</code>.
+                            <span class="block text-slate-500 mt-1">El archivo viene configurado por defecto con el
+                                usuario <code class="text-slate-400 font-mono">root</code> y contraseña vacía, ideal
+                                para el entorno local predeterminado de XAMPP.</span>
+                        </li>
+                        <li>
+                            <strong>Correo Electrónico (Notificaciones SMTP)</strong>: Duplica <code
+                                class="text-slate-200">config/mail.php.example</code> y renombralo como <code
+                                class="text-brand-500 font-bold">config/mail.php</code>.
+                            <span class="block text-slate-500 mt-1">Abre el archivo e introduce tus credenciales de
+                                correo (Servidor SMTP, email y contraseña) si deseas probar la funcionalidad de envío de
+                                recibos y facturas en formato PDF por email.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Step D -->
+                <div class="p-4 bg-slate-950 border border-slate-800/80 rounded-lg">
+                    <h5 class="text-white font-semibold text-sm mb-2"><i
+                            class="fa-solid fa-terminal text-brand-500 mr-2"></i>Paso D: Instalación de Dependencias
+                    </h5>
+                    <p class="text-xs text-slate-400 mb-3">
+                        Abre la consola o terminal del sistema, dirígete a la raíz del proyecto (<code
+                            class="text-brand-500">cd C:\\xampp\\htdocs\\fiberlink</code>) y ejecuta los siguientes
+                        comandos:
+                    </p>
+                    <div class="space-y-3">
+                        <div>
+                            <span class="text-xs text-slate-300 font-medium block mb-1">1. Instalar dependencias de PHP
+                                (PHPMailer, TCPDF):</span>
+                            <pre
+                                class="bg-slate-900 text-brand-500 font-mono text-xs p-2 rounded border border-slate-800">composer install</pre>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-300 font-medium block mb-1">2. Instalar paquetes de Node
+                                (Tailwind CSS compiler):</span>
+                            <pre
+                                class="bg-slate-900 text-brand-500 font-mono text-xs p-2 rounded border border-slate-800">npm install</pre>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-300 font-medium block mb-1">3. Compilar / Monitorear
+                                Tailwind CSS en desarrollo local:</span>
+                            <pre
+                                class="bg-slate-900 text-brand-500 font-mono text-xs p-2 rounded border border-slate-800">npx tailwindcss -i ./src/input.css -o ./public/dist/output.css --watch</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step E -->
+                <div class="p-4 bg-slate-950 border border-slate-800/80 rounded-lg">
+                    <h5 class="text-white font-semibold text-sm mb-2"><i
+                            class="fa-solid fa-circle-check text-brand-500 mr-2"></i>Paso E: Ejecución e Ingreso al
+                        Panel</h5>
+                    <p class="text-xs text-slate-400 mb-2">
+                        Abre tu navegador de preferencia e introduce la siguiente dirección local:
+                    </p>
+                    <pre
+                        class="bg-slate-900 text-slate-300 font-mono text-xs p-2.5 rounded border border-slate-800 mb-3">http://localhost/fiberlink/public/login.php</pre>
+                    <p class="text-xs text-slate-400">
+                        Credenciales de Administrador por defecto registradas en la base de datos:
+                    </p>
+                    <ul class="list-disc pl-5 text-xs text-slate-400 mt-1">
+                        <li>Usuario: <code class="text-brand-500 font-bold font-mono">admin</code></li>
+                        <li>Contraseña: <code class="text-brand-500 font-bold font-mono">admin</code></li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 8. Despliegue en Producción (Hostinger + GitHub) -->
+    <section id="deployment" class="mb-16 scroll-mt-6">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-500 flex items-center justify-center">
+                <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-white font-outfit">Despliegue Continuo en Hostinger</h3>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 md:p-8 space-y-8">
+            
+            <!-- Git Deploy -->
+            <div>
+                <h4 class="text-white font-bold mb-3 flex items-center gap-2">
+                    <span class="text-xs bg-brand-500/20 text-brand-500 px-2 py-0.5 rounded font-mono">1</span>
+                    Integración Git / GitHub en Hostinger
+                </h4>
+                <p class="text-sm text-slate-400 leading-relaxed mb-4">
+                    Hostinger permite la automatización de despliegues (CI/CD) de modo que cada vez que haces un push (<code class="text-brand-500">git push</code>) desde tu editor (ej. VS Code) a GitHub, los cambios se reflejan automáticamente en el servidor web de Hostinger.
+                </p>
+                <div class="space-y-4">
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-400">
+                        <strong class="text-white block mb-1">Paso A: Configuración en Hostinger hPanel</strong>
+                        <ol class="list-decimal pl-5 space-y-1">
+                            <li>Inicia sesión en tu cuenta de <strong>Hostinger</strong> y dirígete al panel de tu sitio web (<strong>hPanel</strong>).</li>
+                            <li>En la barra lateral izquierda, navega a <strong>Avanzado -> Git</strong>.</li>
+                            <li>En la sección "Desplegar repositorio Git", introduce los siguientes datos:
+                                <ul class="list-disc pl-5 mt-1 text-slate-500">
+                                    <li>Dirección del Repositorio: <code class="text-brand-500 font-mono">https://github.com/BederCC/fiberlink.git</code></li>
+                                    <li>Rama: <code class="text-slate-300 font-mono">main</code></li>
+                                    <li>Directorio de instalación: <code class="text-slate-300 font-mono">public_html</code> (o la subcarpeta donde alojes la web).</li>
+                                </ul>
+                            </li>
+                            <li>Haz clic en el botón <strong>Crear</strong>.</li>
+                        </ol>
+                    </div>
+
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-400">
+                        <strong class="text-white block mb-1">Paso B: Webhook de Automatización Real-Time</strong>
+                        <ol class="list-decimal pl-5 space-y-1">
+                            <li>Una vez creado el repositorio Git en Hostinger, verás un enlace llamado <strong>"Webhook URL"</strong>. Cópialo.</li>
+                            <li>Entra a tu repositorio en <strong>GitHub</strong> y haz clic en la pestaña <strong>Settings</strong> (Configuración).</li>
+                            <li>En el menú de la izquierda, entra a <strong>Webhooks</strong> y haz clic en <strong>Add webhook</strong> (Agregar webhook).</li>
+                            <li>Pega la URL copiada en el campo <strong>Payload URL</strong> y asegúrate de seleccionar:
+                                <ul class="list-disc pl-5 mt-1 text-slate-500">
+                                    <li>Content type: <code class="text-slate-300">application/json</code></li>
+                                    <li>Events: "Just the push event." (Solo el evento push).</li>
+                                </ul>
+                            </li>
+                            <li>Guarda el webhook. ¡Listo! A partir de ahora, cada <code class="text-brand-500 font-mono">git push</code> actualizará tu web en producción de inmediato.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Database Configuration on Hostinger -->
+            <div>
+                <h4 class="text-white font-bold mb-3 flex items-center gap-2">
+                    <span class="text-xs bg-brand-500/20 text-brand-500 px-2 py-0.5 rounded font-mono">2</span>
+                    Configuración de Base de Datos en Producción
+                </h4>
+                <p class="text-sm text-slate-400 leading-relaxed mb-4">
+                    La base de datos en Hostinger es independiente del entorno local. Para mantener la consistencia:
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-950 p-4 rounded-lg border border-slate-800/80 text-xs">
+                        <strong class="text-white block mb-2"><i class="fa-solid fa-database text-brand-500 mr-1.5"></i>Importar Esquema SQL</strong>
+                        <p class="text-slate-400 mb-2">
+                            Entra a la sección de <strong>Bases de Datos -> Bases de Datos MySQL</strong> en el panel de Hostinger, crea una base de datos e importa el archivo <code class="text-brand-500 font-mono">database.sql</code> de tu repositorio usando <strong>phpMyAdmin</strong> en la nube.
+                        </p>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-lg border border-slate-800/80 text-xs">
+                        <strong class="text-white block mb-2"><i class="fa-solid fa-key text-brand-500 mr-1.5"></i>Modificar Credenciales</strong>
+                        <p class="text-slate-400 mb-2">
+                            Al crear la base de datos MySQL en Hostinger, el sistema generará un nombre de base de datos y de usuario con un prefijo (ej. <code class="text-brand-500">u226387153_fiberlink</code>). 
+                        </p>
+                        <p class="text-slate-400">
+                            Abre tu archivo local <code class="text-slate-300">config/database.php</code> y asegúrate de rellenar el bloque de producción <code class="text-slate-400 font-mono">else</code> con esas credenciales exactas antes de hacer push.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-20 pt-6 border-t border-slate-800 text-center text-xs text-slate-600">
+        <p>FiberLink EIRL - Sistema de Control y Facturación de ISP.</p>
+        <p class="mt-1">Derechos Reservados © 2026 | Desarrollado por <a href="https://voltoraperu.com" target="_blank" class="text-brand-500 hover:underline font-semibold">voltoradevs</a></p>
+    </footer>
+    </main>
+    </div>
+
+    <!-- Script for Diagram Zoom -->
+    <script>
+        function toggleZoomDiagram() {
+            const container = document.getElementById('diagramContainer');
+            const card = document.getElementById('diagramCard');
+            const btnText = document.getElementById('zoomBtnText');
+            const btnIcon = document.querySelector('#diagramCard button i');
+            
+            if (container.classList.contains('fixed')) {
+                // Exit Fullscreen
+                container.className = 'w-full overflow-x-auto custom-scrollbar flex justify-center bg-slate-950 p-6 rounded-lg border border-slate-800 transition-all duration-300';
+                card.classList.remove('z-50');
+                btnText.textContent = 'Agrandar';
+                btnIcon.className = 'fa-solid fa-expand text-xs';
+                document.body.style.overflow = '';
+            } else {
+                // Enter Fullscreen
+                container.className = 'fixed inset-0 z-50 bg-slate-950/95 p-12 overflow-auto flex justify-center items-center transition-all duration-300';
+                card.classList.add('z-50');
+                btnText.textContent = 'Contraer';
+                btnIcon.className = 'fa-solid fa-compress text-xs';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+    </script>
+</body>
+
+</html>

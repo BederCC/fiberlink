@@ -13,8 +13,14 @@
                         <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">FiberLink</span>
                     </a>
                 </div>
-                <div class="flex items-center">
-                    <div class="flex items-center ms-3 relative">
+                <div class="flex items-center gap-3">
+                    <!-- Botón Documentación -->
+                    <a href="<?php echo BASE_URL; ?>/reporte_arquitectura.html" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors shadow-sm">
+                        <i class="fa-solid fa-file-lines text-indigo-400"></i>
+                        <span>Documentación</span>
+                    </a>
+
+                    <div class="flex items-center relative">
                         <div>
                             <button type="button" class="flex text-sm bg-slate-800 rounded-full focus:ring-4 focus:ring-slate-700" aria-expanded="false" data-dropdown-toggle="dropdown-user" id="user-menu-button">
                                 <span class="sr-only">Open user menu</span>
@@ -22,28 +28,38 @@
                             </button>
                         </div>
                         <!-- Dropdown menu -->
-                        <div class="z-50 hidden absolute right-0 top-10 my-4 text-base list-none bg-slate-800 divide-y divide-slate-700 rounded shadow-xl border border-slate-700" id="dropdown-user" style="display: none;">
-                            <div class="px-4 py-3" role="none">
-                                <p class="text-sm text-white" role="none" id="user-name-display">
+                        <div class="z-50 hidden absolute right-0 top-11 w-56 text-sm list-none bg-slate-800/95 backdrop-blur-md divide-y divide-slate-700/60 rounded-xl shadow-2xl border border-slate-700/80 transition-all duration-200" id="dropdown-user" style="display: none;">
+                            <div class="px-5 py-3.5" role="none">
+                                <p class="text-sm font-semibold text-white tracking-wide" role="none" id="user-name-display">
                                     Usuario
                                 </p>
-                                <p class="text-sm font-medium text-slate-400 truncate" role="none" id="user-role-display">
+                                <p class="text-xs font-medium text-slate-400 truncate mt-0.5 uppercase tracking-wider" role="none" id="user-role-display">
                                     Rol
                                 </p>
                             </div>
-                            <ul class="py-1" role="none">
+                            <ul class="py-2 text-slate-300" role="none">
                                 <li>
-                                    <a href="#" id="navbar-dashboard-link" class="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white" role="menuitem">Dashboard</a>
+                                    <a href="#" id="navbar-dashboard-link" class="flex items-center gap-2.5 px-5 py-2.5 hover:bg-slate-700/50 hover:text-white transition-colors" role="menuitem">
+                                        <i class="fa-solid fa-chart-pie text-slate-400"></i>
+                                        <span>Dashboard</span>
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="#" class="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white" role="menuitem">Configuración</a>
+                                    <a href="<?php echo BASE_URL; ?>/reporte_arquitectura.html" target="_blank" class="flex items-center gap-2.5 px-5 py-2.5 hover:bg-slate-700/50 hover:text-white transition-colors" role="menuitem">
+                                        <i class="fa-solid fa-file-lines text-indigo-400"></i>
+                                        <span>Documentación</span>
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo BASE_URL; ?>/api/logout.php" class="block px-4 py-2 text-sm text-red-400 hover:bg-slate-700 hover:text-red-300" role="menuitem">
-                                        <div class="flex items-center gap-2">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                                            Cerrar Sesión
-                                        </div>
+                                    <a href="#" class="flex items-center gap-2.5 px-5 py-2.5 hover:bg-slate-700/50 hover:text-white transition-colors" role="menuitem">
+                                        <i class="fa-solid fa-gear text-slate-400"></i>
+                                        <span>Configuración</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo BASE_URL; ?>/api/logout.php" class="flex items-center gap-2.5 px-5 py-2.5 text-red-400 hover:bg-slate-700/50 hover:text-red-300 transition-colors border-t border-slate-700/40" role="menuitem">
+                                        <i class="fa-solid fa-right-from-bracket"></i>
+                                        <span>Cerrar Sesión</span>
                                     </a>
                                 </li>
                             </ul>
