@@ -507,29 +507,80 @@
         }
 
         btn.disabled = true;
-        btn.textContent = 'Generando...';
+
+        const batchSize = 15; // 15 invoices per batch is safe and fast
+        const totalInvoices = serviceIds.length;
+        let generatedCount = 0;
+        let errors = 0;
+
+        // Visual progress feedback
+        const stepPreview = document.getElementById('stepPreview');
+        let progressContainer = document.getElementById('generationProgressContainer');
+        if (!progressContainer) {
+            progressContainer = document.createElement('div');
+            progressContainer.id = 'generationProgressContainer';
+            progressContainer.className = 'mt-4 p-4 bg-slate-900 border border-slate-700 rounded-lg text-center';
+            stepPreview.insertBefore(progressContainer, stepPreview.lastElementChild);
+        }
+        progressContainer.classList.remove('hidden');
+        progressContainer.innerHTML = `
+            <div class="text-sm font-medium text-slate-300 mb-2">Generando facturas... <span id="progressPercent">0%</span></div>
+            <div class="w-full bg-slate-700 rounded-full h-2.5 mb-2 overflow-hidden">
+                <div id="progressBar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+            <div class="text-xs text-slate-400" id="progressStatus">Procesando: 0 / ${totalInvoices}</div>
+        `;
 
         try {
-            const response = await fetch('../api/billing.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ month, year, service_ids: serviceIds })
-            });
+            for (let i = 0; i < totalInvoices; i += batchSize) {
+                const batchIds = serviceIds.slice(i, i + batchSize);
+                btn.textContent = `Generando (${generatedCount}/${totalInvoices})...`;
+                
+                const response = await fetch('../api/billing.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ month, year, service_ids: batchIds })
+                });
 
-            const data = await response.json();
-            if (response.ok) {
-                alert(`Generación completada. ${data.generated_count} facturas creadas.`);
-                closeModal('generateModal');
-                loadInvoices();
-            } else {
-                alert('Error: ' + data.message);
+                if (response.ok) {
+                    const data = await response.json();
+                    generatedCount += data.generated_count;
+                } else {
+                    const errData = await response.json().catch(() => ({}));
+                    console.error('Error in batch:', errData.message || 'Unknown error');
+                    errors += batchIds.length;
+                }
+
+                // Update progress bar
+                const processed = Math.min(i + batchSize, totalInvoices);
+                const percent = Math.round((processed / totalInvoices) * 100);
+                const progressBar = document.getElementById('progressBar');
+                const progressPercent = document.getElementById('progressPercent');
+                const progressStatus = document.getElementById('progressStatus');
+                
+                if (progressBar) progressBar.style.width = `${percent}%`;
+                if (progressPercent) progressPercent.textContent = `${percent}%`;
+                if (progressStatus) {
+                    progressStatus.textContent = `Procesados: ${processed} / ${totalInvoices} ${errors > 0 ? `(${errors} errores)` : ''}`;
+                }
             }
+
+            if (errors === 0) {
+                alert(`Generación completada con éxito. ${generatedCount} facturas creadas.`);
+            } else {
+                alert(`Generación completada con observaciones. ${generatedCount} creadas, ${errors} fallaron.`);
+            }
+            
+            progressContainer.classList.add('hidden');
+            closeModal('generateModal');
+            loadInvoices();
         } catch (error) {
             console.error(error);
-            alert('Error de conexión');
+            alert('Error de conexión durante la generación. El proceso se ha detenido.');
         } finally {
             btn.disabled = false;
             btn.textContent = 'Confirmar y Generar';
+            if (progressContainer) progressContainer.classList.add('hidden');
         }
     }
 
