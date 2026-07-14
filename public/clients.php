@@ -353,10 +353,13 @@
                 if (response.ok) {
                     loadClients();
                 } else {
-                    alert('Error al eliminar');
+                    const errData = await response.json().catch(() => ({}));
+                    const errMsg = errData.message || 'Error al eliminar';
+                    alert(errMsg);
                 }
             } catch (error) {
                 console.error('Error:', error);
+                alert('Error de conexión al eliminar');
             }
         }
     }

@@ -130,17 +130,27 @@ switch($method) {
         $data = json_decode(file_get_contents("php://input"));
         
         if(!empty($data->id)) {
-            $query = "DELETE FROM clients WHERE id = :id";
-            $stmt = $db->prepare($query);
-            $stmt->bindParam(":id", $data->id);
-            
-            if($stmt->execute()) {
-                writeActivityLog("Deleted client ID: " . $data->id);
-                http_response_code(200);
-                echo json_encode(array("message" => "Cliente eliminado."));
-            } else {
-                http_response_code(503);
-                echo json_encode(array("message" => "No se pudo eliminar el cliente."));
+            try {
+                $query = "DELETE FROM clients WHERE id = :id";
+                $stmt = $db->prepare($query);
+                $stmt->bindParam(":id", $data->id);
+                
+                if($stmt->execute()) {
+                    writeActivityLog("Deleted client ID: " . $data->id);
+                    http_response_code(200);
+                    echo json_encode(array("message" => "Cliente eliminado."));
+                } else {
+                    http_response_code(503);
+                    echo json_encode(array("message" => "No se pudo eliminar el cliente."));
+                }
+            } catch (PDOException $e) {
+                if ($e->getCode() == '23000') {
+                    http_response_code(409); // Conflict
+                    echo json_encode(array("message" => "No se puede eliminar el cliente porque tiene facturas, pagos o instalaciones asociadas. Intente cambiar su estado a 'Inactivo' en su lugar."));
+                } else {
+                    http_response_code(500);
+                    echo json_encode(array("message" => "Error al eliminar: " . $e->getMessage()));
+                }
             }
         }
         break;
