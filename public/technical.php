@@ -7,10 +7,10 @@
         
         <!-- Header -->
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold text-white">Operaciones Técnicas (Simulación)</h1>
+            <h1 class="text-2xl font-bold text-white">Operaciones Técnicas</h1>
             <div class="flex items-center gap-2">
                 <span class="flex w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
-                <span class="text-sm text-slate-400">RouterOS: Conectado (Simulado)</span>
+                <span class="text-sm text-slate-400">RouterOS: Conectado</span>
             </div>
         </div>
 
