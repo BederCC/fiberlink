@@ -29,7 +29,7 @@
             <!-- FRONT: Admin Login -->
             <div class="w-full backface-hidden bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
                 <div class="text-center mb-8">
-                    <h1 class="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent mb-2">FiberLink</h1>
+                    <img src="src/img/logo.png" alt="FiberLink" class="mx-auto h-16 w-auto object-contain mb-3">
                     <p class="text-slate-400 text-sm">Portal Administrativo</p>
                     <div class="mt-2 space-y-1">
                         <p class="text-[10px] text-slate-500 italic">User: <span class="text-indigo-400/80">admin</span></p>
@@ -63,7 +63,7 @@
             <!-- BACK: Client Login -->
             <div class="absolute top-0 left-0 w-full h-full backface-hidden rotate-y-180 bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl overflow-hidden">
                 <div class="text-center mb-8">
-                    <h1 class="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent mb-2">FiberLink</h1>
+                    <img src="src/img/logo.png" alt="FiberLink" class="mx-auto h-16 w-auto object-contain mb-3">
                     <p class="text-slate-400 text-sm">Portal de Clientes</p>
                 </div>
 

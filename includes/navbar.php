@@ -8,9 +8,8 @@
                            <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
                         </svg>
                     </button>
-                    <a href="#" class="flex ms-2 md:me-24 items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-white font-bold text-xl">F</div>
-                        <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">FiberLink</span>
+                    <a href="#" class="flex ms-2 md:me-24 items-center">
+                        <img src="<?php echo BASE_URL; ?>/src/img/logo.png" alt="FiberLink" class="h-8 w-auto object-contain">
                     </a>
                 </div>
                 <div class="flex items-center gap-3">
